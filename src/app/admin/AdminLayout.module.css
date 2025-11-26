@@ -1,0 +1,164 @@
+.shell {
+  --bg-deep: #f5f7fb;
+  --text-light: #0f172a;
+  --text-muted: #475569;
+  --cta-secondary: rgba(15, 23, 42, 0.05);
+  --border-soft: rgba(15, 23, 42, 0.12);
+  --sidebar-bg: #ffffff;
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-deep);
+  color: var(--text-light);
+  font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sidebar {
+  width: 260px;
+  border-right: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset: 0 auto 0 0;
+  background: var(--sidebar-bg);
+  z-index: 20;
+  box-shadow: 6px 0 30px rgba(15, 23, 42, 0.08);
+}
+
+.sidebarHeader {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.sidebarTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.nav {
+  flex: 1;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.navLink {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 0.65rem;
+  color: var(--text-light);
+  background: transparent;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.navLink:hover {
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.navLinkSecondary {
+  opacity: 0.7;
+}
+
+.navLinkSecondary:hover {
+  opacity: 1;
+}
+
+.sidebarFooter {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border-soft);
+  background: var(--sidebar-bg);
+}
+
+.logout {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  color: #f87171;
+  text-align: left;
+  border-radius: 0.65rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.logout:hover {
+  color: #fca5a5;
+}
+
+.main {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-deep);
+}
+
+.topBar {
+  height: 64px;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 15;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+}
+
+.topBarTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.userMeta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userEmail {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.userBadge {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 0 18px rgba(12, 79, 173, 0.55);
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  color: var(--text-light);
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .main {
+    margin-left: 0;
+  }
+
+  .topBar {
+    position: static;
+  }
+}
+

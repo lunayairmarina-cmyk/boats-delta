@@ -1,0 +1,275 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px clamp(24px, 6vw, 96px);
+    background: transparent;
+    transition: background 0.3s ease, padding 0.3s ease, border-color 0.3s ease;
+    border-bottom: 1px solid transparent;
+}
+
+.navbarScrolled {
+    background: rgba(1, 6, 18, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 16px clamp(24px, 6vw, 96px);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbarMenuOpen {
+    background: #010612;
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.brandMark {
+    height: 80px;
+    width: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease;
+    overflow: hidden;
+}
+
+.brandMark:hover {
+    transform: translateY(-2px);
+    background: #fff;
+}
+
+.logoImage {
+    width: 120%;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    transform: scale(3);
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 6px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+}
+
+.menuItem {
+    position: relative;
+    padding: 10px 24px;
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.menuItem:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.menuItemActive {
+    background: #fff;
+    color: #5f2eea;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.menuItemActive:hover {
+    background: #fff;
+    color: #5f2eea;
+}
+
+.connectBtn {
+    padding: 12px 28px;
+    border-radius: 999px;
+    background: linear-gradient(130deg, #7a3df5, #4c2fff);
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    box-shadow: 0 10px 25px rgba(82, 50, 157, 0.35);
+    border: none;
+}
+
+.connectBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(82, 50, 157, 0.45);
+    filter: brightness(1.05);
+}
+
+.desktopActions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.menuToggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    padding: 10px;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.menuToggle span {
+    display: block;
+    height: 2px;
+    background: #fff;
+    border-radius: 999px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.menuToggleActive span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.menuToggleActive span:nth-child(2) {
+    opacity: 0;
+}
+
+.menuToggleActive span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+.menuToggle:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.mobileMenu {
+    position: fixed;
+    inset: 0;
+    background: #010612;
+    backdrop-filter: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 90;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mobileMenuScrolled {
+    background: #010612;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobileMenuContent {
+    width: min(320px, 80%);
+    height: 100%;
+    background: rgba(6, 14, 30, 1);
+    padding: 80px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.mobileMenuOpen {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mobileMenuOpen .mobileMenuContent {
+    transform: translateX(0);
+}
+
+.mobileMenuContent nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mobileMenuItem {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 18px;
+    padding: 12px;
+    border-radius: 12px;
+    transition: background 0.2s ease;
+}
+
+.mobileMenuItem:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.mobileMenuItemActive {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.mobileLanguage {
+    margin-top: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    padding: 10px 18px;
+    background: transparent;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.mobileCta {
+    margin-top: auto;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 999px;
+    background: linear-gradient(130deg, #7a3df5, #4c2fff);
+    color: #fff;
+    padding: 12px 24px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 12px 28px rgba(82, 50, 157, 0.4);
+}
+
+@media (max-width: 900px) {
+    .navbar {
+        padding: 16px 24px;
+    }
+
+    .menu {
+        display: none;
+    }
+
+    .menuToggle {
+        display: flex;
+    }
+
+    .connectBtn {
+        display: none;
+    }
+
+    .desktopActions {
+        display: none;
+    }
+
+    .navbarScrolled {
+        background: #010612;
+        backdrop-filter: none;
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+    }
+}

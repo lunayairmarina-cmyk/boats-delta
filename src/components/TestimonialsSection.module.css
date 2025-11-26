@@ -1,0 +1,94 @@
+.testimonialsSection {
+  position: relative;
+  padding: clamp(72px, 10vw, 140px) clamp(24px, 8vw, 120px);
+  background: radial-gradient(circle at 20% 20%, #ffe0f4, transparent 55%),
+    radial-gradient(circle at 80% 0%, #ffeef9, transparent 60%), #fff6fa;
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  inset: 40px;
+  border-radius: 48px;
+  background: radial-gradient(
+    circle at 50% 30%,
+    rgba(255, 144, 188, 0.4),
+    transparent 55%
+  );
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.testimonialsInner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(32px, 5vw, 56px);
+  text-align: center;
+}
+
+.testimonialsInner h2 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(36px, 5vw, 58px);
+  color: #0e0a34;
+  margin: 0 auto;
+  max-width: 640px;
+  line-height: 1.2;
+}
+
+.testimonialsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: clamp(18px, 3vw, 28px);
+}
+
+.testimonialCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 26px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(121, 117, 255, 0.08);
+  box-shadow: 0 35px 55px rgba(15, 13, 53, 0.08);
+  backdrop-filter: blur(6px);
+  min-height: 120px;
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(124, 108, 255, 0.1);
+}
+
+.testimonialCopy {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.personName {
+  font-weight: 600;
+  color: #1a154d;
+  margin: 0;
+  font-size: 17px;
+}
+
+.personRole {
+  margin: 0;
+  font-size: 14px;
+  color: #6c6a86;
+}
+
+@media (max-width: 540px) {
+  .testimonialCard {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px;
+  }
+}
+

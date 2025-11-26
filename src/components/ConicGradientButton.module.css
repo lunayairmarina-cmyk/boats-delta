@@ -1,0 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500&display=swap");
+
+.button {
+  position: relative;
+  border: none;
+  background: transparent;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  isolation: isolate;
+  min-width: 180px;
+}
+
+.conicBorder {
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(transparent 200deg, #8b6bff, #54c1ff);
+  z-index: 0;
+}
+
+.overlay {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: radial-gradient(circle at 20% 20%, #7fe9ff, #0045c7);
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: lowercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px 32px;
+  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.35),
+    0 15px 35px rgba(0, 57, 149, 0.35);
+}
+
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), #a9c4ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #123481;
+  font-size: 18px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,354 @@
+.relationshipSection {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(80px, 10vw, 160px);
+  margin: clamp(80px, 10vw, 160px) auto;
+  max-width: 1280px;
+  padding: 0 clamp(24px, 6vw, 80px);
+}
+
+/* --- Widget 1: Why Choose --- */
+.whyWidget {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: clamp(48px, 6vw, 120px);
+  align-items: center;
+}
+
+.whyText {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: #0f1f53;
+  position: relative;
+}
+
+.whyBadge {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 3px;
+  font-weight: 700;
+  color: #2a4ecb;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0.9;
+}
+
+.whyBadge::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.whyText h2 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(42px, 5vw, 64px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #0f1f53;
+}
+
+.whyBody {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #575c7a;
+  max-width: 540px;
+  font-weight: 400;
+}
+
+.whyPhoto {
+  justify-self: center;
+  width: min(580px, 100%);
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px -20px rgba(14, 25, 54, 0.25);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+
+.whyPhoto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(14, 25, 54, 0.05) 100%);
+  pointer-events: none;
+}
+
+.whyPhoto:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 50px 100px -20px rgba(14, 25, 54, 0.3);
+}
+
+.whyImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.whyPhoto:hover .whyImage {
+  transform: scale(1.08);
+}
+
+/* --- Widget 2: Relationship / Dashboard --- */
+.dashboardWidget {
+  background: linear-gradient(145deg, #ffffff, #f4f6ff);
+  border-radius: 56px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: clamp(48px, 6vw, 120px);
+  align-items: center;
+  padding: clamp(48px, 8vw, 100px);
+  box-shadow:
+    0 30px 60px -15px rgba(60, 44, 125, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboardWidget::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.8), transparent 60%);
+  pointer-events: none;
+}
+
+.analyticsColumn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  perspective: 1000px;
+}
+
+.metricPrimary,
+.metricHeatmap,
+.metricSignal {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 36px;
+  padding: 24px;
+  box-shadow: 0 20px 40px -10px rgba(25, 16, 63, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.metricPrimary:hover,
+.metricHeatmap:hover,
+.metricSignal:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px -10px rgba(25, 16, 63, 0.12);
+}
+
+.metricPrimary header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metricPrimary header p {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  color: #8a8d9f;
+}
+
+.metricPrimary header strong {
+  font-family: "Playfair Display", serif;
+  font-size: 32px;
+  color: #0f1f53;
+  line-height: 1;
+}
+
+.barChart {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+  margin-top: 24px;
+  height: 180px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.bar {
+  flex: 1;
+  border-radius: 20px 20px 8px 8px;
+  background: linear-gradient(180deg, #b0a7ff, #6b7eff);
+  box-shadow: 0 8px 16px rgba(107, 126, 255, 0.25);
+  transition: height 1s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  opacity: 0.9;
+}
+
+.bar:hover {
+  opacity: 1;
+  background: linear-gradient(180deg, #a398ff, #5a6eff);
+}
+
+.metricHeatmap {
+  width: 240px;
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  z-index: 2;
+}
+
+.metricHeatmap span {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #c4aaff, #757eff);
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.metricHeatmap span:hover {
+  transform: scale(1.2);
+}
+
+.metricSignal {
+  width: 240px;
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  padding: 20px;
+  z-index: 2;
+}
+
+.signalLine {
+  width: 100%;
+  height: 90px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(115, 102, 255, 0.08), #ffffff);
+  position: relative;
+  overflow: hidden;
+}
+
+.signalLine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='100' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q 25 20 50 10 T 100 10' fill='none' stroke='%237970ff' stroke-width='2' stroke-opacity='0.2'/%3E%3C/svg%3E");
+  background-size: 50px 100%;
+  opacity: 0.5;
+}
+
+.signalDot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ff6f9d;
+  box-shadow: 0 0 0 4px rgba(255, 111, 157, 0.2), 0 0 20px rgba(255, 111, 157, 0.6);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 111, 157, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 111, 157, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 111, 157, 0);
+  }
+}
+
+.relationshipCopy {
+  color: #0f1f53;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.relationshipBadge {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 3px;
+  font-weight: 700;
+  color: #2a4ecb;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.relationshipBadge::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.relationshipCopy h3 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(38px, 5vw, 56px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.relationshipCopy p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #5e6180;
+  max-width: 480px;
+}
+
+.conicButtonLink {
+  display: inline-flex;
+  text-decoration: none;
+  margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+
+  .metricHeatmap,
+  .metricSignal {
+    position: static;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .metricHeatmap {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  .analyticsColumn {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 768px) {
+  .relationshipSection {
+    gap: 80px;
+  }
+
+  .whyWidget,
+  .dashboardWidget {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .whyPhoto {
+    order: -1;
+  }
+}

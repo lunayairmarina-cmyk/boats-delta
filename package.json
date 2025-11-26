@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
+    "gsap": "^3.13.0",
+    "mongoose": "^9.0.0",
     "next": "16.0.4",
     "react": "19.2.0",
     "react-dom": "19.2.0"
@@ -19,6 +22,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

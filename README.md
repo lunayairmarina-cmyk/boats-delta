@@ -34,3 +34,13 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Seeding initial content
+
+The admin dashboard and public services sections now read from MongoDB/GridFS instead of static fixtures. After installing dependencies, populate the database with the existing website services and imagery:
+
+```bash
+npm run seed
+```
+
+The script downloads the current marketing imagery, stores it in the `images` GridFS bucket, and upserts the matching service records. You can rerun it safely; it will only add missing assets.

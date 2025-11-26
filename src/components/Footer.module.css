@@ -1,0 +1,232 @@
+.footer {
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(255, 255, 255, 0.8),
+      transparent 55%
+    ),
+    linear-gradient(180deg, #f5eefe 0%, #efe6fa 55%, #faf7ff 100%);
+  color: #2e1d45;
+  padding: clamp(64px, 10vw, 120px) clamp(24px, 8vw, 140px);
+  position: relative;
+  overflow: hidden;
+}
+
+.inner {
+  max-width: 960px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  padding-bottom: clamp(110px, 18vw, 180px);
+}
+
+.copyBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 6px;
+  color: #fda94c;
+  font-size: 20px;
+  letter-spacing: 4px;
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.logoImage {
+  width: auto;
+  height: clamp(60px, 8vw, 100px);
+  object-fit: contain;
+  scale: 3;
+}
+
+.scriptTitle {
+  font-family: "Great Vibes", "Playfair Display", serif;
+  font-size: clamp(48px, 7vw, 72px);
+  color: #3a2961;
+}
+
+.subtitle {
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.7;
+  max-width: 640px;
+  color: rgba(44, 32, 73, 0.9);
+}
+
+.socialRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.socialCard {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 14px 32px rgba(86, 64, 134, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  position: relative;
+}
+
+.socialCard::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.75);
+  z-index: 0;
+}
+
+.socialCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px rgba(86, 64, 134, 0.25);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(244, 239, 255, 0.95));
+}
+
+.socialIcon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #5f2eea;
+  position: relative;
+  z-index: 1;
+}
+
+.socialIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.socialCard[data-brand="facebook"] .socialIcon {
+  color: #1877f2;
+}
+
+.socialCard[data-brand="instagram"] .socialIcon {
+  color: #d62976;
+}
+
+.socialCard[data-brand="linkedin"] .socialIcon {
+  color: #0a66c2;
+}
+
+.socialCard[data-brand="twitter"] .socialIcon {
+  color: #1d9bf0;
+}
+
+.socialCard[data-brand="snapchat"] .socialIcon {
+  color: #fffc00;
+}
+
+.socialCard[data-brand="whatsapp"] .socialIcon {
+  color: #25d366;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.ctaBtn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px clamp(28px, 6vw, 64px);
+  font-size: 16px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #0047ad, #3f7cff);
+  color: #fff;
+  box-shadow: 0 18px 36px rgba(63, 124, 255, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ctaBtn span:last-child {
+  font-size: 22px;
+}
+
+.arrowBtn {
+  position: absolute;
+  left: clamp(8px, 5vw, 80px);
+  bottom: clamp(18px, 5vw, 70px);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  color: #6c49c2;
+  font-size: 24px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 30px rgba(71, 55, 120, 0.2);
+  cursor: pointer;
+}
+
+.linkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: clamp(12px, 6vw, 100px);
+  bottom: clamp(18px, 5vw, 70px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: right;
+  font-size: 15px;
+  letter-spacing: 0.6px;
+}
+
+.linkList a {
+  color: rgba(49, 37, 82, 0.95);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.linkList a:hover {
+  color: #3f7cff;
+}
+
+@media (max-width: 640px) {
+  .inner {
+    padding-bottom: 140px;
+  }
+
+  .arrowBtn {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 18px;
+  }
+
+  .linkList {
+    position: static;
+    text-align: center;
+  }
+}
+
+

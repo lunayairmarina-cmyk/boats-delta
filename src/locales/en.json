@@ -1,0 +1,145 @@
+{
+    "companyName": "Lunier Marina",
+    "nav": {
+        "home": "Home",
+        "services": "Services",
+        "about": "About us",
+        "reviews": "Reviews",
+        "faq": "FAQ",
+        "connect": "Connect us"
+    },
+    "hero": {
+        "title": "Lunier Marina",
+        "subtitle": "Exceptional Marine Luxury",
+        "description": "The yachting industry has evolved tremendously over the years, with luxury yachts becoming more lavish and complex. Owning a yacht is not just about enjoying the open seas; it is also about managing sophisticated assets that require specialized knowledge and attention to detail.",
+        "cta_connect": "Connect With Us",
+        "cta_know_more": "Know More"
+    },
+    "dashboard": {
+        "title": "Performance dashboard",
+        "efficiency": "98% efficiency"
+    },
+    "about": {
+        "title": "Exceptional Marine Luxury",
+        "description": "In a fast-paced world, luxury yachts remain a sanctuary for tranquility and distinction. Owning a yacht is no longer just a pleasure; it has become a complex asset requiring precise management. This is where Lunier Marina comes in, offering you an unparalleled experience that combines absolute luxury with professionalism, ensuring you enjoy every moment aboard your yacht while leaving all the details to us."
+    },
+    "why_choose_us": {
+        "title": "Why Choose Lunier Marina?",
+        "experience_title": "Extensive Experience and Exceptional Relations",
+        "experience_desc": "We are a trusted company in the yacht management sector. Our team includes highly competent yacht managers experienced in complex operations. Our distinguished relationships with leading professionals in the sector, from brokers and marine engineers to insurance experts, ensure a seamless experience and optimal results at every stage of your yacht's lifecycle.",
+        "service_title": "Sophisticated and Personalized Customer Service",
+        "service_desc": "Our philosophy is built on establishing long-term relationships with our clients. We believe that a successful partnership requires us to consistently exceed your expectations and meet your requirements at any time. By deeply understanding your needs and preferences, we offer a personalized service that makes you feel like the most important partner in our journey.",
+        "privacy_desc": "We understand the importance of privacy for yacht owners and their guests. We handle all sensitive information related to yacht ownership, itinerary plans, and guests with the utmost confidentiality and professionalism, ensuring the privacy of our esteemed clients and VIPs."
+    },
+    "services": {
+        "title": "Our Services Package",
+        "management_title": "Comprehensive Yacht and Boat Management (360 Degree)",
+        "management_desc": "We offer a complete solution for managing your yacht or boat, covering all operational, technical, and financial aspects. From crew supervision and periodic maintenance to budget management and compliance with maritime laws, we handle everything. You can also choose a modular approach that allows you to select only the services you need.",
+        "agency_title": "Agency Services for Visiting Yachts",
+        "agency_desc": "We welcome visiting yachts to the coasts of Saudi Arabia and facilitate all necessary procedures to ensure smooth arrival and comfortable departure. We take care of entry permits, customs clearance, and providing all required documentation, allowing you to focus on enjoying the beauty of the Red Sea.",
+        "marina_title": "Management and Operation of Marinas and Yacht Clubs",
+        "marina_desc": "We manage marinas according to the highest international standards, providing a safe and luxurious environment for yacht and boat docking. We also manage yacht clubs that offer recreational services and exclusive amenities for yacht and boat owners, using modern technology to make them an ideal destination for relaxation and networking.",
+        "crew_title": "Crew Recruitment Services",
+        "crew_desc": "We understand that the right crew is the foundation of an exceptional experience. Our recruitment team selects candidates with extreme care to ensure they match your unique requirements in terms of skill and personality. You can trust that every member of our crew is qualified, experienced, and ready to provide the highest levels of service."
+    },
+    "commitment": {
+        "title": "Our Commitment",
+        "performance_title": "Highest Standards of Performance and Responsibility",
+        "performance_desc": "At Lunier Marina, we are committed to providing services that are not limited to luxury alone but extend to include quality, safety, and sustainability.",
+        "quality_title": "Quality and Safety",
+        "quality_desc": "We apply the highest safety and security standards in every operation and management process to ensure your yacht is in excellent technical condition, providing you and your guests with a safe and comfortable cruise at all times.",
+        "environment_title": "Environmental Responsibility",
+        "environment_desc": "We are committed to preserving the marine environment. We work hard to adopt eco-friendly practices in all our operations, from using sustainable products to implementing programs to reduce the environmental impact of our operations. We believe that the beauty of the sea is a wealth that must be preserved for future generations.",
+        "confidentiality_title": "Absolute Confidentiality, Unwavering Trust",
+        "confidentiality_desc": "We understand that privacy is a top priority for our clients. Therefore, we handle all information related to owners, guests, and itinerary plans with the utmost confidentiality and professionalism. Your trust is our most valuable asset, and we are committed to protecting it at all times."
+    },
+    "team": {
+        "title": "Our Team",
+        "heart_title": "The Heart of Our Service",
+        "heart_desc": "Our greatest strength is teamwork. We work directly with our clients; every yacht manager is supported by a complete team of technical management, accounting, and recruitment to provide robust and responsive service. We constantly share information to ensure every yacht runs smoothly.",
+        "passion_title": "Passion Inspires Excellence",
+        "passion_desc": "Lunier Marina is not just a company; it is a team of passionate and dedicated individuals who put their passion at the core of everything they do. Every member of our team, from managers to engineers and technicians, works as your partner to ensure every aspect of your yacht is managed to perfection. We are here to ensure your yachting experience exceeds all expectations.",
+        "integrated_title": "Integrated Team",
+        "integrated_desc": "Our team consists of experts in yacht management, engineering, and crew recruitment. We work as an extension of your own team to ensure every aspect of your yacht is managed to perfection.",
+        "development_title": "Talent Development",
+        "development_desc": "We are always looking for passionate individuals to join us. We believe that people make the difference, and we provide them with opportunities to develop and grow in a rewarding career in the yachting world.",
+        "crew_selection_title": "Crew Recruitment",
+        "crew_selection_desc": "We carefully select the right crew who not only possess the required skills but also have the personality that matches your preferences, ensuring a distinguished experience aboard your yacht."
+    },
+    "testimonials": {
+        "title": "Don't take it from us, hear it from our users"
+    },
+    "careers": {
+        "title": "Careers",
+        "subtitle": "Join Us or Collaborate With Us",
+        "description": "If you are passionate about the yachting world and strive for excellence, Lunier Marina is your destination. We are always looking for exceptional talent to join our growing team. Join us and participate in shaping the future of marine hospitality in the Kingdom."
+    },
+    "partnerships": {
+        "title": "Partnerships",
+        "subtitle": "Together Towards Excellence",
+        "description": "We welcome partnerships with leading companies in the sector, from marine designers and engineers to global suppliers. We believe that collaboration is the key to success, and we strive to build strong relationships that benefit all parties to provide the best services to our clients."
+    },
+    "faq": {
+        "label": "FAQ",
+        "title": "What's often asked about",
+        "description": "Answers to the questions we hear most often from yacht owners and captains planning their next season.",
+        "cta": "Contact Us",
+        "items": {
+            "1": {
+                "question": "What does full-service yacht management include?",
+                "answer": "We coordinate maintenance schedules, crew management, provisioning, compliance paperwork, and voyage support so you can focus entirely on your guests."
+            },
+            "2": {
+                "question": "Can you assist with insurance and registration?",
+                "answer": "Our compliance desk keeps every registry, flag, and insurance document current and handles renewals ahead of deadlines to avoid delays at port."
+            },
+            "3": {
+                "question": "Do you operate across different regions?",
+                "answer": "Yes, our captains and partner shipyards span the Mediterranean, Gulf, and Indian Ocean corridors to make seasonal repositioning effortless."
+            },
+            "4": {
+                "question": "How do you maintain safety standards on board?",
+                "answer": "We follow ISM and ISPS guidelines, conduct regular drills with your crew, and track every inspection digitally for full transparency."
+            },
+            "5": {
+                "question": "Is support available outside office hours?",
+                "answer": "A dedicated duty manager is reachable 24/7 for routing changes, technical incidents, or concierge requests."
+            }
+        }
+    },
+    "contact": {
+        "title": "CONNECT US",
+        "subtitle": "Send us a message and we'll get back to you within 24 hours.",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "email": "Email",
+        "phone": "Phone number",
+        "company": "Company name",
+        "availability": "Earliest availability",
+        "interest": "What are you most interested in?",
+        "send": "Send message",
+        "note": "WE'LL GET BACK TO YOU WITHIN 24 HOURS.",
+        "placeholders": {
+            "firstName": "Jane",
+            "lastName": "Smith",
+            "email": "jane@example.com",
+            "phone": "(555) 000-0000",
+            "company": "Your company",
+            "interest": "Tell us about the voyage or service you need help with."
+        }
+    },
+    "footer": {
+        "readyTitle": "Ready",
+        "slogan": "More than just management, it's a partnership towards luxury and excellence.",
+        "address": "Al Murjan Tower, Prince Sultan Road, Al Rawdah District, Jeddah, Saudi Arabia.",
+        "phone": "0534457744",
+        "email": "cap.harbi@boatpro.club",
+        "website": "https://seaexpertis.com/",
+        "boatpro_website": "https://boatpro.club/",
+        "company_integrated": "Integrated Marine Services Holding Co. Ltd.",
+        "company_boatpro": "Boat Pro Marine Services",
+        "company_boatpro_desc": "Specialized in operating an application for renting boats, yachts, and marine recreational vehicles",
+        "company_lunier": "Lunier Marina Marine Services",
+        "company_lunier_desc": "Specialized in yacht, marina, and facility management and operation services."
+    }
+}
