@@ -324,9 +324,35 @@
     box-shadow: 0 12px 28px rgba(12, 79, 173, 0.4);
 }
 
-@media (max-width: 900px) {
+/* 1336×768 and below (laptop/tablet landscape) */
+@media (max-width: 1336px) {
+    .navbar {
+        padding: 20px clamp(20px, 4vw, 64px);
+    }
+
+    .navbarScrolled {
+        padding: 14px clamp(20px, 4vw, 64px);
+    }
+
+    .menuItem {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+
+    .connectBtn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+/* Tablet and below */
+@media (max-width: 1024px) {
     .navbar {
         padding: 16px 24px;
+    }
+
+    .navbarScrolled {
+        padding: 12px 24px;
     }
 
     .menu {
@@ -335,6 +361,8 @@
 
     .menuToggle {
         display: flex;
+        min-width: 44px;
+        min-height: 44px;
     }
 
     .connectBtn {
@@ -355,5 +383,43 @@
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(12px);
         border-bottom-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 12px 20px;
+    }
+
+    .brandMark {
+        height: 64px;
+        width: 56px;
+    }
+
+    .menuToggle {
+        padding: 10px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 10px 16px;
+    }
+
+    .brandMark {
+        height: 56px;
+        width: 48px;
+    }
+
+    .mobileMenuItem {
+        min-height: 44px;
+        padding: 14px 16px;
+    }
+
+    .mobileCta {
+        min-height: 44px;
+        padding: 14px 24px;
     }
 }

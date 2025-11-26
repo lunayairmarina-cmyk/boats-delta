@@ -571,7 +571,29 @@
   background: rgba(255, 255, 255, 0.35);
 }
 
-/* Responsive Design */
+/* 1336×768 and below */
+@media (max-width: 1336px) {
+  .hero {
+    padding: clamp(64px, 10vw, 120px) clamp(24px, 5vw, 100px);
+  }
+
+  .servicesSection,
+  .featuredSection,
+  .processSection,
+  .ctaSection {
+    padding: clamp(64px, 8vw, 120px) clamp(24px, 5vw, 100px);
+  }
+
+  .servicesGrid {
+    gap: 24px;
+  }
+
+  .featuredContent {
+    gap: clamp(32px, 5vw, 72px);
+  }
+}
+
+/* Tablet */
 @media (max-width: 1024px) {
   .featuredContent {
     grid-template-columns: 1fr;
@@ -586,16 +608,33 @@
   .featuredStats {
     grid-template-columns: 1fr;
   }
+
+  .servicesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
+/* Mobile */
 @media (max-width: 768px) {
   .hero {
     min-height: 80vh;
     padding: 48px 24px 64px;
   }
 
+  .servicesSection,
+  .featuredSection,
+  .processSection,
+  .ctaSection {
+    padding: 48px 24px;
+  }
+
   .servicesGrid {
     grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .serviceCard {
+    padding: 32px 24px;
   }
 
   .processStep {
@@ -608,6 +647,8 @@
     width: 60px;
     height: 60px;
     font-size: 28px;
+    min-width: 60px;
+    min-height: 60px;
   }
 
   .stepTitle {
@@ -619,13 +660,39 @@
     direction: ltr;
     text-align: center;
   }
+
+  .primaryBtn,
+  .secondaryBtn,
+  .ctaPrimaryBtn,
+  .ctaSecondaryBtn {
+    min-height: 44px;
+    padding: 12px 28px;
+  }
 }
 
-@media (max-width: 520px) {
+/* Small mobile */
+@media (max-width: 480px) {
+  .hero {
+    padding: 40px 18px 48px;
+    min-height: 75vh;
+  }
+
+  .heroTitle {
+    font-size: clamp(40px, 10vw, 56px);
+  }
+
+  .servicesSection,
+  .featuredSection,
+  .processSection,
+  .ctaSection {
+    padding: 40px 18px;
+  }
+
   .heroActions,
   .ctaActions {
     flex-direction: column;
     width: 100%;
+    gap: 12px;
   }
 
   .primaryBtn,
@@ -633,17 +700,20 @@
   .ctaPrimaryBtn,
   .ctaSecondaryBtn {
     width: 100%;
+    min-height: 44px;
     justify-content: center;
+    padding: 14px 24px;
   }
 
   .serviceCard {
-    padding: 28px;
+    padding: 24px 20px;
   }
 
   .processStep {
     flex-direction: column;
     grid-template-columns: 1fr;
     text-align: center;
+    padding: 20px;
   }
 
   .stepNumber {
@@ -653,6 +723,14 @@
   .stepTitle,
   .stepDescription {
     text-align: center;
+  }
+
+  .featuredStats {
+    gap: 16px;
+  }
+
+  .statItem {
+    padding: 20px;
   }
 }
 

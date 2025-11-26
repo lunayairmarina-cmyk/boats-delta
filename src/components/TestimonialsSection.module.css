@@ -84,11 +84,58 @@
   color: #6c6a86;
 }
 
-@media (max-width: 540px) {
+/* 1336×768 and below */
+@media (max-width: 1336px) {
+  .testimonialsSection {
+    padding: clamp(64px, 8vw, 120px) clamp(24px, 5vw, 100px);
+  }
+
+  .testimonialsGrid {
+    gap: clamp(16px, 2.5vw, 24px);
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .testimonialsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .testimonialsSection {
+    padding: 56px 24px;
+  }
+
+  .testimonialsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .testimonialCard {
+    padding: 24px;
+    min-height: auto;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .testimonialsSection {
+    padding: 48px 18px;
+  }
+
   .testimonialCard {
     flex-direction: column;
     align-items: flex-start;
-    padding: 18px;
+    padding: 20px;
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 

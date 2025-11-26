@@ -428,10 +428,42 @@
     font-size: 1.125rem;
 }
 
-/* Responsive */
+/* 1336×768 and below */
+@media (max-width: 1336px) {
+    .blogPage {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .hero {
+        padding: 5rem clamp(24px, 4vw, 64px) 3rem;
+    }
+
+    .postsSection {
+        padding: 3rem clamp(24px, 4vw, 64px);
+    }
+
+    .postsGrid {
+        gap: 1.75rem;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0 clamp(24px, 4vw, 64px);
+    }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .postsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
     .hero {
-        padding: 6rem 1.5rem 4rem;
+        padding: 5rem 1.5rem 3rem;
     }
 
     .filtersSection {
@@ -454,19 +486,53 @@
     .cardContent {
         padding: 1.5rem;
     }
+
+    .searchInput {
+        min-height: 44px;
+        padding: 12px 16px 12px 48px;
+    }
+
+    .categoryTag {
+        min-height: 44px;
+        padding: 12px 20px;
+    }
 }
 
+/* Small mobile */
 @media (max-width: 480px) {
     .hero {
-        padding: 5rem 1rem 3rem;
+        padding: 4rem 1rem 2.5rem;
     }
 
     .heroTitle {
-        font-size: 2rem;
+        font-size: clamp(1.75rem, 8vw, 2rem);
+    }
+
+    .filtersSection {
+        padding: 1.5rem 1rem;
+    }
+
+    .postsSection {
+        padding: 2.5rem 1rem;
     }
 
     .categoriesWrapper {
         justify-content: flex-start;
+        gap: 0.5rem;
+    }
+
+    .categoryTag {
+        font-size: 0.8125rem;
+        padding: 10px 16px;
+        min-height: 44px;
+    }
+
+    .cardContent {
+        padding: 1.25rem;
+    }
+
+    .cardTitle {
+        font-size: 1.25rem;
     }
 }
 

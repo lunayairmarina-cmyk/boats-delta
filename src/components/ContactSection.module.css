@@ -177,7 +177,82 @@
   color: #7e6cff;
 }
 
-@media (max-width: 640px) {
+/* 1336×768 and below */
+@media (max-width: 1336px) {
+  .contactSection {
+    padding: clamp(64px, 10vw, 140px) clamp(24px, 6vw, 140px);
+  }
+
+  .contactInner {
+    max-width: 100%;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .contactSection {
+    padding: 64px clamp(24px, 4vw, 80px);
+  }
+
+  .fieldGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .contactSection {
+    padding: 56px 24px;
+  }
+
+  .contactHeader h2 {
+    font-size: clamp(40px, 10vw, 64px);
+    letter-spacing: 4px;
+  }
+
+  .contactForm {
+    gap: 18px;
+  }
+
+  .field input,
+  .field textarea {
+    min-height: 44px;
+    padding: 14px 18px;
+  }
+
+  .phoneField {
+    min-height: 44px;
+  }
+
+  .phoneField select,
+  .phoneField input {
+    min-height: 44px;
+    padding: 14px 16px;
+  }
+
+  .contactSubmit {
+    width: 100%;
+    min-height: 44px;
+    padding: 16px 24px;
+    justify-content: center;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .contactSection {
+    padding: 48px 18px;
+  }
+
+  .contactHeader h2 {
+    font-size: clamp(32px, 12vw, 48px);
+    letter-spacing: 2px;
+  }
+
+  .contactHeader p {
+    font-size: 16px;
+  }
+
   .phoneField {
     grid-template-columns: auto 1fr;
   }
@@ -185,6 +260,17 @@
   .phoneField select {
     border-left: none;
     border-right: 1px solid rgba(8, 8, 51, 0.08);
+    min-width: 80px;
+  }
+
+  .field input,
+  .field textarea {
+    font-size: 14px;
+  }
+
+  .contactSubmit {
+    padding: 14px 20px;
+    font-size: 15px;
   }
 }
 

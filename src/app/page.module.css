@@ -147,13 +147,37 @@
   text-decoration: none;
 }
 
-@media (max-width: 900px) {
-  .navbar {
-    flex-direction: column;
+/* 1336×768 and below */
+@media (max-width: 1336px) {
+  .hero {
+    padding: 120px clamp(24px, 5vw, 80px) clamp(60px, 10vh, 140px);
   }
 
-  .menu {
-    flex-wrap: wrap;
+  .heroContent {
+    max-width: 580px;
+  }
+
+  .experienceSection {
+    padding: 0 clamp(24px, 5vw, 100px) 64px;
+  }
+
+  .experienceCard {
+    padding: clamp(28px, 4vw, 48px);
+    gap: clamp(20px, 3vw, 40px);
+  }
+
+  .whySection,
+  .relationshipSection,
+  .servicesSection {
+    padding: 0 clamp(24px, 6vw, 100px);
+    gap: clamp(28px, 4vw, 80px);
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .hero {
+    padding: 100px clamp(24px, 4vw, 64px) clamp(60px, 8vh, 120px);
   }
 
   .heroContent {
@@ -168,24 +192,125 @@
   .heroActions {
     justify-content: center;
   }
+
+  .experienceCard {
+    grid-template-columns: 1fr;
+  }
+
+  .whySection,
+  .relationshipSection,
+  .servicesSection {
+    grid-template-columns: 1fr;
+  }
 }
 
-@media (max-width: 520px) {
-  .navbar {
-    align-items: flex-start;
-  }
-
-  .menu {
-    justify-content: flex-start;
-  }
-
-  .secondaryBtn {
-    width: 100%;
-    text-align: center;
-  }
-
+/* Mobile */
+@media (max-width: 768px) {
   .hero {
-    padding: 24px 18px 64px;
+    padding: 80px 24px 60px;
+    min-height: 85vh;
+  }
+
+  .heroTitle {
+    font-size: clamp(48px, 10vw, 72px);
+  }
+
+  .heroCopy {
+    font-size: 16px;
+  }
+
+  .primaryBtn,
+  .outlineBtn {
+    min-height: 44px;
+    padding: 12px 28px;
+    font-size: 14px;
+  }
+
+  .experienceSection {
+    margin-top: -100px;
+    padding: 0 24px 48px;
+  }
+
+  .experienceCard {
+    padding: 32px 24px;
+    border-radius: 24px;
+  }
+
+  .experienceCard::before,
+  .experienceSection::before {
+    display: none;
+  }
+
+  .whySection,
+  .relationshipSection,
+  .servicesSection {
+    padding: 0 24px;
+    margin: 48px auto;
+  }
+
+  .metricHeatmap,
+  .metricSignal {
+    position: static;
+    width: 100%;
+  }
+
+  .analyticsColumn {
+    align-items: center;
+  }
+
+  .servicesGallery {
+    grid-template-columns: 1fr;
+  }
+
+  .galleryStack {
+    flex-direction: row;
+    min-height: 160px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .hero {
+    padding: 64px 18px 48px;
+    min-height: 80vh;
+  }
+
+  .heroTitle {
+    font-size: clamp(40px, 12vw, 56px);
+  }
+
+  .heroCopy {
+    font-size: 15px;
+  }
+
+  .primaryBtn,
+  .outlineBtn {
+    width: 100%;
+    min-height: 44px;
+    padding: 14px 24px;
+  }
+
+  .heroActions {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .experienceSection {
+    margin-top: -80px;
+    padding: 0 18px 40px;
+  }
+
+  .experienceCard {
+    padding: 24px 20px;
+    border-radius: 20px;
+  }
+
+  .whySection,
+  .relationshipSection,
+  .servicesSection {
+    padding: 0 18px;
+    margin: 40px auto;
   }
 }
 
@@ -537,8 +662,13 @@
     color: #5e6180;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1336px) {
+    .relationshipSection {
+      padding: clamp(32px, 6vw, 80px) clamp(24px, 5vw, 80px);
+    }
+  }
 
+  @media (max-width: 768px) {
     .metricHeatmap,
     .metricSignal {
       position: static;

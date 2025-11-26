@@ -8,6 +8,16 @@
   --accent-glow: rgba(12, 79, 173, 0.65);
   --cta-secondary: rgba(255, 255, 255, 0.2);
   --border-soft: rgba(255, 255, 255, 0.3);
+  
+  /* Responsive breakpoints */
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1024px;
+  --breakpoint-desktop: 1336px;
+  --breakpoint-ultrawide: 1920px;
+  
+  /* Touch target minimum */
+  --touch-target-min: 44px;
 }
 
 *,
@@ -33,9 +43,51 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Prevent horizontal overflow */
+* {
+  max-width: 100%;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Container max-width for ultra-wide screens */
+.container,
+.wrapper,
+main > section {
+  max-width: 1920px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* Ensure all interactive elements meet touch target minimum */
+button,
+a[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.menuItem,
+.mobileMenuItem,
+.categoryTag,
+.shareButton,
+.primaryBtn,
+.secondaryBtn,
+.outlineBtn,
+.ctaBtn {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes shimmer {
@@ -44,5 +96,30 @@ a {
   }
   100% {
     background-position: 200% 0;
+  }
+}
+
+/* Responsive typography base */
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1336px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1337px) {
+  html {
+    font-size: 16px;
   }
 }
