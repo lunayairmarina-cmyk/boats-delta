@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './page.module.css';
 import { useBlogDetailAnimations } from '@/hooks/useBlogDetailAnimations';
+import { BlogDetailSkeleton } from '@/components/blog/BlogSkeleton';
 
 interface BlogPost {
     _id: string;
@@ -182,12 +183,7 @@ export default function BlogPostPage() {
     };
 
     if (loading) {
-        return (
-            <div className={styles.loadingContainer}>
-                <div className={styles.loadingSpinner}></div>
-                <p>{t('blog.loading')}</p>
-            </div>
-        );
+        return <BlogDetailSkeleton />;
     }
 
     if (!post) {

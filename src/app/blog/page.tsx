@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './page.module.css';
 import { useBlogAnimations } from '@/hooks/useBlogAnimations';
+import { BlogListSkeleton } from '@/components/blog/BlogSkeleton';
 
 interface BlogPost {
     _id: string;
@@ -98,10 +99,26 @@ export default function BlogPage() {
 
     if (loading) {
         return (
-            <div className={styles.loadingContainer}>
-                <div className={styles.loadingSpinner}></div>
-                <p>{t('blog.loading')}</p>
-            </div>
+            <main className={styles.blogPage} style={{ direction: dir }}>
+                <section className={styles.hero}>
+                    <div className={styles.heroContent}>
+                        <div className={styles.skeletonBadge} />
+                        <div className={styles.skeletonTitle} />
+                        <div className={styles.skeletonDescription} />
+                    </div>
+                </section>
+                <section className={styles.filtersSection}>
+                    <div className={styles.filtersContainer}>
+                        <div className={styles.skeletonSearch} />
+                        <div className={styles.skeletonCategories} />
+                    </div>
+                </section>
+                <section className={styles.postsSection}>
+                    <div className={styles.container}>
+                        <BlogListSkeleton />
+                    </div>
+                </section>
+            </main>
         );
     }
 

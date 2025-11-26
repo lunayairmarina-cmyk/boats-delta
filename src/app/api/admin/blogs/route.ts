@@ -9,7 +9,13 @@ export async function GET() {
     try {
         await connectDB();
         const blogs = await Blog.find({}).sort({ createdAt: -1 });
-        return NextResponse.json(blogs);
+        return NextResponse.json(blogs, {
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0',
+            },
+        });
     } catch (error) {
         console.error('Failed to fetch blogs:', error);
         return NextResponse.json({ error: 'Failed to fetch blogs' }, { status: 500 });
@@ -30,8 +36,14 @@ export async function POST(request: Request) {
         }
 
         const blog = await Blog.create(body);
+        // Invalidate cache when new blog is created
         invalidateCache(BLOG_CACHE_KEY);
-        return NextResponse.json(blog, { status: 201 });
+        return NextResponse.json(blog, { 
+            status: 201,
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate',
+            },
+        });
     } catch (error) {
         console.error('Failed to create blog:', error);
         return NextResponse.json({ error: 'Failed to create blog' }, { status: 500 });

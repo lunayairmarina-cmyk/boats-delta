@@ -52,8 +52,13 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
             _id: new (Blog as any).base.Types.ObjectId(params.id)
         });
 
+        // Invalidate cache when blog is updated
         invalidateCache(BLOG_CACHE_KEY);
-        return NextResponse.json(updatedBlog);
+        return NextResponse.json(updatedBlog, {
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate',
+            },
+        });
     } catch (error) {
         console.error('Failed to update blog:', error);
         return NextResponse.json({
@@ -71,8 +76,13 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
         if (!blog) {
             return NextResponse.json({ error: 'Blog not found' }, { status: 404 });
         }
+        // Invalidate cache when blog is deleted
         invalidateCache(BLOG_CACHE_KEY);
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true }, {
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate',
+            },
+        });
     } catch (error) {
         console.error('Failed to delete blog:', error);
         return NextResponse.json({ error: 'Failed to delete blog' }, { status: 500 });

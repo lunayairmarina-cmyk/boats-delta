@@ -4,7 +4,7 @@ import Blog, { IBlog } from '@/models/Blog';
 import { getCache, setCache } from '@/lib/cache';
 
 const BLOG_CACHE_KEY = 'blogs_all';
-const BLOG_CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
+const BLOG_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days (1 month)
 
 type BlogRecord = {
     _id: string;
@@ -93,29 +93,50 @@ export async function GET(request: NextRequest) {
         const preferredLang = request.nextUrl.searchParams.get('lang');
         const includeUnpublished = request.nextUrl.searchParams.get('includeUnpublished') === 'true';
         
-        // Only cache published blogs
-        if (!includeUnpublished) {
-            const cached = getCache<BlogRecord[]>(BLOG_CACHE_KEY);
-            if (cached) {
-                return NextResponse.json(localizeBlogs(cached, preferredLang));
-            }
+        // Never cache admin requests
+        if (includeUnpublished) {
+            await connectDB();
+            const blogs = await Blog.find({})
+                .sort({ createdAt: -1 })
+                .lean();
+            const normalized = normalizeBlogs(blogs);
+            return NextResponse.json(localizeBlogs(normalized, preferredLang), {
+                headers: {
+                    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                },
+            });
+        }
+
+        // Check in-memory cache for published blogs
+        const cached = getCache<BlogRecord[]>(BLOG_CACHE_KEY);
+        if (cached) {
+            return NextResponse.json(localizeBlogs(cached, preferredLang), {
+                headers: {
+                    'Cache-Control': 'public, max-age=2592000, s-maxage=2592000, stale-while-revalidate=86400',
+                    'CDN-Cache-Control': 'public, max-age=2592000',
+                },
+            });
         }
 
         await connectDB();
         
-        const query = includeUnpublished ? {} : { published: true };
-        const blogs = await Blog.find(query)
+        const blogs = await Blog.find({ published: true })
             .sort({ createdAt: -1 })
             .lean();
 
         const normalized = normalizeBlogs(blogs);
         
-        // Only cache published blogs
-        if (!includeUnpublished) {
-            setCache(BLOG_CACHE_KEY, normalized, BLOG_CACHE_TTL_MS);
-        }
+        // Cache in memory
+        setCache(BLOG_CACHE_KEY, normalized, BLOG_CACHE_TTL_MS);
 
-        return NextResponse.json(localizeBlogs(normalized, preferredLang));
+        return NextResponse.json(localizeBlogs(normalized, preferredLang), {
+            headers: {
+                'Cache-Control': 'public, max-age=2592000, s-maxage=2592000, stale-while-revalidate=86400',
+                'CDN-Cache-Control': 'public, max-age=2592000',
+            },
+        });
     } catch (error) {
         console.error('Failed to fetch blogs:', error);
         return NextResponse.json({ error: 'Failed to fetch blogs' }, { status: 500 });
