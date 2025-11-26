@@ -323,25 +323,33 @@ export default function ServicesPage() {
   const { language, dir } = useLanguage();
   const content = SERVICES_CONTENT[language];
   const [heroBgImage, setHeroBgImage] = useState("/api/images/slug/ocean-sunrise");
+  const [featuredImageId, setFeaturedImageId] = useState<string | null>(null);
 
-  // Fetch the latest image URL with cache busting
+  // Fetch the latest image URLs
   useEffect(() => {
-    const updateHeroImage = async () => {
+    const updateImages = async () => {
       try {
-        const response = await fetch("/api/images/slug/ocean-sunrise", { 
-          method: 'HEAD',
-          cache: 'no-store' 
+        const response = await fetch("/api/admin/images?slug=ocean-sunrise", {
+          cache: 'no-store',
         });
         if (response.ok) {
-          const lastModified = response.headers.get('Last-Modified');
-          const timestamp = lastModified ? new Date(lastModified).getTime() : Date.now();
-          setHeroBgImage(`/api/images/slug/ocean-sunrise?v=${timestamp}`);
+          const images = await response.json();
+          const image = Array.isArray(images) && images.length > 0 ? images[0] : null;
+          if (image?._id) {
+            // Use image ID for better cache control (cache headers handle freshness)
+            setHeroBgImage(`/api/images/${image._id}`);
+            setFeaturedImageId(image._id);
+          }
         }
       } catch (error) {
-        console.error('Failed to fetch hero image:', error);
+        console.error('Failed to fetch images:', error);
       }
     };
-    updateHeroImage();
+    updateImages();
+    
+    // Re-fetch every 30 seconds to check for updates
+    const interval = setInterval(updateImages, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   useServicesAnimations({
@@ -428,11 +436,12 @@ export default function ServicesPage() {
           <div className={styles.featuredMedia} data-animate="featured">
             <div className={styles.featuredImageWrapper}>
               <Image
-                src="/api/images/slug/ocean-sunrise"
+                src={featuredImageId ? `/api/images/${featuredImageId}` : "/api/images/slug/ocean-sunrise"}
                 alt="Luxury yacht management services"
                 width={600}
                 height={700}
                 className={styles.featuredImage}
+                unoptimized={true}
                 priority={false}
               />
               <div className={styles.featuredGlow} aria-hidden="true" />

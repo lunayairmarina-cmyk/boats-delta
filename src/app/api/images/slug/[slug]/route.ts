@@ -5,6 +5,10 @@ import mongoose from 'mongoose';
 export async function GET(request: Request, props: { params: Promise<{ slug: string }> }) {
     const params = await props.params;
     const slug = params.slug?.toLowerCase();
+    
+    // Extract query parameters for cache busting (v parameter is ignored but helps with cache invalidation)
+    const url = new URL(request.url);
+    const versionParam = url.searchParams.get('v');
 
     if (!slug) {
         return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
@@ -34,14 +38,31 @@ export async function GET(request: Request, props: { params: Promise<{ slug: str
         // Add cache busting based on upload date
         const uploadDate = file.uploadDate ? new Date(file.uploadDate).getTime() : Date.now();
         const etag = `"${uploadDate}"`;
+        const lastModified = file.uploadDate ? new Date(file.uploadDate).toUTCString() : new Date().toUTCString();
+
+        // Check if client has the latest version
+        const ifNoneMatch = request.headers.get('if-none-match');
+        const ifModifiedSince = request.headers.get('if-modified-since');
+        
+        if (ifNoneMatch === etag || ifModifiedSince === lastModified) {
+            return new Response(null, {
+                status: 304,
+                headers: {
+                    'ETag': etag,
+                    'Last-Modified': lastModified,
+                    'Cache-Control': 'public, max-age=0, must-revalidate',
+                },
+            });
+        }
 
         // @ts-expect-error Node stream is compatible with the Response body but lacks types
         return new Response(stream, {
             headers: {
                 'Content-Type': (file as any).contentType || 'application/octet-stream',
-                'Cache-Control': 'public, max-age=3600, must-revalidate',
+                'Cache-Control': 'public, max-age=0, must-revalidate, no-cache',
                 'ETag': etag,
-                'Last-Modified': file.uploadDate ? new Date(file.uploadDate).toUTCString() : new Date().toUTCString(),
+                'Last-Modified': lastModified,
+                'Pragma': 'no-cache',
             },
         });
     } catch (error) {

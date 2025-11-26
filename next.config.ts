@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
         hostname: "framerusercontent.com",
       },
     ],
+    // Allow unoptimized images for local API routes with query strings
+    unoptimized: false,
   },
 };
 

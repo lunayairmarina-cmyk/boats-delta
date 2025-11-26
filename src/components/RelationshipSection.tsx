@@ -121,6 +121,7 @@ export default function RelationshipSection() {
                         height={520}
                         className={styles.whyImage}
                         priority={false}
+                        unoptimized={true}
                     />
                 </div>
             </div>

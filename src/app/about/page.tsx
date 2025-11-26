@@ -571,6 +571,7 @@ export default function AboutPage() {
             height={760}
             className={styles.storyImage}
             priority={false}
+            unoptimized={true}
           />
           <div className={styles.storyCard}>
             <p>{content.story.card.label}</p>

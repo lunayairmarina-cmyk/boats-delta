@@ -9,6 +9,7 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import CommitmentShowcase from "@/components/CommitmentShowcase";
 import RelationshipSection from "@/components/RelationshipSection";
 import ServicesList from "@/components/ServicesList";
+import YachtAppSection from "@/components/YachtAppSection";
 import styles from "./page.module.css";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -21,25 +22,34 @@ const partnerLogos = Array.from({ length: 8 }, (_, index) => ({
 export default function Home() {
   const { t } = useLanguage();
   const [heroBgImage, setHeroBgImage] = useState("/api/images/slug/ocean-sunrise");
+  const [cardImageId, setCardImageId] = useState<string | null>(null);
 
-  // Fetch the latest image URL with cache busting
+  // Fetch the latest image URLs
   useEffect(() => {
-    const updateHeroImage = async () => {
+    const updateImages = async () => {
       try {
-        const response = await fetch("/api/images/slug/ocean-sunrise", { 
-          method: 'HEAD',
-          cache: 'no-store' 
+        // Fetch hero background image
+        const heroResponse = await fetch("/api/admin/images?slug=ocean-sunrise", {
+          cache: 'no-store',
         });
-        if (response.ok) {
-          const lastModified = response.headers.get('Last-Modified');
-          const timestamp = lastModified ? new Date(lastModified).getTime() : Date.now();
-          setHeroBgImage(`/api/images/slug/ocean-sunrise?v=${timestamp}`);
+        if (heroResponse.ok) {
+          const images = await heroResponse.json();
+          const image = Array.isArray(images) && images.length > 0 ? images[0] : null;
+          if (image?._id) {
+            // Use image ID for better cache control (cache headers handle freshness)
+            setHeroBgImage(`/api/images/${image._id}`);
+            setCardImageId(image._id);
+          }
         }
       } catch (error) {
-        console.error('Failed to fetch hero image:', error);
+        console.error('Failed to fetch images:', error);
       }
     };
-    updateHeroImage();
+    updateImages();
+    
+    // Re-fetch every 30 seconds to check for updates
+    const interval = setInterval(updateImages, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -79,12 +89,13 @@ export default function Home() {
 
           <div className={styles.cardMedia}>
             <Image
-              src="/api/images/slug/ocean-sunrise"
+              src={cardImageId ? `/api/images/${cardImageId}` : "/api/images/slug/ocean-sunrise"}
               alt="Luxury yacht seating overlooking the sea"
               width={600}
               height={800}
               className={styles.cardImage}
               priority={false}
+              unoptimized={true}
             />
           </div>
 
@@ -118,6 +129,7 @@ export default function Home() {
         showHeader={false}
       />
 
+      <YachtAppSection />
       <CommitmentShowcase />
       <TestimonialsSection />
       <ContactSection />

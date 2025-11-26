@@ -168,6 +168,7 @@ export default function ContactPage() {
             height={960}
             className={styles.heroImage}
             priority
+            unoptimized={true}
           />
           <div className={styles.mediaCard}>
             <p>Average response</p>
@@ -220,6 +221,7 @@ export default function ContactPage() {
               height={520}
               className={styles.mapImage}
               priority={false}
+              unoptimized={true}
             />
             <div className={styles.mapTag}>
               {content.map.tag}

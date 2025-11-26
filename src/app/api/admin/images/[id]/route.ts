@@ -57,13 +57,17 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         await bucket.delete(new mongoose.Types.ObjectId(params.id));
 
         // Upload the new file with the same metadata and slug (so slug lookup still works)
+        // Use the same filename to ensure consistency
         const buffer = Buffer.from(await file.arrayBuffer());
-        const uploadStream = bucket.openUploadStream(file.name, {
+        const filename = existingFile.filename || file.name;
+        const uploadStream = bucket.openUploadStream(filename, {
             metadata: {
                 ...existingFile.metadata,
                 contentType: file.type,
                 source: 'admin-replace',
                 updatedAt: new Date().toISOString(), // Add timestamp for cache busting
+                // Ensure slug is preserved
+                slug: existingFile.metadata?.slug,
             },
         });
 
