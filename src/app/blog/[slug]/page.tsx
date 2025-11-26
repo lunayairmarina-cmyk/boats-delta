@@ -41,6 +41,7 @@ export default function BlogPostPage() {
     
     useBlogDetailAnimations({ headerRef, contentRef, relatedRef, dir });
 
+    // Fetch blog post
     useEffect(() => {
         let isMounted = true;
 
@@ -102,6 +103,48 @@ export default function BlogPostPage() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [post]);
 
+    // Update document title and meta tags
+    useEffect(() => {
+        if (post) {
+            const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+            document.title = `${post.title} | Lunier Marina`;
+            
+            // Update meta description
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if (!metaDesc) {
+                metaDesc = document.createElement('meta');
+                metaDesc.setAttribute('name', 'description');
+                document.head.appendChild(metaDesc);
+            }
+            metaDesc.setAttribute('content', post.excerpt);
+
+            // Update OG tags
+            const updateMetaTag = (property: string, content: string) => {
+                let tag = document.querySelector(`meta[property="${property}"]`);
+                if (!tag) {
+                    tag = document.createElement('meta');
+                    tag.setAttribute('property', property);
+                    document.head.appendChild(tag);
+                }
+                tag.setAttribute('content', content);
+            };
+
+            updateMetaTag('og:title', post.title);
+            updateMetaTag('og:description', post.excerpt);
+            updateMetaTag('og:type', 'article');
+            updateMetaTag('og:url', currentUrl);
+            
+            if (post.featuredImage) {
+                const imageUrl = post.featuredImage.startsWith('http') 
+                    ? post.featuredImage 
+                    : post.featuredImage.startsWith('/')
+                    ? `${typeof window !== 'undefined' ? window.location.origin : ''}${post.featuredImage}`
+                    : `${typeof window !== 'undefined' ? window.location.origin : ''}/api/images/${post.featuredImage}`;
+                updateMetaTag('og:image', imageUrl);
+            }
+        }
+    }, [post]);
+
     // Calculate reading time
     const calculateReadingTime = (content: string): number => {
         const text = content.replace(/<[^>]*>/g, ''); // Remove HTML tags
@@ -161,49 +204,8 @@ export default function BlogPostPage() {
         );
     }
 
-    const readingTime = calculateReadingTime(post.content);
+    const readingTime = post ? calculateReadingTime(post.content) : 0;
     const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
-
-    // Update document title and meta tags
-    useEffect(() => {
-        if (post) {
-            document.title = `${post.title} | Lunier Marina`;
-            
-            // Update meta description
-            let metaDesc = document.querySelector('meta[name="description"]');
-            if (!metaDesc) {
-                metaDesc = document.createElement('meta');
-                metaDesc.setAttribute('name', 'description');
-                document.head.appendChild(metaDesc);
-            }
-            metaDesc.setAttribute('content', post.excerpt);
-
-            // Update OG tags
-            const updateMetaTag = (property: string, content: string) => {
-                let tag = document.querySelector(`meta[property="${property}"]`);
-                if (!tag) {
-                    tag = document.createElement('meta');
-                    tag.setAttribute('property', property);
-                    document.head.appendChild(tag);
-                }
-                tag.setAttribute('content', content);
-            };
-
-            updateMetaTag('og:title', post.title);
-            updateMetaTag('og:description', post.excerpt);
-            updateMetaTag('og:type', 'article');
-            updateMetaTag('og:url', currentUrl);
-            
-            if (post.featuredImage) {
-                const imageUrl = post.featuredImage.startsWith('http') 
-                    ? post.featuredImage 
-                    : post.featuredImage.startsWith('/')
-                    ? `${typeof window !== 'undefined' ? window.location.origin : ''}${post.featuredImage}`
-                    : `${typeof window !== 'undefined' ? window.location.origin : ''}/api/images/${post.featuredImage}`;
-                updateMetaTag('og:image', imageUrl);
-            }
-        }
-    }, [post, currentUrl]);
 
     return (
         <main className={styles.blogPostPage} style={{ direction: dir }}>
