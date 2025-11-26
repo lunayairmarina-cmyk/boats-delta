@@ -55,7 +55,7 @@
 }
 
 .heroTitle {
-  font-family: "Lily Script One", cursive;
+  font-family: "Lily Script One", "Lily Script One Fallback", cursive;
   font-size: clamp(64px, 12vw, 96px);
   font-weight: 400;
   letter-spacing: 2px;
@@ -64,6 +64,7 @@
   margin-bottom: 8px;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   text-align: center;
+  min-height: 1.2em; /* Prevent CLS from font loading */
 }
 
 .heroCopy {
@@ -370,6 +371,7 @@
   flex-direction: column;
   gap: 18px;
   line-height: 1.8;
+  min-height: 200px; /* Prevent CLS during loading */
 }
 
 .arabicTitle {

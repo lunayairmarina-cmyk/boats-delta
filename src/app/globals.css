@@ -1,5 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lily+Script+One&family=Playfair+Display:wght@400;600&family=Poppins:wght@300;400;500;600&display=swap");
 
+/* Font fallback to reduce CLS from font loading */
+@font-face {
+  font-family: 'Lily Script One Fallback';
+  src: local('Arial');
+  ascent-override: 100%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 110%;
+}
+
 :root {
   --bg-deep: #ffffff;
   --text-light: #fef7f2;

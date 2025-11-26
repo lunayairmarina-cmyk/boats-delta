@@ -217,8 +217,8 @@
 
 .phoneStatus {
   font-size: 10px;
-  color: #10b981;
-  font-weight: 500;
+  color: #047857; /* Improved contrast ratio (4.53:1) from #10b981 (2.53:1) */
+  font-weight: 600;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 

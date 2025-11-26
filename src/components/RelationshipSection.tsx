@@ -117,11 +117,11 @@ export default function RelationshipSection() {
                     <Image
                         src="/api/images/slug/relationship-crew"
                         alt="Professional yacht crew team at the marina"
-                        width={640}
+                        width={520}
                         height={520}
                         className={styles.whyImage}
-                        priority={false}
-                        unoptimized={true}
+                        sizes="(max-width: 768px) 100vw, 520px"
+                        loading="lazy"
                     />
                 </div>
             </div>

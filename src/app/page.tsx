@@ -23,6 +23,20 @@ export default function Home() {
   const { t } = useLanguage();
   const [heroBgImage, setHeroBgImage] = useState("/api/images/slug/ocean-sunrise");
   const [cardImageId, setCardImageId] = useState<string | null>(null);
+  const [logoImageId, setLogoImageId] = useState<string | null>(null);
+
+  // Preload hero background image for better LCP
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = '/api/images/slug/ocean-sunrise';
+    link.fetchPriority = 'high';
+    document.head.appendChild(link);
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
 
   // Fetch the latest image URLs
   useEffect(() => {
@@ -38,7 +52,38 @@ export default function Home() {
           if (image?._id) {
             // Use image ID for better cache control (cache headers handle freshness)
             setHeroBgImage(`/api/images/${image._id}`);
-            setCardImageId(image._id);
+          }
+        }
+
+        // Fetch experience section images (card image and logo)
+        const experienceResponse = await fetch("/api/admin/images?section=experience-section", {
+          cache: 'no-store',
+        });
+        if (experienceResponse.ok) {
+          const experienceImages = await experienceResponse.json();
+          // Find ocean-sunrise image for card (should be in experience-section)
+          const cardImage = experienceImages.find((img: any) => 
+            img.metadata?.slug === 'ocean-sunrise' || 
+            (img.metadata?.section === 'experience-section' && !img.metadata?.slug?.includes('logo'))
+          );
+          if (cardImage?._id) {
+            setCardImageId(cardImage._id);
+          } else if (experienceImages.length > 0) {
+            // Fallback: use first non-logo image if ocean-sunrise not found
+            const nonLogoImage = experienceImages.find((img: any) => 
+              !img.metadata?.slug?.includes('logo') && !img.filename?.toLowerCase().includes('logo')
+            );
+            if (nonLogoImage?._id) {
+              setCardImageId(nonLogoImage._id);
+            }
+          }
+          // Find logo image
+          const logoImage = experienceImages.find((img: any) => 
+            img.metadata?.slug === 'lm-logo' || 
+            img.filename?.toLowerCase().includes('logo')
+          );
+          if (logoImage?._id) {
+            setLogoImageId(logoImage._id);
           }
         }
       } catch (error) {
@@ -91,21 +136,23 @@ export default function Home() {
             <Image
               src={cardImageId ? `/api/images/${cardImageId}` : "/api/images/slug/ocean-sunrise"}
               alt="Luxury yacht seating overlooking the sea"
-              width={600}
-              height={800}
+              width={300}
+              height={400}
               className={styles.cardImage}
-              priority={false}
-              unoptimized={true}
+              sizes="(max-width: 768px) 100vw, 300px"
+              loading="lazy"
             />
           </div>
 
           <div className={styles.logoStack}>
             <Image
-              src="/LM Logo.svg"
+              src={logoImageId ? `/api/images/${logoImageId}` : "/LM Logo.svg"}
               alt="Lunier Marina Logo"
               width={120}
               height={48}
               className={styles.logoImage}
+              sizes="120px"
+              loading="lazy"
             />
           </div>
         </div>

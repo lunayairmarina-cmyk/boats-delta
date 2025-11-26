@@ -145,7 +145,8 @@ export default function Navbar() {
             <div
                 className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""} ${scrolled || isBlogPage ? styles.mobileMenuScrolled : ""} ${isBlogPage ? styles.mobileMenuBlogPage : ""}`}
                 role="dialog"
-                aria-modal="false"
+                aria-modal={menuOpen}
+                aria-label="Navigation menu"
                 onClick={toggleMenu}
             >
                 <div className={styles.mobileMenuContent} onClick={(event) => event.stopPropagation()}>

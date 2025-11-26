@@ -133,11 +133,6 @@ export default function ServicesList({
                                     href={`/services/${service.slug || service._id}`}
                                     className={styles.card}
                                     style={{ direction: isArabic ? 'rtl' : 'ltr' }}
-                                    aria-label={
-                                        isArabic
-                                            ? `عرض تفاصيل ${displayTitle}`
-                                            : `View details for ${displayTitle}`
-                                    }
                                 >
                                     <div className={styles.imageWrapper}>
                                         <Image
