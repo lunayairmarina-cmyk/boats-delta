@@ -7,7 +7,7 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
     try {
         await connectDB();
         const db = mongoose.connection.db;
-        // @ts-expect-error GridFSBucket typing is not exposed through mongoose
+        // @ts-ignore GridFSBucket typing is not exposed through mongoose
         const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
 
         await bucket.delete(new mongoose.Types.ObjectId(params.id));
@@ -16,6 +16,73 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
     } catch (error) {
         console.error('Delete image error:', error);
         return NextResponse.json({ error: 'Failed to delete image' }, { status: 500 });
+    }
+}
+
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
+    try {
+        await connectDB();
+        const db = mongoose.connection.db;
+        if (!db) {
+            throw new Error('Database connection is not initialized.');
+        }
+        // @ts-ignore GridFSBucket typing is not exposed through mongoose
+        const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
+        const filesCollection = db.collection('images.files');
+
+        // Get the existing file metadata
+        const existingFile = await filesCollection.findOne({
+            _id: new mongoose.Types.ObjectId(params.id)
+        });
+
+        if (!existingFile) {
+            return NextResponse.json({ error: 'Image not found' }, { status: 404 });
+        }
+
+        // Check if this is a services image (should not be replaceable)
+        const section = existingFile.metadata?.section;
+        if (section === 'services-primary' || section === 'services-gallery') {
+            return NextResponse.json({ error: 'Services images cannot be replaced' }, { status: 403 });
+        }
+
+        const formData = await request.formData();
+        const file = formData.get('file') as File;
+
+        if (!file) {
+            return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+        }
+
+        // Delete the old file
+        await bucket.delete(new mongoose.Types.ObjectId(params.id));
+
+        // Upload the new file with the same metadata and slug (so slug lookup still works)
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const uploadStream = bucket.openUploadStream(file.name, {
+            metadata: {
+                ...existingFile.metadata,
+                contentType: file.type,
+                source: 'admin-replace',
+                updatedAt: new Date().toISOString(), // Add timestamp for cache busting
+            },
+        });
+
+        uploadStream.end(buffer);
+
+        await new Promise((resolve, reject) => {
+            uploadStream.on('finish', resolve);
+            uploadStream.on('error', reject);
+        });
+
+        return NextResponse.json({
+            success: true,
+            fileId: uploadStream.id,
+            filename: file.name,
+            slug: existingFile.metadata?.slug,
+        });
+    } catch (error) {
+        console.error('Replace image error:', error);
+        return NextResponse.json({ error: 'Failed to replace image' }, { status: 500 });
     }
 }
 
@@ -29,8 +96,26 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
         }
         const filesCollection = db.collection('images.files');
 
+        // Check if this is a services image
+        const existingFile = await filesCollection.findOne({
+            _id: new mongoose.Types.ObjectId(params.id)
+        });
+
+        if (existingFile) {
+            const currentSection = existingFile.metadata?.section;
+            // Prevent modifying services images
+            if (currentSection === 'services-primary' || currentSection === 'services-gallery') {
+                return NextResponse.json({ error: 'Services images cannot be modified' }, { status: 403 });
+            }
+        }
+
         const body = await request.json();
         const { order, section } = body;
+
+        // Prevent changing section to services sections
+        if (section && (section === 'services-primary' || section === 'services-gallery')) {
+            return NextResponse.json({ error: 'Cannot change section to services sections' }, { status: 403 });
+        }
 
         const updateFields: Record<string, unknown> = {};
         if (typeof order === 'number') {

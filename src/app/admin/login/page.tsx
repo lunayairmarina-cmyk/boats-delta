@@ -12,16 +12,25 @@ export default function LoginPage() {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        const res = await fetch('/api/admin/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password }),
-        });
+        setError('');
+        
+        try {
+            const res = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
 
-        if (res.ok) {
-            router.push('/admin');
-        } else {
-            setError('Invalid credentials');
+            const data = await res.json();
+
+            if (res.ok) {
+                router.push('/admin');
+                router.refresh(); // Refresh to ensure middleware picks up the cookie
+            } else {
+                setError(data.error || 'Invalid credentials');
+            }
+        } catch (err) {
+            setError('An error occurred. Please try again.');
         }
     };
 

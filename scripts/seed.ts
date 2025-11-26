@@ -448,10 +448,21 @@ async function ensureImage({
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    // Map category to section for proper organization
+    const sectionMap: Record<string, string | undefined> = {
+        'about': 'about-page',
+        'contact': 'contact-page',
+        'hero': 'hero-home',
+        'portraits': 'testimonials',
+    };
+
+    const section = sectionMap[image.category];
+
     return await new Promise((resolve, reject) => {
         const uploadStream = bucket.openUploadStream(image.filename, {
             metadata: {
                 category: image.category,
+                section: section,
                 sourceUrl: image.url,
                 slug: image.slug,
                 seeded: true,
@@ -468,7 +479,7 @@ async function ensureImage({
 async function seedServices() {
     await connectDB();
     const db = mongoose.connection.db;
-    // @ts-expect-error GridFSBucket typing is not exposed through mongoose
+    // @ts-ignore GridFSBucket typing is not exposed through mongoose
     const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
 
     for (const seed of serviceSeeds) {

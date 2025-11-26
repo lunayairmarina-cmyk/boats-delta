@@ -30,12 +30,18 @@ export async function GET(request: Request, props: { params: Promise<{ slug: str
         }
 
         const stream = bucket.openDownloadStream((file as any)._id);
+        
+        // Add cache busting based on upload date
+        const uploadDate = file.uploadDate ? new Date(file.uploadDate).getTime() : Date.now();
+        const etag = `"${uploadDate}"`;
 
         // @ts-expect-error Node stream is compatible with the Response body but lacks types
         return new Response(stream, {
             headers: {
                 'Content-Type': (file as any).contentType || 'application/octet-stream',
-                'Cache-Control': 'public, max-age=1800, stale-while-revalidate=900',
+                'Cache-Control': 'public, max-age=3600, must-revalidate',
+                'ETag': etag,
+                'Last-Modified': file.uploadDate ? new Date(file.uploadDate).toUTCString() : new Date().toUTCString(),
             },
         });
     } catch (error) {

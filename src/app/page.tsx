@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import ContactSection from "@/components/ContactSection";
 import FaqSection from "@/components/FaqSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
@@ -19,15 +20,40 @@ const partnerLogos = Array.from({ length: 8 }, (_, index) => ({
 
 export default function Home() {
   const { t } = useLanguage();
+  const [heroBgImage, setHeroBgImage] = useState("/api/images/slug/ocean-sunrise");
+
+  // Fetch the latest image URL with cache busting
+  useEffect(() => {
+    const updateHeroImage = async () => {
+      try {
+        const response = await fetch("/api/images/slug/ocean-sunrise", { 
+          method: 'HEAD',
+          cache: 'no-store' 
+        });
+        if (response.ok) {
+          const lastModified = response.headers.get('Last-Modified');
+          const timestamp = lastModified ? new Date(lastModified).getTime() : Date.now();
+          setHeroBgImage(`/api/images/slug/ocean-sunrise?v=${timestamp}`);
+        }
+      } catch (error) {
+        console.error('Failed to fetch hero image:', error);
+      }
+    };
+    updateHeroImage();
+  }, []);
 
   return (
     <main className={styles.page}>
-      <div className={styles.hero}>
+      <div 
+        className={styles.hero}
+        style={{
+          backgroundImage: `linear-gradient(145deg, rgba(1, 6, 18, 0.85), rgba(9, 30, 58, 0.55)), url(${heroBgImage})`,
+        }}
+      >
 
 
         <section className={styles.heroContent}>
-          <p className={styles.eyeBrow}>{t('companyName')}</p>
-          <h1 className={styles.heroTitle}>{t('hero.title')}</h1>
+          <h1 className={styles.heroTitle}>{t('hero.subtitle')}</h1>
           <p className={styles.heroCopy}>
             {t('hero.description')}
           </p>

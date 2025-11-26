@@ -13,7 +13,6 @@ interface AboutAnimationRefs {
   missionRef: SectionRef;
   valuesRef: SectionRef;
   timelineRef: SectionRef;
-  teamRef: SectionRef;
   ctaRef: SectionRef;
 }
 
@@ -34,7 +33,6 @@ export const useAboutAnimations = ({
   missionRef,
   valuesRef,
   timelineRef,
-  teamRef,
   ctaRef,
 }: AboutAnimationRefs) => {
   useLayoutEffect(() => {
@@ -138,24 +136,6 @@ export const useAboutAnimations = ({
         });
       }
 
-      if (teamRef.current) {
-        const teamCards = teamRef.current.querySelectorAll(
-          "[data-animate='team-card']",
-        );
-        gsap.from(teamCards, {
-          opacity: 0,
-          y: 30,
-          scale: 0.95,
-          duration: 0.8,
-          ease: "power2.out",
-          stagger: 0.12,
-          scrollTrigger: {
-            trigger: teamRef.current,
-            start: "top 80%",
-          },
-        });
-      }
-
       if (ctaRef.current) {
         gsap.from(ctaRef.current, {
           opacity: 0,
@@ -171,7 +151,7 @@ export const useAboutAnimations = ({
     }, rootRef);
 
     return () => ctx.revert();
-  }, [rootRef, heroRef, storyRef, missionRef, valuesRef, timelineRef, teamRef, ctaRef]);
+  }, [rootRef, heroRef, storyRef, missionRef, valuesRef, timelineRef, ctaRef]);
 };
 
 

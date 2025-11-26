@@ -7,7 +7,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
     try {
         await connectDB();
         const db = mongoose.connection.db;
-        // @ts-expect-error GridFSBucket typing is not exposed through mongoose
+        // @ts-ignore GridFSBucket typing is not exposed through mongoose
         const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
 
         const _id = new mongoose.Types.ObjectId(params.id);

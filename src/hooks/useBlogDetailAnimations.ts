@@ -11,9 +11,9 @@ const registerGsapPlugins = () => {
 };
 
 interface BlogDetailAnimationRefs {
-    headerRef: RefObject<HTMLElement>;
-    contentRef: RefObject<HTMLElement>;
-    relatedRef: RefObject<HTMLElement>;
+    headerRef: RefObject<HTMLElement | null>;
+    contentRef: RefObject<HTMLElement | null>;
+    relatedRef: RefObject<HTMLElement | null>;
     dir: 'ltr' | 'rtl';
 }
 

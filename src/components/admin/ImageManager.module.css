@@ -21,27 +21,26 @@
 }
 
 .content {
-    display: grid;
-    grid-template-columns: 400px 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
-    align-items: start;
 }
 
-@media (max-width: 1024px) {
-    .content {
-        grid-template-columns: 1fr;
-    }
+/* Section Selector */
+.sectionSelector {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-/* Upload Panel */
-.uploadPanel {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 2rem;
+.updateNote {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: #fef3c7;
+    border-left: 3px solid #f59e0b;
+    border-radius: 4px;
 }
 
 .panelTitle {
@@ -269,6 +268,58 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-wrap: wrap;
+}
+
+.replaceGroup {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-left: auto;
+    flex-wrap: wrap;
+}
+
+.replaceLabel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem 0.875rem;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.replaceLabel:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+.replaceButton {
+    padding: 0.375rem 0.875rem;
+    background: linear-gradient(135deg, #0c4fad 0%, #084a9d 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(12, 79, 173, 0.2);
+}
+
+.replaceButton:hover:not(:disabled) {
+    background: linear-gradient(135deg, #084a9d 0%, #063d7e 100%);
+    box-shadow: 0 4px 8px rgba(12, 79, 173, 0.3);
+}
+
+.replaceButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .orderButtons {

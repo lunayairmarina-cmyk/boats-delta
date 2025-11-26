@@ -214,7 +214,7 @@ export default function ContactPage() {
 
           <div className={styles.mapFrame}>
             <Image
-              src="/api/images/slug/ocean-sunrise"
+              src="/api/images/slug/contact-map"
               alt="Aerial view of the Red Sea coastline"
               width={720}
               height={520}

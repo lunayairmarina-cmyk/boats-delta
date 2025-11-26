@@ -11,8 +11,6 @@ type ImageSection =
     | 'why-choose-us'
     | 'testimonials'
     | 'partner-logos'
-    | 'services-primary'
-    | 'services-gallery'
     | 'about-page'
     | 'contact-page'
     | 'general';
@@ -33,9 +31,9 @@ export default function ImageManager() {
     const { language } = useLanguage();
     const [activeSection, setActiveSection] = useState<ImageSection>('hero-home');
     const [images, setImages] = useState<GridFSFile[]>([]);
-    const [uploading, setUploading] = useState(false);
+    const [replacing, setReplacing] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [uploadSlug, setUploadSlug] = useState('');
+    const [replacingImageId, setReplacingImageId] = useState<string | null>(null);
     const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
 
     const isHeroSection = activeSection === 'hero-home';
@@ -47,8 +45,6 @@ export default function ImageManager() {
             'why-choose-us': { label: 'Why Choose Us (relationship-crew)', group: 'Homepage' },
             'testimonials': { label: 'Testimonial Avatars (portrait-vip-1 to 12)', group: 'Homepage' },
             'partner-logos': { label: 'Partner/Client Logos', group: 'Homepage' },
-            'services-primary': { label: 'Service Primary Images', group: 'Services' },
-            'services-gallery': { label: 'Service Detail Gallery', group: 'Services' },
             'about-page': { label: 'About Page Images', group: 'About Page' },
             'contact-page': { label: 'Contact Page Images', group: 'Contact Page' },
             'general': { label: 'General/Other Images', group: 'Other' },
@@ -59,8 +55,6 @@ export default function ImageManager() {
             'why-choose-us': { label: 'لماذا تختارنا (relationship-crew)', group: 'الصفحة الرئيسية' },
             'testimonials': { label: 'صور الشهادات (portrait-vip-1 إلى 12)', group: 'الصفحة الرئيسية' },
             'partner-logos': { label: 'شعارات الشركاء/العملاء', group: 'الصفحة الرئيسية' },
-            'services-primary': { label: 'صور الخدمات الرئيسية', group: 'الخدمات' },
-            'services-gallery': { label: 'معرض تفاصيل الخدمة', group: 'الخدمات' },
             'about-page': { label: 'صور صفحة من نحن', group: 'صفحة من نحن' },
             'contact-page': { label: 'صور صفحة الاتصال', group: 'صفحة الاتصال' },
             'general': { label: 'صور عامة/أخرى', group: 'أخرى' },
@@ -70,43 +64,35 @@ export default function ImageManager() {
     const copy = language === 'ar'
         ? {
             title: 'إدارة الصور',
-            description: 'تحكم في جميع صور الموقع حسب الأقسام',
-            uploadImage: 'رفع صورة جديدة',
+            description: 'تحديث صور الموقع حسب الأقسام (لا يمكن إضافة أو حذف الصور)',
             section: 'القسم',
-            slug: 'المعرف (اختياري)',
-            slugHint: 'يستخدم في /api/images/slug/[slug]',
-            selectImage: 'اختر صورة',
-            replaceImage: 'استبدل الصورة',
-            upload: 'رفع',
-            uploading: 'جاري الرفع…',
+            selectImage: 'اختر صورة للاستبدال',
+            replaceImage: 'استبدال الصورة',
+            replacing: 'جاري الاستبدال…',
             imagesInSection: 'الصور في هذا القسم',
             noImages: 'لا توجد صور في هذا القسم بعد',
-            delete: 'حذف',
             moveUp: 'تحريك لأعلى',
             moveDown: 'تحريك لأسفل',
             order: 'الترتيب:',
             slide: 'الشريحة',
             heroHint: 'استخدم أزرار التحريك لضبط ترتيب الشرائح في الصفحة',
+            updateNote: 'ملاحظة: يمكنك فقط تحديث الصور الموجودة. لا يمكن إضافة أو حذف الصور.',
         }
         : {
             title: 'Image Management',
-            description: 'Control all website images organized by sections',
-            uploadImage: 'Upload New Image',
+            description: 'Update website images by section (add and delete are disabled)',
             section: 'Section',
-            slug: 'Slug (optional)',
-            slugHint: 'Used in /api/images/slug/[slug]',
-            selectImage: 'Select Image',
+            selectImage: 'Select Image to Replace',
             replaceImage: 'Replace Image',
-            upload: 'Upload',
-            uploading: 'Uploading…',
+            replacing: 'Replacing…',
             imagesInSection: 'Images in this section',
             noImages: 'No images in this section yet',
-            delete: 'Delete',
             moveUp: 'Move Up',
             moveDown: 'Move Down',
             order: 'Order:',
             slide: 'Slide',
             heroHint: 'Use move buttons to adjust the order of slides on the site',
+            updateNote: 'Note: You can only update existing images. Adding and deleting images is disabled.',
         };
 
     const orderedImages = useMemo(() => {
@@ -129,57 +115,44 @@ export default function ImageManager() {
         fetchImages();
     }, [fetchImages]);
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, imageId: string) => {
         if (!e.target.files?.[0]) {
             setSelectedFile(null);
+            setReplacingImageId(null);
             return;
         }
         setSelectedFile(e.target.files[0]);
+        setReplacingImageId(imageId);
     };
 
-    const handleUpload = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!selectedFile) return;
-        setUploading(true);
+    const handleReplace = async (imageId: string) => {
+        if (!selectedFile || replacingImageId !== imageId) return;
+        setReplacing(true);
 
         const formData = new FormData();
         formData.append('file', selectedFile);
-        formData.append('section', activeSection);
-        if (uploadSlug.trim()) {
-            formData.append('slug', uploadSlug.trim());
-        }
 
         try {
-            const res = await fetch('/api/admin/upload-image', {
-                method: 'POST',
+            const res = await fetch(`/api/admin/images/${imageId}`, {
+                method: 'PUT',
                 body: formData,
             });
             if (res.ok) {
                 setSelectedFile(null);
-                setUploadSlug('');
+                setReplacingImageId(null);
                 await fetchImages();
-                const fileInput = document.querySelector<HTMLInputElement>('input[type="file"]');
-                if (fileInput) fileInput.value = '';
+                // Reset file input
+                const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
+                fileInputs.forEach(input => input.value = '');
+            } else {
+                const error = await res.json();
+                alert(error.error || 'Failed to replace image');
             }
         } catch (error) {
-            console.error('Upload failed', error);
+            console.error('Replace failed', error);
+            alert('Failed to replace image');
         } finally {
-            setUploading(false);
-        }
-    };
-
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this image?')) return;
-
-        try {
-            const res = await fetch(`/api/admin/images/${id}`, {
-                method: 'DELETE',
-            });
-            if (res.ok) {
-                setImages(images.filter((img) => img._id !== id));
-            }
-        } catch (error) {
-            console.error('Delete failed', error);
+            setReplacing(false);
         }
     };
 
@@ -253,67 +226,26 @@ export default function ImageManager() {
             </div>
 
             <div className={styles.content}>
-                <div className={styles.uploadPanel}>
-                    <h4 className={styles.panelTitle}>{copy.uploadImage}</h4>
-                    <form onSubmit={handleUpload} className={styles.uploadForm}>
-                        <div className={styles.formGroup}>
-                            <label className={styles.label}>{copy.section}</label>
-                            <select
-                                className={styles.select}
-                                value={activeSection}
-                                onChange={(e) => setActiveSection(e.target.value as ImageSection)}
-                            >
-                                {Object.entries(groupedSections).map(([group, items]) => (
-                                    <optgroup key={group} label={group}>
-                                        {items.map(({ key, label }) => (
-                                            <option key={key} value={key}>
-                                                {label}
-                                            </option>
-                                        ))}
-                                    </optgroup>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className={styles.formGroup}>
-                            <label className={styles.label}>
-                                {copy.slug}
-                                <span className={styles.hint}>{copy.slugHint}</span>
-                            </label>
-                            <input
-                                type="text"
-                                value={uploadSlug}
-                                onChange={(e) => setUploadSlug(e.target.value)}
-                                placeholder="ocean-sunrise"
-                                className={styles.input}
-                            />
-                        </div>
-
-                        <div className={styles.fileInputGroup}>
-                            <input
-                                type="file"
-                                id="file-upload"
-                                className={styles.hiddenInput}
-                                onChange={handleFileSelect}
-                                accept="image/*"
-                            />
-                            <label htmlFor="file-upload" className={styles.fileLabel}>
-                                {selectedFile ? copy.replaceImage : copy.selectImage}
-                            </label>
-                            {selectedFile && <span className={styles.fileName}>{selectedFile.name}</span>}
-                        </div>
-
-                        <button
-                            type="submit"
-                            className={styles.uploadButton}
-                            disabled={!selectedFile || uploading}
-                        >
-                            {uploading ? copy.uploading : copy.upload}
-                        </button>
-                    </form>
-                </div>
-
                 <div className={styles.imagesList}>
+                    <div className={styles.sectionSelector}>
+                        <label className={styles.label}>{copy.section}</label>
+                        <select
+                            className={styles.select}
+                            value={activeSection}
+                            onChange={(e) => setActiveSection(e.target.value as ImageSection)}
+                        >
+                            {Object.entries(groupedSections).map(([group, items]) => (
+                                <optgroup key={group} label={group}>
+                                    {items.map(({ key, label }) => (
+                                        <option key={key} value={key}>
+                                            {label}
+                                        </option>
+                                    ))}
+                                </optgroup>
+                            ))}
+                        </select>
+                        <p className={styles.updateNote}>{copy.updateNote}</p>
+                    </div>
                     <div className={styles.listHeader}>
                         <h4 className={styles.panelTitle}>{copy.imagesInSection}</h4>
                         {isHeroSection && orderedImages.length > 1 && (
@@ -372,13 +304,28 @@ export default function ImageManager() {
                                                 </button>
                                             </div>
                                         )}
-                                        <button
-                                            type="button"
-                                            onClick={() => handleDelete(img._id)}
-                                            className={styles.deleteButton}
-                                        >
-                                            {copy.delete}
-                                        </button>
+                                        <div className={styles.replaceGroup}>
+                                            <input
+                                                type="file"
+                                                id={`file-replace-${img._id}`}
+                                                className={styles.hiddenInput}
+                                                onChange={(e) => handleFileSelect(e, img._id)}
+                                                accept="image/*"
+                                            />
+                                            <label htmlFor={`file-replace-${img._id}`} className={styles.replaceLabel}>
+                                                {copy.selectImage}
+                                            </label>
+                                            {replacingImageId === img._id && selectedFile && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleReplace(img._id)}
+                                                    className={styles.replaceButton}
+                                                    disabled={replacing}
+                                                >
+                                                    {replacing ? copy.replacing : copy.replaceImage}
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             );

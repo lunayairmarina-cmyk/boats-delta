@@ -69,12 +69,6 @@ const ABOUT_CONTENT: Record<
       panelBody: string;
       panelCta: string;
     };
-    team: {
-      badge: string;
-      title: string;
-      description: string;
-    };
-    teamMembers: Array<{ name: string; role: string; photo: string }>;
     cta: {
       badge: string;
       title: string;
@@ -285,37 +279,9 @@ const ABOUT_CONTENT: Record<
       ],
       panelTitle: "Work with us",
       panelBody:
-        "Submit portfolios for engineering, guest experience, sustainability, or crew leadership roles. We provide mentorship, on-the-job training, and visibility across Dubai, Jeddah, Monaco, and Bodrum.",
+        "Submit portfolios for engineering, guest experience, or sustainability roles. We provide mentorship, on-the-job training, and visibility across Dubai, Jeddah, Monaco, and Bodrum.",
       panelCta: "share your profile",
     },
-    team: {
-      badge: "crew leadership",
-      title: "People behind the polished decks",
-      description:
-        "A cross-functional crew anchored in Dubai with satellite pods in Monaco, Jeddah, and Bodrum.",
-    },
-    teamMembers: [
-      {
-        name: "Maya Al Serkal",
-        role: "Founder & Fleet Strategist",
-        photo: "/api/images/slug/portrait-vip-1",
-      },
-      {
-        name: "Elias Cortés",
-        role: "Technical Director",
-        photo: "/api/images/slug/portrait-vip-13",
-      },
-      {
-        name: "Ranya Haddad",
-        role: "Guest Experience Lead",
-        photo: "/api/images/slug/portrait-vip-2",
-      },
-      {
-        name: "Leo Vasseur",
-        role: "Sustainability Officer",
-        photo: "/api/images/slug/portrait-vip-11",
-      },
-    ],
     cta: {
       badge: "next step",
       title: "Ready to chart your next season?",
@@ -526,37 +492,9 @@ const ABOUT_CONTENT: Record<
       ],
       panelTitle: "اعمل معنا",
       panelBody:
-        "أرسل ملفاتك لأدوار الهندسة أو تجربة الضيوف أو الاستدامة أو قيادة الطاقم. نوفر الإرشاد والتدريب وفرصاً في دبي وجدة وموناكو وبودروم.",
+        "أرسل ملفاتك لأدوار الهندسة أو تجربة الضيوف أو الاستدامة. نوفر الإرشاد والتدريب وفرصاً في دبي وجدة وموناكو وبودروم.",
       panelCta: "شارك ملفك",
     },
-    team: {
-      badge: "قيادة الطاقم",
-      title: "أشخاص وراء الأسطح اللامعة",
-      description:
-        "فريق متعدد الاختصاصات يتمركز في دبي مع خلايا داعمة في موناكو وجدة وبودروم.",
-    },
-    teamMembers: [
-      {
-        name: "Maya Al Serkal",
-        role: "المؤسسة وقائدة الاستراتيجيات",
-        photo: "/api/images/slug/portrait-vip-1",
-      },
-      {
-        name: "Elias Cortés",
-        role: "المدير التقني",
-        photo: "/api/images/slug/portrait-vip-13",
-      },
-      {
-        name: "Ranya Haddad",
-        role: "قائدة تجربة الضيوف",
-        photo: "/api/images/slug/portrait-vip-2",
-      },
-      {
-        name: "Leo Vasseur",
-        role: "مسؤول الاستدامة",
-        photo: "/api/images/slug/portrait-vip-11",
-      },
-    ],
     cta: {
       badge: "الخطوة التالية",
       title: "هل أنت جاهز للموسم المقبل؟",
@@ -574,7 +512,6 @@ export default function AboutPage() {
   const missionRef = useRef<HTMLElement | null>(null);
   const valuesRef = useRef<HTMLElement | null>(null);
   const timelineRef = useRef<HTMLElement | null>(null);
-  const teamRef = useRef<HTMLElement | null>(null);
   const ctaRef = useRef<HTMLElement | null>(null);
   const { language, dir } = useLanguage();
   const content = ABOUT_CONTENT[language];
@@ -586,7 +523,6 @@ export default function AboutPage() {
     missionRef,
     valuesRef,
     timelineRef,
-    teamRef,
     ctaRef,
   });
 
@@ -795,37 +731,6 @@ export default function AboutPage() {
           <Link href="/contact" className={styles.careersButton}>
             {content.careers.panelCta} <span aria-hidden="true">➝</span>
           </Link>
-        </div>
-      </section>
-
-      <section className={styles.teamSection} ref={teamRef}>
-        <div className={styles.teamIntro}>
-          <p className={styles.sectionBadge}>{content.team.badge}</p>
-          <h2>{content.team.title}</h2>
-          <p>{content.team.description}</p>
-        </div>
-        <div className={styles.teamGrid}>
-          {content.teamMembers.map((member) => (
-            <article
-              key={member.name}
-              className={styles.teamCard}
-              data-animate="team-card"
-            >
-              <div className={styles.teamAvatar}>
-                <Image
-                  src={member.photo}
-                  alt={member.name}
-                  width={320}
-                  height={380}
-                  className={styles.teamImage}
-                />
-              </div>
-              <div className={styles.teamBody}>
-                <h3>{member.name}</h3>
-                <p>{member.role}</p>
-              </div>
-            </article>
-          ))}
         </div>
       </section>
 

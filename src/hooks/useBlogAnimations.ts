@@ -11,9 +11,9 @@ const registerGsapPlugins = () => {
 };
 
 interface BlogAnimationRefs {
-    heroRef: RefObject<HTMLElement>;
-    postsRef: RefObject<HTMLElement>;
-    searchRef: RefObject<HTMLElement>;
+    heroRef: RefObject<HTMLElement | null>;
+    postsRef: RefObject<HTMLElement | null>;
+    searchRef: RefObject<HTMLElement | null>;
 }
 
 export const useBlogAnimations = ({

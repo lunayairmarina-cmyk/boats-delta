@@ -3,9 +3,8 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import RotatingBorderButton from "@/components/RotatingBorderButton";
 import { useLanguage } from '@/context/LanguageContext';
-import styles from './ServicesList.module.css'; // We'll create this CSS module
+import styles from './ServicesList.module.css';
 
 interface Service {
     _id: string;
@@ -92,65 +91,71 @@ export default function ServicesList({
                     </div>
                 )}
 
-                <div className={styles.grid}>
-                    {services.map((service) => {
-                        const isArabic = language === 'ar';
-                        const sanitizedTitle = service.title?.trim() ?? '';
-                        const sanitizedTitleAr = service.titleAr?.trim() ?? '';
-                        const sanitizedDescription = service.description?.trim() ?? '';
-                        const sanitizedDescriptionAr = service.descriptionAr?.trim() ?? '';
-                        const sanitizedPrice = service.price?.trim() ?? '';
-                        const sanitizedPriceAr = service.priceAr?.trim() ?? '';
+                <div className={styles.servicesLayout}>
+                    <div className={styles.contentSection}>
+                        <div className={styles.contentBadge}>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="2" y="12" width="3" height="6" fill="#0c4fad" rx="1"/>
+                                <rect x="7" y="8" width="3" height="10" fill="#0c4fad" rx="1"/>
+                                <rect x="12" y="4" width="3" height="14" fill="#0c4fad" rx="1"/>
+                                <rect x="17" y="6" width="2" height="12" fill="#0c4fad" rx="1"/>
+                            </svg>
+                            <span>WITH US</span>
+                        </div>
+                        <h3 className={styles.contentTitle}>{title}</h3>
+                        <p className={styles.contentDescription}>
+                            {subtitle || "Integrate your favorite apps effortlessly, ensuring a smooth flow of information and reducing friction across your tech stack."}
+                        </p>
+                        <Link href="/contact" className={styles.knowMoreButton}>
+                            <span className={styles.buttonText}>KNOW MORE</span>
+                            <span className={styles.buttonArrow}>➝</span>
+                        </Link>
+                    </div>
 
-                        const displayTitle = isArabic
-                            ? sanitizedTitleAr || sanitizedTitle
-                            : sanitizedTitle || sanitizedTitleAr;
-                        const displayDescription = isArabic
-                            ? sanitizedDescriptionAr || sanitizedDescription
-                            : sanitizedDescription || sanitizedDescriptionAr;
-                        const displayPrice = isArabic
-                            ? sanitizedPriceAr || sanitizedPrice
-                            : sanitizedPrice || sanitizedPriceAr;
+                    <div className={styles.horizontalScroll}>
+                        {services.map((service) => {
+                            const isArabic = language === 'ar';
+                            const sanitizedTitle = service.title?.trim() ?? '';
+                            const sanitizedTitleAr = service.titleAr?.trim() ?? '';
+                            const sanitizedDescription = service.description?.trim() ?? '';
+                            const sanitizedDescriptionAr = service.descriptionAr?.trim() ?? '';
 
-                        return (
-                            <div
-                                key={service._id}
-                                className={styles.card}
-                                style={{ direction: isArabic ? 'rtl' : 'ltr' }}
-                            >
-                                <div className={styles.imageWrapper}>
-                                    <Image
-                                        src={`/api/images/${service.image}`}
-                                        alt={displayTitle}
-                                        fill
-                                        className={styles.image}
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    />
-                                </div>
-                                <div className={styles.content}>
-                                    <h3 className={styles.cardTitle}>{displayTitle}</h3>
-                                    <p className={styles.cardDesc}>{displayDescription}</p>
-                                    {displayPrice && <p className={styles.price}>{displayPrice}</p>}
-                                    <div className={styles.actions}>
-                                        <Link href="/contact" className={styles.link}>
-                                            <RotatingBorderButton text={buttonLabel} />
-                                        </Link>
-                                        <Link
-                                            href={`/services/${service.slug || service._id}`}
-                                            className={styles.detailLink}
-                                            aria-label={
-                                                isArabic
-                                                    ? `عرض تفاصيل ${displayTitle}`
-                                                    : `View details for ${displayTitle}`
-                                            }
-                                        >
-                                            {isArabic ? 'تفاصيل الخدمة' : 'View Details'}
-                                        </Link>
+                            const displayTitle = isArabic
+                                ? sanitizedTitleAr || sanitizedTitle
+                                : sanitizedTitle || sanitizedTitleAr;
+                            const displayDescription = isArabic
+                                ? sanitizedDescriptionAr || sanitizedDescription
+                                : sanitizedDescription || sanitizedDescriptionAr;
+
+                            return (
+                                <Link
+                                    key={service._id}
+                                    href={`/services/${service.slug || service._id}`}
+                                    className={styles.card}
+                                    style={{ direction: isArabic ? 'rtl' : 'ltr' }}
+                                    aria-label={
+                                        isArabic
+                                            ? `عرض تفاصيل ${displayTitle}`
+                                            : `View details for ${displayTitle}`
+                                    }
+                                >
+                                    <div className={styles.imageWrapper}>
+                                        <Image
+                                            src={`/api/images/${service.image}`}
+                                            alt={displayTitle}
+                                            fill
+                                            className={styles.image}
+                                            sizes="(max-width: 768px) 400px, 500px"
+                                        />
                                     </div>
-                                </div>
-                            </div>
-                        );
-                    })}
+                                    <div className={styles.content}>
+                                        <h3 className={styles.cardTitle}>{displayTitle}</h3>
+                                        <p className={styles.cardDesc}>{displayDescription}</p>
+                                    </div>
+                                </Link>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
         </section>

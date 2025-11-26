@@ -42,7 +42,7 @@ const BlogSchema = new Schema<IBlog>(
 );
 
 // Create indexes for better query performance
-BlogSchema.index({ slug: 1 });
+// Note: slug index is already created by unique: true
 BlogSchema.index({ published: 1, createdAt: -1 });
 BlogSchema.index({ category: 1 });
 

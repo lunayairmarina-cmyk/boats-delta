@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useServicesAnimations } from "@/hooks/useServicesAnimations";
 import RotatingBorderButton from "@/components/RotatingBorderButton";
 import ServicesList from "@/components/ServicesList";
@@ -322,6 +322,27 @@ export default function ServicesPage() {
   const ctaRef = useRef<HTMLElement | null>(null);
   const { language, dir } = useLanguage();
   const content = SERVICES_CONTENT[language];
+  const [heroBgImage, setHeroBgImage] = useState("/api/images/slug/ocean-sunrise");
+
+  // Fetch the latest image URL with cache busting
+  useEffect(() => {
+    const updateHeroImage = async () => {
+      try {
+        const response = await fetch("/api/images/slug/ocean-sunrise", { 
+          method: 'HEAD',
+          cache: 'no-store' 
+        });
+        if (response.ok) {
+          const lastModified = response.headers.get('Last-Modified');
+          const timestamp = lastModified ? new Date(lastModified).getTime() : Date.now();
+          setHeroBgImage(`/api/images/slug/ocean-sunrise?v=${timestamp}`);
+        }
+      } catch (error) {
+        console.error('Failed to fetch hero image:', error);
+      }
+    };
+    updateHeroImage();
+  }, []);
 
   useServicesAnimations({
     rootRef,
@@ -335,7 +356,13 @@ export default function ServicesPage() {
   return (
     <main className={styles.page} ref={rootRef} style={{ direction: dir }}>
       {/* Hero Section */}
-      <section className={styles.hero} ref={heroRef}>
+      <section 
+        className={styles.hero} 
+        ref={heroRef}
+        style={{
+          backgroundImage: `linear-gradient(145deg, rgba(1, 6, 18, 0.85), rgba(9, 30, 58, 0.55)), url(${heroBgImage})`,
+        }}
+      >
         <div className={styles.heroOverlay} aria-hidden="true" />
         <div className={styles.heroContent}>
           <p className={styles.eyebrow} data-animate="hero">
