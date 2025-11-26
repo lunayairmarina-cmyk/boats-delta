@@ -75,9 +75,13 @@ export default function Navbar() {
         };
     }, [menuOpen]);
 
+    // Check if we're on a blog page (blog listing or blog detail)
+    const isBlogPage = pathname.startsWith('/blog');
+    
     const headerClassNames = [
         styles.navbar,
-        scrolled ? styles.navbarScrolled : "",
+        isBlogPage ? styles.navbarBlogPage : "",
+        scrolled || isBlogPage ? styles.navbarScrolled : "",
         menuOpen ? styles.navbarMenuOpen : "",
     ]
         .filter(Boolean)
@@ -139,7 +143,7 @@ export default function Navbar() {
             </button>
 
             <div
-                className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""} ${scrolled ? styles.mobileMenuScrolled : ""}`}
+                className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""} ${scrolled || isBlogPage ? styles.mobileMenuScrolled : ""} ${isBlogPage ? styles.mobileMenuBlogPage : ""}`}
                 role="dialog"
                 aria-modal="false"
                 onClick={toggleMenu}
