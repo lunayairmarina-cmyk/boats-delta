@@ -155,7 +155,9 @@
         "defaultAuthor": "فريق لونيير مارينا",
         "backToBlog": "العودة إلى المدونة",
         "notFound": "المقال غير موجود",
+        "notFoundDescription": "المقال الذي تبحث عنه غير موجود.",
         "tags": "العلامات",
-        "relatedPosts": "مقالات ذات صلة"
+        "relatedPosts": "مقالات ذات صلة",
+        "minRead": "دقيقة قراءة"
     }
 }

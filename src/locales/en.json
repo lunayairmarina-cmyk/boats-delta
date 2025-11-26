@@ -155,7 +155,9 @@
         "defaultAuthor": "Lunier Marina Team",
         "backToBlog": "Back to Blog",
         "notFound": "Post not found",
+        "notFoundDescription": "The blog post you are looking for does not exist.",
         "tags": "Tags",
-        "relatedPosts": "Related Posts"
+        "relatedPosts": "Related Posts",
+        "minRead": "min read"
     }
 }

@@ -22,7 +22,9 @@ interface Blog {
     tags?: string[];
 }
 
-type EditableBlog = Partial<Blog>;
+type EditableBlog = Omit<Partial<Blog>, 'tags'> & {
+    tags?: string[] | string;
+};
 
 const TEXT: Record<string, any> = {
     en: {
@@ -173,11 +175,14 @@ export default function BlogManager() {
             const imageId = await resolveImage();
             
             // Parse tags from comma-separated string
-            const tags = currentBlog.tags
-                ? (typeof currentBlog.tags === 'string' 
-                    ? currentBlog.tags.split(',').map(t => t.trim()).filter(Boolean)
-                    : currentBlog.tags)
-                : [];
+            let tags: string[] = [];
+            if (currentBlog.tags) {
+                if (typeof currentBlog.tags === 'string') {
+                    tags = (currentBlog.tags as string).split(',').map(t => t.trim()).filter(Boolean);
+                } else if (Array.isArray(currentBlog.tags)) {
+                    tags = currentBlog.tags as string[];
+                }
+            }
 
             const payload = {
                 title: currentBlog.title,
@@ -360,7 +365,7 @@ export default function BlogManager() {
                                         <input
                                             className={styles.input}
                                             onChange={(event) =>
-                                                setCurrentBlog({ ...currentBlog, tags: event.target.value })
+                                                setCurrentBlog({ ...currentBlog, tags: event.target.value as string })
                                             }
                                             type="text"
                                             value={typeof currentBlog.tags === 'string' ? currentBlog.tags : (currentBlog.tags || []).join(', ')}

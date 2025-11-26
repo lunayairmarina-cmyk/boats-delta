@@ -41,9 +41,24 @@ export const useBlogDetailAnimations = ({
                     delay: 0.2,
                     stagger: 0.15,
                 });
+
+                // Parallax effect on featured image
+                const imageParallax = headerRef.current.querySelector('[data-parallax="true"]');
+                if (imageParallax) {
+                    gsap.to(imageParallax, {
+                        yPercent: 30,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: imageParallax,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true,
+                        },
+                    });
+                }
             }
 
-            // Content Section - Fade in on scroll
+            // Content Section - Staggered animations for paragraphs and images
             if (contentRef.current) {
                 const contentTargets = contentRef.current.querySelectorAll("[data-animate='content']");
                 gsap.from(contentTargets, {
@@ -57,9 +72,28 @@ export const useBlogDetailAnimations = ({
                         start: "top 85%",
                     },
                 });
+
+                // Animate paragraphs and images within content
+                const paragraphs = contentRef.current.querySelectorAll('.postContent p');
+                const images = contentRef.current.querySelectorAll('.postContent img');
+                const blockquotes = contentRef.current.querySelectorAll('.postContent blockquote');
+
+                [...paragraphs, ...images, ...blockquotes].forEach((element, index) => {
+                    gsap.from(element, {
+                        opacity: 0,
+                        y: 30,
+                        duration: 0.8,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: element,
+                            start: "top 90%",
+                        },
+                        delay: index * 0.05,
+                    });
+                });
             }
 
-            // Related Posts Section - Stagger animation
+            // Related Posts Section - Stagger animation with hover micro-interactions
             if (relatedRef.current) {
                 const relatedTargets = relatedRef.current.querySelectorAll("[data-animate='related']");
                 gsap.from(relatedTargets, {
@@ -73,6 +107,25 @@ export const useBlogDetailAnimations = ({
                         trigger: relatedRef.current,
                         start: "top 80%",
                     },
+                });
+
+                // Add hover micro-interactions
+                relatedTargets.forEach((card) => {
+                    const cardElement = card as HTMLElement;
+                    cardElement.addEventListener('mouseenter', () => {
+                        gsap.to(cardElement, {
+                            scale: 1.02,
+                            duration: 0.3,
+                            ease: "power2.out",
+                        });
+                    });
+                    cardElement.addEventListener('mouseleave', () => {
+                        gsap.to(cardElement, {
+                            scale: 1,
+                            duration: 0.3,
+                            ease: "power2.out",
+                        });
+                    });
                 });
             }
         });
