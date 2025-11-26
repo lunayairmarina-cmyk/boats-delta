@@ -115,6 +115,7 @@ export default function Home() {
         badge={t('services.title')}
         title={t('services.management_title')}
         subtitle={t('services.management_desc')}
+        showHeader={false}
       />
 
       <CommitmentShowcase />
