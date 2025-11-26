@@ -11,7 +11,7 @@
     "hero": {
         "title": "Lunier Marina",
         "subtitle": "Exceptional Marine Luxury",
-        "description": "The yachting industry has evolved tremendously over the years, with luxury yachts becoming more lavish and complex. Owning a yacht is not just about enjoying the open seas; it is also about managing sophisticated assets that require specialized knowledge and attention to detail.",
+        "description": "This is where comprehensive yacht management services come into play, ensuring that owners can enjoy their time at sea and leave the complexities of operations and logistics to the professionals.",
         "cta_connect": "Connect With Us",
         "cta_know_more": "Know More"
     },
@@ -141,5 +141,20 @@
         "company_boatpro_desc": "Specialized in operating an application for renting boats, yachts, and marine recreational vehicles",
         "company_lunier": "Lunier Marina Marine Services",
         "company_lunier_desc": "Specialized in yacht, marina, and facility management and operation services."
+    },
+    "blog": {
+        "badge": "Our Blog",
+        "title": "Latest News & Insights",
+        "description": "Stay updated with the latest trends, tips, and stories from the world of yachting and marine services.",
+        "searchPlaceholder": "Search articles...",
+        "allCategories": "All Categories",
+        "readMore": "Read More",
+        "loading": "Loading posts...",
+        "noResults": "No posts found matching your search.",
+        "defaultAuthor": "Lunier Marina Team",
+        "backToBlog": "Back to Blog",
+        "notFound": "Post not found",
+        "tags": "Tags",
+        "relatedPosts": "Related Posts"
     }
 }
