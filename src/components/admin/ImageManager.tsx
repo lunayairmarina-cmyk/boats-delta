@@ -50,7 +50,7 @@ const IMAGE_SECTIONS: Record<Locale, SectionCopy> = {
 };
 
 export default function ImageManager() {
-    const { language } = useLanguage();
+    const { language, dir } = useLanguage();
     const [activeSection, setActiveSection] = useState<ImageSection>('hero-home');
     const [images, setImages] = useState<GridFSFile[]>([]);
     const [replacing, setReplacing] = useState(false);
@@ -217,7 +217,7 @@ export default function ImageManager() {
     };
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} dir={dir} data-dir={dir}>
             <div className={styles.header}>
                 <div>
                     <h3 className={styles.title}>{copy.title}</h3>

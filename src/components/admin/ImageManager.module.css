@@ -1,7 +1,11 @@
 .container {
-    max-width: 1400px;
+    width: min(1400px, 100%);
     margin: 0 auto;
-    padding: 2rem;
+    padding: clamp(1rem, 2vw, 2rem);
+}
+
+.container[data-dir="rtl"] {
+    direction: rtl;
 }
 
 .header {
@@ -39,7 +43,7 @@
     margin-top: 0.75rem;
     padding: 0.75rem;
     background: #fef3c7;
-    border-left: 3px solid #f59e0b;
+    border-inline-start: 3px solid #f59e0b;
     border-radius: 4px;
 }
 
@@ -133,7 +137,7 @@
 .fileName {
     font-size: 0.75rem;
     color: #6b7280;
-    padding-left: 0.25rem;
+    padding-inline-start: 0.25rem;
 }
 
 .uploadButton {
@@ -180,7 +184,7 @@
     margin-top: 0.5rem;
     padding: 0.75rem;
     background: #f0f9ff;
-    border-left: 3px solid #0c4fad;
+    border-inline-start: 3px solid #0c4fad;
     border-radius: 4px;
 }
 
@@ -275,7 +279,7 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    margin-left: auto;
+    margin-inline-start: auto;
     flex-wrap: wrap;
 }
 
@@ -359,10 +363,22 @@
     color: #dc2626;
     cursor: pointer;
     transition: all 0.2s;
-    margin-left: auto;
+    margin-inline-start: auto;
 }
 
 .deleteButton:hover {
     background: #dc2626;
     color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .imageActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .replaceGroup,
+    .deleteButton {
+        margin-inline-start: 0;
+    }
 }

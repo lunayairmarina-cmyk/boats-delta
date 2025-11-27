@@ -2,21 +2,44 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
+}
+
+.container[data-dir="rtl"] {
+  direction: rtl;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   background: var(--bg-deep);
   padding: 1.25rem;
   border-radius: 0.9rem;
   border: 1px solid var(--border-soft);
+  flex-wrap: wrap;
+  text-align: start;
+}
+
+.container[data-dir="rtl"] .header {
+  text-align: right;
 }
 
 .headerTitle {
   font-size: 1.25rem;
   font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primaryButton {
+    width: 100%;
+  }
 }
 
 .primaryButton {
@@ -126,7 +149,7 @@
 
 .formRow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
   gap: 1rem;
   align-items: flex-start;
 }
@@ -236,6 +259,11 @@
   margin-top: 0.4rem;
 }
 
+.container[data-dir="rtl"] .metaRow {
+  justify-content: flex-end;
+  text-align: right;
+}
+
 .featureList {
   display: flex;
   flex-direction: column;
@@ -301,6 +329,7 @@
   padding: 0 1.75rem 0.5rem;
   border-top: 1px solid rgba(148, 163, 184, 0.1);
   padding-top: 1rem;
+  flex-wrap: wrap;
 }
 
 .secondaryButton {
@@ -328,9 +357,9 @@
 }
 
 .cards {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
 }
 
 .card {
@@ -341,6 +370,7 @@
   border: 1px solid var(--border-soft);
   background: var(--cta-secondary);
   align-items: center;
+  min-height: 100%;
 }
 
 @media (max-width: 768px) {
@@ -408,6 +438,19 @@
   gap: 0.45rem;
 }
 
+@media (max-width: 900px) {
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cardActions {
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
 .cardButton {
   padding: 0.5rem 0.9rem;
   border-radius: 0.65rem;
@@ -463,13 +506,14 @@
 }
 
 @media (max-width: 640px) {
-  .card {
+  .formActions {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
-  .cardActions {
-    flex-direction: row;
+  .secondaryButton,
+  .submitButton {
+    width: 100%;
   }
 }
 

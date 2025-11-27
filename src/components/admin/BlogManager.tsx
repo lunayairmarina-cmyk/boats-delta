@@ -283,7 +283,7 @@ export default function BlogManager() {
     const modalTitleText = isEditingExisting ? copy.modal.editTitle : copy.modal.newTitle;
 
     return (
-        <div className={styles.container} style={{ direction: dir }}>
+        <div className={styles.container} dir={dir} data-dir={dir}>
             <div className={styles.header}>
                 <h3 className={styles.headerTitle}>{copy.headerTitle}</h3>
                 <button className={styles.primaryButton} onClick={() => openModal()}>

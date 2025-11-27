@@ -1,67 +1,87 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  max-width: 1600px;
+  gap: clamp(1rem, 2vw, 2rem);
+  width: min(1400px, 100%);
   margin: 0 auto;
-  padding: 2rem;
-  min-height: 100vh;
-  background: #f9fafb;
 }
 
 .tabs {
   display: flex;
+  align-items: stretch;
   gap: 0.5rem;
-  background: #ffffff;
-  padding: 0.5rem;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  border: 1px solid #e4e8f0;
+  padding: 0.35rem;
+  background: #fff;
+  box-shadow: 0 15px 50px rgba(15, 23, 42, 0.05);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .tabButton {
   position: relative;
-  padding: 0.75rem 1.5rem;
-  font-weight: 500;
-  font-size: 0.875rem;
-  color: #6b7280;
-  background: none;
+  flex: 1 1 0;
+  min-width: 160px;
+  padding: 0.85rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #5b6170;
+  background: transparent;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
 }
 
 .tabButton:hover {
-  color: #374151;
-  background: #f3f4f6;
+  background: #f4f6fb;
+  color: #24293a;
 }
 
 .tabButtonActive {
   color: #ffffff;
   background: linear-gradient(135deg, #0c4fad 0%, #084a9d 100%);
-  box-shadow: 0 2px 4px rgba(12, 79, 173, 0.2);
-}
-
-.tabUnderline {
-  display: none;
+  box-shadow: 0 8px 16px rgba(12, 79, 173, 0.25);
 }
 
 .panel {
-  min-height: 500px;
+  min-height: 420px;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: #fff;
+  box-shadow: 0 25px 80px rgba(15, 23, 42, 0.06);
+  padding: clamp(1rem, 2vw, 1.75rem);
 }
 
-@media (max-width: 640px) {
-  .wrapper {
-    padding: 1.5rem 1rem;
-  }
-
-  .tabs {
-    flex-wrap: wrap;
+@media (max-width: 1024px) {
+  .panel {
+    border-radius: 16px;
   }
 }
 
+@media (max-width: 768px) {
+  .tabButton {
+    flex: 0 0 auto;
+  }
 
+  .panel {
+    padding: 1rem;
+  }
+}
 
+@media (max-width: 480px) {
+  .tabButton {
+    min-width: 130px;
+    font-size: 0.85rem;
+  }
 
-
+  .panel {
+    padding: 0.75rem;
+  }
+}
