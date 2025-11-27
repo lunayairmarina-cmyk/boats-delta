@@ -384,15 +384,18 @@
 
   .primaryBtn,
   .outlineBtn {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     min-height: 44px;
-    padding: 14px 24px;
+    padding: 14px 20px;
+    font-size: 14px;
   }
 
   .heroActions {
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
     gap: 12px;
+    justify-content: center;
   }
 
   .experienceSection {
