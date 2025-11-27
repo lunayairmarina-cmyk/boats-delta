@@ -157,6 +157,14 @@ export default function ContactPage() {
   const content = CONTACT_CONTENT[language];
   const phoneHref = getPhoneHref();
   const mailHref = getMailHref();
+  const CONTACT_FORM_ID = "contact-form";
+
+  const scrollToContactForm = () => {
+    const section = document.getElementById(CONTACT_FORM_ID);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   const renderHighlightValue = (item: HighlightItem) => {
     if (item.type === "phone") {
@@ -236,7 +244,12 @@ export default function ContactPage() {
               <h2>{detail.title}</h2>
               <p>{detail.body}</p>
             </div>
-            <button type="button" className={styles.accessAction}>
+            <button
+              type="button"
+              className={styles.accessAction}
+              onClick={scrollToContactForm}
+              aria-controls={CONTACT_FORM_ID}
+            >
               {detail.action}
               <span aria-hidden="true">➝</span>
             </button>

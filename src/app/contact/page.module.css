@@ -81,17 +81,21 @@
   font-size: 20px;
   font-weight: 600;
   letter-spacing: 0.5px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .highlightLink {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
   color: #fef7f2;
   text-decoration: none;
   padding: 2px 6px;
   border-radius: 12px;
   transition: color 0.2s ease, transform 0.2s ease, text-shadow 0.2s ease;
+  max-width: 100%;
 }
 
 .highlightLink::after {

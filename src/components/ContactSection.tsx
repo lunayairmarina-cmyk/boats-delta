@@ -9,7 +9,7 @@ export default function ContactSection() {
   const { t } = useLanguage();
 
   return (
-    <section className={styles.contactSection}>
+    <section className={styles.contactSection} id="contact-form">
       <div className={styles.contactInner}>
         <div className={styles.contactHeader}>
           <p className={styles.contactLabel}>{t('contact.title')}</p>
