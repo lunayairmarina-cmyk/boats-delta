@@ -17,6 +17,26 @@ type HighlightItem = {
   type?: "phone" | "email";
 };
 
+function PhoneIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+      {...props}
+    >
+      <path
+        d="M6.5 3.5A2.1 2.1 0 0 1 8.6 2h2.1c.9 0 1.7.6 1.9 1.4l.6 2.4c.2.8-.1 1.7-.8 2.2l-1.1.8c.7 1.5 1.8 2.7 3.3 3.3l.8-1.1c.5-.7 1.4-1 2.2-.8l2.4.6c.8.2 1.4 1 1.4 1.9v2.1a2.1 2.1 0 0 1-1.5 2.1c-1.6.4-5 .8-8.7-2.9C5.7 11 6.1 7.6 6.5 6Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 const CONTACT_CONTENT: Record<
   Locale,
   {
@@ -157,12 +177,12 @@ export default function ContactPage() {
   const content = CONTACT_CONTENT[language];
   const phoneHref = getPhoneHref();
   const mailHref = getMailHref();
-  const CONTACT_FORM_ID = "contact-form";
 
   const scrollToContactForm = () => {
-    const section = document.getElementById(CONTACT_FORM_ID);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (typeof document === "undefined") return;
+    const target = document.getElementById("contact-form");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -178,6 +198,7 @@ export default function ContactPage() {
           aria-label={`${item.label} ${item.value}`}
         >
           {item.value}
+          <PhoneIcon className={styles.phoneIcon} />
         </a>
       );
     }
@@ -198,6 +219,25 @@ export default function ContactPage() {
     return <span className={styles.highlightValue}>{item.value}</span>;
   };
 
+  const renderHighlightHelper = (item: HighlightItem) => {
+    // For the Arabic concierge line, replace the middle dot with a styled icon
+    if (language === "ar" && item.type === "phone") {
+      const parts = item.helper.split("•");
+      const before = parts[0] ?? "";
+      const after = parts[1] ?? "";
+
+      return (
+        <p className={styles.highlightHelper}>
+          {before.trim()}{" "}
+          <span className={styles.helperIcon} aria-hidden="true" />
+          {" "}{after.trim()}
+        </p>
+      );
+    }
+
+    return <p className={styles.highlightHelper}>{item.helper}</p>;
+  };
+
   return (
     <main className={styles.page} style={{ direction: dir }}>
       <section className={styles.hero}>
@@ -211,7 +251,7 @@ export default function ContactPage() {
               <article key={item.label} className={styles.highlightCard}>
                 <p className={styles.highlightLabel}>{item.label}</p>
                 {renderHighlightValue(item)}
-                <p className={styles.highlightHelper}>{item.helper}</p>
+                {renderHighlightHelper(item)}
               </article>
             ))}
           </div>
@@ -248,7 +288,6 @@ export default function ContactPage() {
               type="button"
               className={styles.accessAction}
               onClick={scrollToContactForm}
-              aria-controls={CONTACT_FORM_ID}
             >
               {detail.action}
               <span aria-hidden="true">➝</span>

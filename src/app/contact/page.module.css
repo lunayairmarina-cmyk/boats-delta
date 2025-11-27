@@ -106,8 +106,7 @@
 }
 
 .highlightLink[data-variant="phone"]::after {
-  content: "📞";
-  font-size: 1rem;
+  content: none;
 }
 
 .highlightLink[data-variant="email"]::after {
@@ -176,6 +175,23 @@
   margin-top: 6px;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.55);
+}
+
+.helperIcon {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f6d365, #fda085);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 0 8px rgba(253, 160, 133, 0.6);
+  vertical-align: middle;
+}
+
+.phoneIcon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.25;
 }
 
 .heroMedia {

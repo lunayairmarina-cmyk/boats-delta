@@ -66,7 +66,7 @@ const SOCIAL_LINKS = [
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path
-          d="M4 3h4.2l3.7 5.6L15.3 3h4.2l-5.9 8.5L19.9 21h-4.2l-4.1-6.2L7.5 21H3.3l6.2-9.2L4 3Z"
+          d="M3 3h4.7l4.2 5.7L15.6 3H21l-6.2 8.3L21 21h-4.7l-4.3-5.9L8.4 21H3l6.3-8.7L3 3Z"
           fill="currentColor"
         />
       </svg>
