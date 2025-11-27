@@ -47,3 +47,5 @@ const TermsHero = ({ lastUpdated, siteName }: TermsHeroProps, ref: ForwardedRef<
 
 export default forwardRef(TermsHero);
 
+
+

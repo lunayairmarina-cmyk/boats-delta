@@ -181,9 +181,39 @@
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
+.blogBackLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    background: rgba(255, 255, 255, 0.08);
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.navbarBlogPage .blogBackLink {
+    border-color: rgba(15, 23, 42, 0.15);
+    color: #0f172a;
+    background: rgba(15, 23, 42, 0.05);
+}
+
+.blogBackLink:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.navbarBlogPage .blogBackLink:hover {
+    background: rgba(15, 23, 42, 0.1);
+}
+
 .menuToggle span {
     display: block;
     height: 2px;
+    width: 100%;
     background: #fff;
     border-radius: 999px;
     transition: transform 0.2s ease, opacity 0.2s ease;
@@ -293,12 +323,14 @@
 }
 
 .mobileMenuBlogPage {
-    background: rgba(255, 255, 255, 0.98);
+    background: #ffffff;
+    backdrop-filter: none;
 }
 
 .mobileMenuBlogPage .mobileMenuContent {
-    background: rgba(255, 255, 255, 1);
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    border-left: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: -12px 0 32px rgba(15, 23, 42, 0.12);
 }
 
 .mobileMenuBlogPage .mobileMenuItem {

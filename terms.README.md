@@ -86,3 +86,5 @@ Coverage:
 - To add analytics when users accept terms, hook into `handleAnchorNavigate` or accordion toggle.
 - Additional GSAP sequences should use `ensureGsapPlugins` to avoid duplicative imports and respect reduced-motion state.
 
+
+

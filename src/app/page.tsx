@@ -19,17 +19,6 @@ const partnerLogos = Array.from({ length: 8 }, (_, index) => ({
   label: "Logoipsum",
 }));
 
-interface AdminImage {
-  _id?: string;
-  metadata?: {
-    slug?: string;
-    section?: string;
-  };
-  filename?: string;
-}
-
-const isAdminImageArray = (value: unknown): value is AdminImage[] => Array.isArray(value);
-
 export default function Home() {
   const { t, language } = useLanguage();
   const [heroBgImage, setHeroBgImage] = useState("/api/images/slug/ocean-sunrise");
@@ -58,9 +47,8 @@ export default function Home() {
           cache: 'no-store',
         });
         if (heroResponse.ok) {
-          const imagesPayload: unknown = await heroResponse.json();
-          const images = isAdminImageArray(imagesPayload) ? imagesPayload : [];
-          const image = images.length > 0 ? images[0] : null;
+          const images = await heroResponse.json();
+          const image = Array.isArray(images) && images.length > 0 ? images[0] : null;
           if (image?._id) {
             // Use image ID for better cache control (cache headers handle freshness)
             setHeroBgImage(`/api/images/${image._id}`);
@@ -72,10 +60,9 @@ export default function Home() {
           cache: 'no-store',
         });
         if (experienceResponse.ok) {
-          const experiencePayload: unknown = await experienceResponse.json();
-          const experienceImages = isAdminImageArray(experiencePayload) ? experiencePayload : [];
+          const experienceImages = await experienceResponse.json();
           // Find ocean-sunrise image for card (should be in experience-section)
-          const cardImage = experienceImages.find((img) => 
+          const cardImage = experienceImages.find((img: any) => 
             img.metadata?.slug === 'ocean-sunrise' || 
             (img.metadata?.section === 'experience-section' && !img.metadata?.slug?.includes('logo'))
           );
@@ -83,7 +70,7 @@ export default function Home() {
             setCardImageId(cardImage._id);
           } else if (experienceImages.length > 0) {
             // Fallback: use first non-logo image if ocean-sunrise not found
-            const nonLogoImage = experienceImages.find((img) => 
+            const nonLogoImage = experienceImages.find((img: any) => 
               !img.metadata?.slug?.includes('logo') && !img.filename?.toLowerCase().includes('logo')
             );
             if (nonLogoImage?._id) {
@@ -91,7 +78,7 @@ export default function Home() {
             }
           }
           // Find logo image
-          const logoImage = experienceImages.find((img) => 
+          const logoImage = experienceImages.find((img: any) => 
             img.metadata?.slug === 'lm-logo' || 
             img.filename?.toLowerCase().includes('logo')
           );
@@ -121,6 +108,7 @@ export default function Home() {
 
 
         <section className={styles.heroContent}>
+          <span className={styles.heroBrand}>{t('hero.brand')}</span>
           <h1 className={styles.heroTitle}>{t('hero.subtitle')}</h1>
           <p
             className={`${styles.heroCopy} ${

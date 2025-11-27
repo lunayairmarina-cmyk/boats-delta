@@ -130,54 +130,63 @@ export default function Navbar() {
                 </Link>
             </div>
 
-            <button
-                type="button"
-                className={`${styles.menuToggle} ${menuOpen ? styles.menuToggleActive : ""}`}
-                onClick={toggleMenu}
-                aria-expanded={menuOpen}
-                aria-label="Toggle navigation"
-            >
-                <span />
-                <span />
-                <span />
-            </button>
-
-            <div
-                className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""} ${scrolled || isBlogPage ? styles.mobileMenuScrolled : ""} ${isBlogPage ? styles.mobileMenuBlogPage : ""}`}
-                role="dialog"
-                aria-modal={menuOpen}
-                aria-label="Navigation menu"
-                onClick={toggleMenu}
-            >
-                <div className={styles.mobileMenuContent} onClick={(event) => event.stopPropagation()}>
-                    <nav>
-                        {navLinks.map((link) => {
-                            const [basePath, hashFragment] = link.href.split("#");
-                            const isSectionLink = Boolean(hashFragment);
-                            const targetHash = hashFragment ? `#${hashFragment}` : "";
-                            const isActive = isSectionLink
-                                ? pathname === basePath && currentHash === targetHash
-                                : pathname === link.href;
-                            return (
-                                <Link
-                                    key={`mobile-${link.href}`}
-                                    href={link.href}
-                                    className={`${styles.mobileMenuItem} ${isActive ? styles.mobileMenuItemActive : ""}`}
-                                    onClick={handleNavLinkSelect}
-                                >
-                                    {link.label}
-                                </Link>
-                            );
-                        })}
-                    </nav>
-                    <button onClick={toggleLanguage} className={styles.mobileLanguage}>
-                        {language === 'en' ? 'العربية' : 'English'}
+            {isBlogPage ? (
+                <Link href="/" className={styles.blogBackLink} aria-label="Back to home">
+                    <span aria-hidden="true">←</span>
+                    {language === 'ar' ? 'الصفحة الرئيسية' : 'Home'}
+                </Link>
+            ) : (
+                <>
+                    <button
+                        type="button"
+                        className={`${styles.menuToggle} ${menuOpen ? styles.menuToggleActive : ""}`}
+                        onClick={toggleMenu}
+                        aria-expanded={menuOpen}
+                        aria-label="Toggle navigation"
+                    >
+                        <span />
+                        <span />
+                        <span />
                     </button>
-                    <Link href="/contact" className={styles.mobileCta}>
-                        {t('nav.connect')}
-                    </Link>
-                </div>
-            </div>
+
+                    <div
+                        className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""} ${scrolled ? styles.mobileMenuScrolled : ""}`}
+                        role="dialog"
+                        aria-modal={menuOpen}
+                        aria-label="Navigation menu"
+                        onClick={toggleMenu}
+                    >
+                        <div className={styles.mobileMenuContent} onClick={(event) => event.stopPropagation()}>
+                            <nav>
+                                {navLinks.map((link) => {
+                                    const [basePath, hashFragment] = link.href.split("#");
+                                    const isSectionLink = Boolean(hashFragment);
+                                    const targetHash = hashFragment ? `#${hashFragment}` : "";
+                                    const isActive = isSectionLink
+                                        ? pathname === basePath && currentHash === targetHash
+                                        : pathname === link.href;
+                                    return (
+                                        <Link
+                                            key={`mobile-${link.href}`}
+                                            href={link.href}
+                                            className={`${styles.mobileMenuItem} ${isActive ? styles.mobileMenuItemActive : ""}`}
+                                            onClick={handleNavLinkSelect}
+                                        >
+                                            {link.label}
+                                        </Link>
+                                    );
+                                })}
+                            </nav>
+                            <button onClick={toggleLanguage} className={styles.mobileLanguage}>
+                                {language === 'en' ? 'العربية' : 'English'}
+                            </button>
+                            <Link href="/contact" className={styles.mobileCta}>
+                                {t('nav.connect')}
+                            </Link>
+                        </div>
+                    </div>
+                </>
+            )}
         </header>
     );
 }
