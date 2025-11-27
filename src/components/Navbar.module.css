@@ -1,95 +1,87 @@
+/* ============================================
+   DESKTOP NAVBAR (≥ 1100px)
+   ============================================ */
+
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 100;
-    display: flex;
+    display: none; /* Hidden by default, shown only on desktop */
     align-items: center;
     justify-content: space-between;
-    padding: 24px clamp(24px, 6vw, 96px);
+    padding: 28px clamp(32px, 5vw, 120px);
     background: transparent;
-    transition: background 0.3s ease, padding 0.3s ease, border-color 0.3s ease;
     border-bottom: 1px solid transparent;
+    will-change: background-color, backdrop-filter, box-shadow, padding;
+    transition: none; /* GSAP handles transitions */
+}
+
+/* Show navbar only on screens ≥ 1100px */
+@media (min-width: 1100px) {
+    .navbar {
+        display: flex;
+    }
 }
 
 .navbarScrolled {
-    background: rgba(1, 6, 18, 0.85);
-    backdrop-filter: blur(12px);
-    padding: 16px clamp(24px, 6vw, 96px);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+    background: rgba(1, 6, 18, 0.92);
+    backdrop-filter: blur(20px);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .navbarMenuOpen {
     background: #010612;
-    border-bottom-color: rgba(255, 255, 255, 0.2);
+    border-bottom-color: rgba(255, 255, 255, 0.15);
 }
 
 .navbarBlogPage {
     background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-bottom-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(20px);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
-.navbarBlogPage .menu {
-    background: rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+/* RTL Support */
+.navbar[data-dir="rtl"] {
+    direction: rtl;
 }
 
-.navbarBlogPage .menuItem {
-    color: rgba(15, 23, 42, 0.8);
-}
-
-.navbarBlogPage .menuItem:hover {
-    color: #0f172a;
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.navbarBlogPage .menuItemActive {
-    background: #0c4fad;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(12, 79, 173, 0.3);
-}
-
-.navbarBlogPage .menuItemActive:hover {
-    background: #0c4fad;
-    color: #fff;
-}
-
-.navbarBlogPage .connectBtn {
-    background: linear-gradient(135deg, #0c4fad 0%, #6c75ff 100%);
-    box-shadow: 0 10px 25px rgba(12, 79, 173, 0.35);
-}
-
-.navbarBlogPage .menuToggle {
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.navbarBlogPage .menuToggle span {
-    background: #0f172a;
-}
+/* ============================================
+   BRAND MARK / LOGO
+   ============================================ */
 
 .brandMark {
-    height: 80px;
-    width: 70px;
+    height: 88px;
+    width: 76px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px 4px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 8px 6px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
     background: #fff;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
     text-decoration: none;
-    transition: transform 0.2s ease, background 0.2s ease;
     overflow: hidden;
+    position: relative;
+    will-change: transform;
+    transition: none; /* GSAP handles transitions */
 }
 
-.brandMark:hover {
-    transform: translateY(-2px);
-    background: #fff;
+.brandMark::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(122, 61, 245, 0.1) 0%, rgba(76, 47, 255, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.brandMark:hover::before {
+    opacity: 1;
 }
 
 .logoImage {
@@ -98,73 +90,326 @@
     object-fit: contain;
     object-position: center;
     transform: scale(3);
+    position: relative;
+    z-index: 1;
 }
+
+.navbarBlogPage .brandMark {
+    border-color: rgba(15, 23, 42, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   NAVIGATION MENU
+   ============================================ */
 
 .menu {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 6px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 8px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    will-change: transform, opacity;
+}
+
+.navbarBlogPage .menu {
+    background: rgba(15, 23, 42, 0.06);
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .menuItem {
     position: relative;
-    padding: 10px 24px;
-    border-radius: 999px;
-    color: rgba(255, 255, 255, 0.7);
+    padding: 12px 28px;
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.75);
     font-size: 15px;
     font-weight: 500;
+    font-family: inherit;
     text-decoration: none;
-    transition: all 0.3s ease;
     border: none;
     background: transparent;
     cursor: pointer;
+    overflow: hidden;
+    will-change: transform, color, background-color;
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menuItemText {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menuItemUnderline {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    border-radius: 2px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
 }
 
 .menuItem:hover {
     color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+}
+
+.menuItem:hover .menuItemUnderline {
+    transform: translateX(-50%) scaleX(1);
+}
+
+.menuItem:hover .menuItemText {
+    transform: translateY(-1px);
 }
 
 .menuItemActive {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.95);
     color: #5f2eea;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.menuItemActive .menuItemUnderline {
+    display: none;
 }
 
 .menuItemActive:hover {
-    background: #fff;
+    background: rgba(255, 255, 255, 1);
     color: #5f2eea;
 }
 
-.connectBtn {
-    padding: 12px 28px;
-    border-radius: 999px;
-    background: linear-gradient(130deg, #7a3df5, #4c2fff);
-    color: #fff;
-    font-weight: 600;
-    font-size: 15px;
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    box-shadow: 0 10px 25px rgba(82, 50, 157, 0.35);
-    border: none;
+.menuItemActive:hover .menuItemText {
+    transform: none;
 }
 
-.connectBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 28px rgba(82, 50, 157, 0.45);
-    filter: brightness(1.05);
+.navbarBlogPage .menuItem {
+    color: rgba(15, 23, 42, 0.75);
 }
+
+.navbarBlogPage .menuItem:hover {
+    color: #0f172a;
+    background: rgba(15, 23, 42, 0.06);
+}
+
+.navbarBlogPage .menuItemActive {
+    background: #0c4fad;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(12, 79, 173, 0.35);
+}
+
+.navbarBlogPage .menuItemActive:hover {
+    background: #0c4fad;
+    color: #fff;
+}
+
+.navbarBlogPage .menuItem .menuItemUnderline {
+    background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.4), transparent);
+}
+
+/* ============================================
+   DESKTOP ACTIONS (Language + CTA)
+   ============================================ */
 
 .desktopActions {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 20px;
 }
+
+.languageButton {
+    position: relative;
+    padding: 12px 24px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden;
+    will-change: transform, background-color, border-color;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+}
+
+.languageButton::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(122, 61, 245, 0.2) 0%, rgba(76, 47, 255, 0.2) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.languageButton:hover::before {
+    opacity: 1;
+}
+
+.languageButton:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.languageButtonText {
+    position: relative;
+    z-index: 1;
+}
+
+.navbarBlogPage .languageButton {
+    background: rgba(15, 23, 42, 0.06);
+    border-color: rgba(15, 23, 42, 0.15);
+    color: rgba(15, 23, 42, 0.85);
+}
+
+.navbarBlogPage .languageButton:hover {
+    background: rgba(15, 23, 42, 0.1);
+    border-color: rgba(15, 23, 42, 0.25);
+    color: #0f172a;
+}
+
+.connectBtn {
+    position: relative;
+    padding: 14px 32px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #7a3df5 0%, #4c2fff 100%);
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    font-family: inherit;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(82, 50, 157, 0.35);
+    overflow: hidden;
+    will-change: transform, box-shadow;
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.connectBtn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.connectBtn:hover::before {
+    opacity: 1;
+}
+
+.connectBtnText {
+    position: relative;
+    z-index: 1;
+}
+
+.navbarBlogPage .connectBtn {
+    background: linear-gradient(135deg, #0c4fad 0%, #6c75ff 100%);
+    box-shadow: 0 10px 25px rgba(12, 79, 173, 0.35);
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS (Desktop Only)
+   ============================================ */
+
+/* 1280px - Standard Desktop */
+@media (min-width: 1100px) and (max-width: 1280px) {
+    .navbar {
+        padding: 24px clamp(28px, 4vw, 80px);
+    }
+
+    .brandMark {
+        height: 80px;
+        width: 68px;
+    }
+
+    .menuItem {
+        padding: 11px 24px;
+        font-size: 14.5px;
+    }
+
+    .languageButton {
+        padding: 11px 20px;
+        font-size: 14.5px;
+    }
+
+    .connectBtn {
+        padding: 12px 28px;
+        font-size: 14.5px;
+    }
+}
+
+/* 1440px - Large Desktop */
+@media (min-width: 1281px) and (max-width: 1440px) {
+    .navbar {
+        padding: 26px clamp(32px, 4.5vw, 100px);
+    }
+
+    .brandMark {
+        height: 84px;
+        width: 72px;
+    }
+
+    .menuItem {
+        padding: 12px 26px;
+    }
+}
+
+/* 1600px - Extra Large Desktop */
+@media (min-width: 1441px) and (max-width: 1600px) {
+    .navbar {
+        padding: 28px clamp(40px, 5vw, 120px);
+    }
+}
+
+/* 1920px+ - Ultra-wide and 4K */
+@media (min-width: 1921px) {
+    .navbar {
+        padding: 32px clamp(48px, 6vw, 160px);
+    }
+
+    .brandMark {
+        height: 96px;
+        width: 84px;
+    }
+
+    .menuItem {
+        padding: 14px 32px;
+        font-size: 16px;
+    }
+
+    .languageButton {
+        padding: 14px 28px;
+        font-size: 16px;
+    }
+
+    .connectBtn {
+        padding: 16px 36px;
+        font-size: 16px;
+    }
+}
+
+/* ============================================
+   MOBILE MENU TOGGLE (Hidden on Desktop)
+   ============================================ */
 
 .menuToggle {
     display: none;
@@ -179,6 +424,31 @@
     cursor: pointer;
     padding: 10px;
     transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.menuToggle span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: #fff;
+    border-radius: 999px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.menuToggleActive span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.menuToggleActive span:nth-child(2) {
+    opacity: 0;
+}
+
+.menuToggleActive span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+.menuToggle:hover {
+    background: rgba(255, 255, 255, 0.25);
 }
 
 .blogBackLink {
@@ -210,181 +480,38 @@
     background: rgba(15, 23, 42, 0.1);
 }
 
-.menuToggle span {
-    display: block;
-    height: 2px;
-    width: 100%;
-    background: #fff;
-    border-radius: 999px;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.menuToggleActive span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-}
-
-.menuToggleActive span:nth-child(2) {
-    opacity: 0;
-}
-
-.menuToggleActive span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
-}
-
-.menuToggle:hover {
-    background: rgba(255, 255, 255, 0.25);
-}
-
-.mobileMenu {
-    position: fixed;
-    inset: 0;
-    background: #010612;
-    backdrop-filter: none;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    z-index: 90;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.mobileMenuScrolled {
-    background: #010612;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.mobileMenuContent {
-    width: min(320px, 80%);
-    height: 100%;
-    background: rgba(6, 14, 30, 1);
-    padding: 80px 32px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-}
-
-.mobileMenuOpen {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.mobileMenuOpen .mobileMenuContent {
-    transform: translateX(0);
-}
-
-.mobileMenuContent nav {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.mobileMenuItem {
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none;
-    font-size: 18px;
-    padding: 12px;
-    border-radius: 12px;
-    transition: background 0.2s ease;
-}
-
-.mobileMenuItem:hover {
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.mobileMenuItemActive {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.mobileLanguage {
-    margin-top: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 999px;
-    padding: 10px 18px;
-    background: transparent;
-    color: #fff;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-.mobileCta {
-    margin-top: auto;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 999px;
-    background: linear-gradient(130deg, #7a3df5, #4c2fff);
-    color: #fff;
-    padding: 12px 24px;
-    text-decoration: none;
-    font-weight: 600;
-    box-shadow: 0 12px 28px rgba(82, 50, 157, 0.4);
-}
-
-.mobileMenuBlogPage {
-    background: #ffffff;
-    backdrop-filter: none;
-}
-
-.mobileMenuBlogPage .mobileMenuContent {
-    background: #ffffff;
-    border-left: 1px solid rgba(15, 23, 42, 0.08);
-    box-shadow: -12px 0 32px rgba(15, 23, 42, 0.12);
-}
-
-.mobileMenuBlogPage .mobileMenuItem {
-    color: rgba(15, 23, 42, 0.9);
-}
-
-.mobileMenuBlogPage .mobileMenuItem:hover {
+.navbarBlogPage .menuToggle {
+    border: 1px solid rgba(0, 0, 0, 0.2);
     background: rgba(0, 0, 0, 0.05);
 }
 
-.mobileMenuBlogPage .mobileMenuItemActive {
-    background: rgba(12, 79, 173, 0.1);
-    color: #0c4fad;
+.navbarBlogPage .menuToggle span {
+    background: #0f172a;
 }
 
-.mobileMenuBlogPage .mobileLanguage {
-    border-color: rgba(0, 0, 0, 0.2);
-    color: #0f172a;
-}
+/* ============================================
+   MOBILE MENU (Below 1100px)
+   ============================================ */
 
-.mobileMenuBlogPage .mobileCta {
-    background: linear-gradient(135deg, #0c4fad 0%, #6c75ff 100%);
-    box-shadow: 0 12px 28px rgba(12, 79, 173, 0.4);
-}
-
-/* 1336×768 and below (laptop/tablet landscape) */
-@media (max-width: 1336px) {
+/* Hide desktop navbar and show mobile menu toggle below 1100px */
+@media (max-width: 1099px) {
     .navbar {
-        padding: 20px clamp(20px, 4vw, 64px);
-    }
-
-    .navbarScrolled {
-        padding: 14px clamp(20px, 4vw, 64px);
-    }
-
-    .menuItem {
-        padding: 10px 16px;
-        font-size: 14px;
-    }
-
-    .connectBtn {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-}
-
-/* Tablet and below */
-@media (max-width: 1024px) {
-    .navbar {
+        display: flex;
         padding: 16px 24px;
+        background: transparent;
     }
 
     .navbarScrolled {
+        background: #010612;
+        backdrop-filter: none;
+        border-bottom-color: rgba(255, 255, 255, 0.2);
         padding: 12px 24px;
+    }
+
+    .navbarBlogPage.navbarScrolled {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom-color: rgba(0, 0, 0, 0.1);
     }
 
     .menu {
@@ -405,39 +532,313 @@
         display: none;
     }
 
-    .navbarScrolled {
-        background: #010612;
-        backdrop-filter: none;
-        border-bottom-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .navbarBlogPage.navbarScrolled {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(12px);
-        border-bottom-color: rgba(0, 0, 0, 0.1);
-    }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-    .navbar {
-        padding: 12px 20px;
-    }
-
     .brandMark {
         height: 64px;
         width: 56px;
     }
-
-    .menuToggle {
-        padding: 10px;
-    }
 }
 
-/* Small mobile */
-@media (max-width: 480px) {
+.mobileMenu {
+    position: fixed;
+    inset: 0;
+    background: rgba(1, 6, 18, 0.85);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 90;
+    display: flex;
+    justify-content: flex-end;
+    will-change: opacity;
+}
+
+.mobileMenu[data-dir="rtl"] {
+    justify-content: flex-start;
+}
+
+.mobileMenuScrolled {
+    background: rgba(1, 6, 18, 0.92);
+}
+
+.mobileMenuContent {
+    width: min(360px, 85%);
+    max-width: 360px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(6, 14, 30, 0.98) 0%, rgba(4, 10, 22, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4);
+    will-change: transform, opacity;
+}
+
+.mobileMenu[data-dir="rtl"] .mobileMenuContent {
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.4);
+}
+
+.mobileMenuOpen {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mobileMenuClose {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    padding: 0;
+    will-change: transform, opacity;
+}
+
+.mobileMenu[data-dir="rtl"] .mobileMenuClose {
+    right: auto;
+    left: 20px;
+}
+
+.mobileMenuClose:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: rotate(90deg);
+}
+
+.mobileMenuClose:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+.mobileMenuClose svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.mobileMenuNav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 80px 24px 24px;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mobileMenuItem {
+    position: relative;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    padding: 16px 20px;
+    border-radius: 14px;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, background-color;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobileMenuItem::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 0;
+    background: linear-gradient(180deg, #7a3df5 0%, #4c2fff 100%);
+    border-radius: 0 3px 3px 0;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobileMenu[data-dir="rtl"] .mobileMenuItem::before {
+    left: auto;
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.mobileMenuItem:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(4px);
+}
+
+.mobileMenu[data-dir="rtl"] .mobileMenuItem:hover {
+    transform: translateX(-4px);
+}
+
+.mobileMenuItem:active {
+    transform: translateX(2px) scale(0.98);
+}
+
+.mobileMenu[data-dir="rtl"] .mobileMenuItem:active {
+    transform: translateX(-2px) scale(0.98);
+}
+
+.mobileMenuItemActive {
+    background: rgba(122, 61, 245, 0.15);
+    color: #fff;
+}
+
+.mobileMenuItemActive::before {
+    transform: translateY(-50%) scaleY(1);
+    height: 60%;
+}
+
+.mobileMenuItemText {
+    position: relative;
+    z-index: 1;
+}
+
+.mobileLanguage {
+    margin: 8px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    min-height: 48px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, background-color;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobileLanguage:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.mobileLanguage:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.mobileCta {
+    margin: 0 24px 24px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #7a3df5 0%, #4c2fff 100%);
+    color: #fff;
+    padding: 16px 24px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    min-height: 52px;
+    box-shadow: 0 8px 24px rgba(122, 61, 245, 0.4), 0 0 0 0 rgba(122, 61, 245, 0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, box-shadow;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.mobileCta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobileCta:hover::before {
+    opacity: 1;
+}
+
+.mobileCta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(122, 61, 245, 0.5), 0 0 0 4px rgba(122, 61, 245, 0.1);
+}
+
+.mobileCta:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 16px rgba(122, 61, 245, 0.4);
+}
+
+.mobileMenuBlogPage {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+}
+
+.mobileMenuBlogPage .mobileMenuContent {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+    box-shadow: -8px 0 32px rgba(15, 23, 42, 0.15);
+}
+
+.mobileMenu[data-dir="rtl"].mobileMenuBlogPage .mobileMenuContent {
+    box-shadow: 8px 0 32px rgba(15, 23, 42, 0.15);
+}
+
+.mobileMenuBlogPage .mobileMenuClose {
+    border-color: rgba(15, 23, 42, 0.15);
+    background: rgba(15, 23, 42, 0.05);
+    color: rgba(15, 23, 42, 0.8);
+}
+
+.mobileMenuBlogPage .mobileMenuClose:hover {
+    background: rgba(15, 23, 42, 0.1);
+    border-color: rgba(15, 23, 42, 0.2);
+}
+
+.mobileMenuBlogPage .mobileMenuItem {
+    color: rgba(15, 23, 42, 0.85);
+}
+
+.mobileMenuBlogPage .mobileMenuItem::before {
+    background: linear-gradient(180deg, #0c4fad 0%, #6c75ff 100%);
+}
+
+.mobileMenuBlogPage .mobileMenuItem:hover {
+    background: rgba(15, 23, 42, 0.06);
+}
+
+.mobileMenuBlogPage .mobileMenuItemActive {
+    background: rgba(12, 79, 173, 0.12);
+    color: #0c4fad;
+}
+
+.mobileMenuBlogPage .mobileLanguage {
+    border-color: rgba(15, 23, 42, 0.2);
+    background: rgba(15, 23, 42, 0.03);
+    color: rgba(15, 23, 42, 0.85);
+}
+
+.mobileMenuBlogPage .mobileLanguage:hover {
+    background: rgba(15, 23, 42, 0.08);
+    border-color: rgba(15, 23, 42, 0.3);
+}
+
+.mobileMenuBlogPage .mobileCta {
+    background: linear-gradient(135deg, #0c4fad 0%, #6c75ff 100%);
+    box-shadow: 0 8px 24px rgba(12, 79, 173, 0.35), 0 0 0 0 rgba(12, 79, 173, 0.4);
+}
+
+.mobileMenuBlogPage .mobileCta:hover {
+    box-shadow: 0 12px 32px rgba(12, 79, 173, 0.45), 0 0 0 4px rgba(12, 79, 173, 0.1);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
     .navbar {
-        padding: 10px 16px;
+        padding: 12px 20px;
     }
 
     .brandMark {
@@ -445,13 +846,86 @@
         width: 48px;
     }
 
+    .menuToggle {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 10px 16px;
+    }
+
+    .brandMark {
+        height: 52px;
+        width: 44px;
+    }
+
+    .mobileMenuContent {
+        width: min(100%, 320px);
+    }
+
+    .mobileMenuClose {
+        top: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .mobileMenu[data-dir="rtl"] .mobileMenuClose {
+        left: 16px;
+    }
+
+    .mobileMenuNav {
+        padding: 72px 20px 20px;
+        gap: 6px;
+    }
+
     .mobileMenuItem {
+        min-height: 48px;
+        padding: 14px 18px;
+        font-size: 16px;
+    }
+
+    .mobileLanguage {
+        margin: 8px 20px;
+        padding: 12px 18px;
         min-height: 44px;
-        padding: 14px 16px;
+        font-size: 14px;
     }
 
     .mobileCta {
-        min-height: 44px;
-        padding: 14px 24px;
+        margin: 0 20px 20px;
+        min-height: 48px;
+        padding: 14px 20px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mobileMenuContent {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .mobileMenuNav {
+        padding: 68px 16px 16px;
+    }
+
+    .mobileMenuItem {
+        padding: 12px 16px;
+        font-size: 15px;
+    }
+
+    .mobileLanguage {
+        margin: 6px 16px;
+        padding: 12px 16px;
+    }
+
+    .mobileCta {
+        margin: 0 16px 16px;
+        padding: 12px 18px;
     }
 }

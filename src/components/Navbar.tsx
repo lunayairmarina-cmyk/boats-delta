@@ -6,13 +6,43 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./Navbar.module.css";
 import { useLanguage } from "@/context/LanguageContext";
+import { useMobileMenuAnimations } from "@/hooks/useMobileMenuAnimations";
+import { useDesktopNavbarAnimations } from "@/hooks/useDesktopNavbarAnimations";
 
 export default function Navbar() {
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [currentHash, setCurrentHash] = useState(() => (typeof window !== "undefined" ? window.location.hash : ""));
-    const { t, language, setLanguage } = useLanguage();
+    const { t, language, setLanguage, dir } = useLanguage();
+    
+    // Check if we're on a blog page (must be defined before hook calls)
+    const isBlogPage = pathname.startsWith('/blog');
+    
+    const {
+        overlayRef,
+        drawerRef,
+        closeButtonRef,
+        menuItemsRef,
+        languageButtonRef: mobileLanguageButtonRef,
+        ctaButtonRef: mobileCtaButtonRef,
+    } = useMobileMenuAnimations({
+        menuOpen,
+        isRTL: dir === "rtl",
+    });
+
+    const {
+        navbarRef,
+        logoRef,
+        navLinksRef,
+        languageButtonRef: desktopLanguageButtonRef,
+        ctaButtonRef: desktopCtaButtonRef,
+        menuContainerRef,
+    } = useDesktopNavbarAnimations({
+        scrolled,
+        isRTL: dir === "rtl",
+        isBlogPage,
+    });
 
     const navLinks = [
         { label: t('nav.home'), href: "/" },
@@ -74,9 +104,6 @@ export default function Navbar() {
             documentElement.style.overflow = "";
         };
     }, [menuOpen]);
-
-    // Check if we're on a blog page (blog listing or blog detail)
-    const isBlogPage = pathname.startsWith('/blog');
     
     const headerClassNames = [
         styles.navbar,
@@ -88,8 +115,8 @@ export default function Navbar() {
         .join(" ");
 
     return (
-        <header className={headerClassNames}>
-            <Link href="/" className={styles.brandMark}>
+        <header ref={navbarRef} className={headerClassNames} data-dir={dir}>
+            <Link ref={logoRef} href="/" className={styles.brandMark}>
                 <Image
                     src="/LM Mark.svg"
                     alt="Lunier Marina Monogram"
@@ -100,8 +127,8 @@ export default function Navbar() {
                 />
             </Link>
 
-            <nav className={styles.menu}>
-                {navLinks.map((link) => {
+            <nav ref={menuContainerRef} className={styles.menu}>
+                {navLinks.map((link, index) => {
                     const [basePath, hashFragment] = link.href.split("#");
                     const isSectionLink = Boolean(hashFragment);
                     const targetHash = hashFragment ? `#${hashFragment}` : "";
@@ -111,22 +138,33 @@ export default function Navbar() {
                     return (
                         <Link
                             key={link.href}
+                            ref={(el) => {
+                                if (el) navLinksRef.current[index] = el;
+                            }}
                             href={link.href}
                             className={`${styles.menuItem} ${isActive ? styles.menuItemActive : ""}`}
                             onClick={handleNavLinkSelect}
                         >
-                            {link.label}
+                            <span className={styles.menuItemText}>{link.label}</span>
+                            <span className={styles.menuItemUnderline} aria-hidden="true" />
                         </Link>
                     );
                 })}
             </nav>
 
             <div className={styles.desktopActions}>
-                <button onClick={toggleLanguage} className={styles.menuItem} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 'inherit', fontFamily: 'inherit' }}>
-                    {language === 'en' ? 'العربية' : 'English'}
+                <button 
+                    ref={desktopLanguageButtonRef}
+                    onClick={toggleLanguage} 
+                    className={styles.languageButton}
+                    aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
+                >
+                    <span className={styles.languageButtonText}>
+                        {language === 'en' ? 'العربية' : 'English'}
+                    </span>
                 </button>
-                <Link href="/contact" className={styles.connectBtn}>
-                    {t('nav.connect')}
+                <Link ref={desktopCtaButtonRef} href="/contact" className={styles.connectBtn}>
+                    <span className={styles.connectBtnText}>{t('nav.connect')}</span>
                 </Link>
             </div>
 
@@ -150,15 +188,33 @@ export default function Navbar() {
                     </button>
 
                     <div
-                        className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""} ${scrolled ? styles.mobileMenuScrolled : ""}`}
+                        ref={overlayRef}
+                        className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""} ${scrolled ? styles.mobileMenuScrolled : ""} ${isBlogPage ? styles.mobileMenuBlogPage : ""}`}
                         role="dialog"
                         aria-modal={menuOpen}
                         aria-label="Navigation menu"
                         onClick={toggleMenu}
+                        data-dir={dir}
                     >
-                        <div className={styles.mobileMenuContent} onClick={(event) => event.stopPropagation()}>
-                            <nav>
-                                {navLinks.map((link) => {
+                        <div 
+                            ref={drawerRef}
+                            className={styles.mobileMenuContent} 
+                            onClick={(event) => event.stopPropagation()}
+                            data-dir={dir}
+                        >
+                            <button
+                                ref={closeButtonRef}
+                                type="button"
+                                className={styles.mobileMenuClose}
+                                onClick={toggleMenu}
+                                aria-label={t('nav.close') || "Close menu"}
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            </button>
+                            <nav className={styles.mobileMenuNav}>
+                                {navLinks.map((link, index) => {
                                     const [basePath, hashFragment] = link.href.split("#");
                                     const isSectionLink = Boolean(hashFragment);
                                     const targetHash = hashFragment ? `#${hashFragment}` : "";
@@ -168,19 +224,31 @@ export default function Navbar() {
                                     return (
                                         <Link
                                             key={`mobile-${link.href}`}
+                                            ref={(el) => {
+                                                if (el) menuItemsRef.current[index] = el;
+                                            }}
                                             href={link.href}
                                             className={`${styles.mobileMenuItem} ${isActive ? styles.mobileMenuItemActive : ""}`}
                                             onClick={handleNavLinkSelect}
                                         >
-                                            {link.label}
+                                            <span className={styles.mobileMenuItemText}>{link.label}</span>
                                         </Link>
                                     );
                                 })}
                             </nav>
-                            <button onClick={toggleLanguage} className={styles.mobileLanguage}>
+                            <button 
+                                ref={mobileLanguageButtonRef}
+                                onClick={toggleLanguage} 
+                                className={styles.mobileLanguage}
+                            >
                                 {language === 'en' ? 'العربية' : 'English'}
                             </button>
-                            <Link href="/contact" className={styles.mobileCta}>
+                            <Link 
+                                ref={mobileCtaButtonRef}
+                                href="/contact" 
+                                className={styles.mobileCta}
+                                onClick={handleNavLinkSelect}
+                            >
                                 {t('nav.connect')}
                             </Link>
                         </div>

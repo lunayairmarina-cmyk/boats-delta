@@ -1,14 +1,20 @@
 .footer {
   background: radial-gradient(
       circle at 20% 20%,
-      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0.85),
       transparent 55%
     ),
     linear-gradient(180deg, #f5eefe 0%, #efe6fa 55%, #faf7ff 100%);
   color: #2e1d45;
-  padding: clamp(64px, 10vw, 120px) clamp(24px, 8vw, 140px);
+  padding: clamp(80px, 12vw, 140px) clamp(24px, 8vw, 140px);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  margin-bottom: 0;
+  min-height: fit-content;
+}
+
+.footer[data-dir="rtl"] {
+  direction: rtl;
 }
 
 .inner {
@@ -17,28 +23,38 @@
   text-align: center;
   position: relative;
   padding-bottom: clamp(110px, 18vw, 180px);
+  overflow: visible;
+  min-height: fit-content;
 }
 
 .copyBlock {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: clamp(24px, 4vw, 32px);
 }
 
 .stars {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   color: #fda94c;
-  font-size: 20px;
-  letter-spacing: 4px;
+  font-size: clamp(18px, 2.5vw, 22px);
+  letter-spacing: 6px;
+  will-change: transform, opacity;
+}
+
+.stars span {
+  display: inline-block;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 2px 4px rgba(253, 169, 76, 0.3));
 }
 
 .logoContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  margin: clamp(24px, 4vw, 32px) 0;
+  will-change: transform, opacity;
 }
 
 .logoImage {
@@ -46,57 +62,68 @@
   height: clamp(60px, 8vw, 100px);
   object-fit: contain;
   scale: 3;
+  filter: drop-shadow(0 4px 12px rgba(46, 29, 69, 0.15));
+  transition: filter 0.3s ease;
 }
 
 .scriptTitle {
   font-family: "Great Vibes", "Playfair Display", serif;
   font-size: clamp(48px, 7vw, 72px);
   color: #3a2961;
+  margin: 0;
+  will-change: transform, opacity;
+  text-shadow: 0 2px 8px rgba(58, 41, 97, 0.1);
 }
 
 .subtitle {
   font-size: clamp(17px, 2vw, 20px);
-  line-height: 1.7;
-  max-width: 640px;
+  line-height: 1.75;
+  max-width: 680px;
   color: rgba(44, 32, 73, 0.9);
+  margin: 0;
+  will-change: transform, opacity;
 }
 
 .contactDetails {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: clamp(16px, 2.5vw, 20px);
   align-items: center;
   width: 100%;
-  margin-top: 8px;
+  margin-top: clamp(12px, 2vw, 16px);
   font-size: 0.95rem;
 }
 
 .addressLine {
   color: rgba(44, 32, 73, 0.85);
-  max-width: 520px;
-  line-height: 1.6;
+  max-width: 560px;
+  line-height: 1.7;
+  margin: 0;
+  will-change: transform, opacity;
+  text-align: center;
 }
 
 .contactAction {
-  width: min(420px, 100%);
-  border-radius: 22px;
-  padding: 14px 18px;
+  width: min(440px, 100%);
+  border-radius: 20px;
+  padding: clamp(16px, 2vw, 20px) clamp(18px, 2.5vw, 24px);
   display: flex;
-  gap: 14px;
+  gap: clamp(14px, 2vw, 18px);
   align-items: center;
   text-decoration: none;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(240, 233, 255, 0.92));
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 233, 255, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.8);
   color: #241537;
-  box-shadow: 0 18px 34px rgba(75, 59, 115, 0.16);
+  box-shadow: 0 12px 32px rgba(75, 59, 115, 0.12), 0 0 0 0 rgba(122, 62, 255, 0);
   position: relative;
   overflow: hidden;
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    border 0.25s ease,
-    background 0.25s ease;
-  will-change: transform;
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border 0.3s ease,
+    background 0.3s ease;
+  will-change: transform, box-shadow;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .contactAction::after {
@@ -112,9 +139,13 @@
 
 .contactAction:hover,
 .contactAction:focus-visible {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 0 24px 48px rgba(75, 59, 115, 0.23);
-  border-color: rgba(122, 62, 255, 0.35);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 48px rgba(75, 59, 115, 0.2), 0 0 0 4px rgba(122, 62, 255, 0.08);
+  border-color: rgba(122, 62, 255, 0.4);
+}
+
+.contactAction:active {
+  transform: translateY(-2px) scale(1);
 }
 
 .contactAction:hover::after,
@@ -128,15 +159,24 @@
 }
 
 .contactActionIcon {
-  width: 46px;
-  height: 46px;
+  width: clamp(44px, 5vw, 50px);
+  height: clamp(44px, 5vw, 50px);
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   flex-shrink: 0;
-  box-shadow: 0 10px 20px rgba(90, 58, 173, 0.25);
+  box-shadow: 0 8px 20px rgba(90, 58, 173, 0.25);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.contactAction:hover .contactActionIcon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 24px rgba(90, 58, 173, 0.35);
 }
 
 .contactActionIcon svg {
@@ -147,8 +187,14 @@
 .contactActionCopy {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.footer[data-dir="rtl"] .contactActionCopy {
+  text-align: right;
 }
 
 .contactActionLabel {
@@ -186,52 +232,69 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
-  margin: 24px 0;
+  gap: clamp(14px, 2vw, 18px);
+  margin: clamp(28px, 4vw, 36px) 0;
+  will-change: transform, opacity;
 }
 
 .socialCard {
-  width: 68px;
-  height: 68px;
-  border-radius: 20px;
+  width: clamp(60px, 6vw, 72px);
+  height: clamp(60px, 6vw, 72px);
+  min-width: 56px;
+  min-height: 56px;
+  border-radius: 18px;
   background: #fff;
-  box-shadow: 0 14px 32px rgba(86, 64, 134, 0.18);
+  box-shadow: 0 8px 24px rgba(86, 64, 134, 0.15), 0 0 0 0 rgba(95, 46, 234, 0);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, background 0.3s ease;
   position: relative;
+  will-change: transform, box-shadow;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .socialCard::after {
   content: "";
   position: absolute;
-  inset: 8px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.75);
+  inset: 6px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
   z-index: 0;
+  transition: opacity 0.3s ease;
 }
 
 .socialCard:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 35px rgba(86, 64, 134, 0.25);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(244, 239, 255, 0.95));
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 16px 40px rgba(86, 64, 134, 0.25), 0 0 0 4px rgba(95, 46, 234, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(244, 239, 255, 0.98));
+}
+
+.socialCard:hover::after {
+  opacity: 0.6;
+}
+
+.socialCard:active {
+  transform: translateY(-4px) scale(1.02);
 }
 
 .socialIcon {
-  width: 32px;
-  height: 32px;
+  width: clamp(28px, 3.5vw, 32px);
+  height: clamp(28px, 3.5vw, 32px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #5f2eea;
   position: relative;
   z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .socialIcon svg {
   width: 100%;
   height: 100%;
+  transition: filter 0.3s ease;
 }
 
 .socialCard[data-brand="facebook"] .socialIcon {
@@ -272,31 +335,62 @@
 .ctaBtn {
   border: none;
   border-radius: 999px;
-  padding: 12px clamp(28px, 6vw, 64px);
-  font-size: 16px;
+  padding: clamp(14px, 2vw, 16px) clamp(32px, 6vw, 72px);
+  font-size: clamp(15px, 1.8vw, 17px);
   letter-spacing: 1.2px;
   text-transform: uppercase;
-  background: linear-gradient(90deg, #0047ad, #3f7cff);
+  background: linear-gradient(135deg, #0047ad 0%, #3f7cff 100%);
   color: #fff;
-  box-shadow: 0 18px 36px rgba(63, 124, 255, 0.35);
+  box-shadow: 0 12px 32px rgba(63, 124, 255, 0.3), 0 0 0 0 rgba(63, 124, 255, 0);
   display: inline-flex;
   align-items: center;
   gap: 12px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
+  min-height: 52px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, background 0.3s ease;
+  will-change: transform, box-shadow;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaBtn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ctaBtn:hover::before {
+  opacity: 1;
+}
+
+.ctaBtn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 16px 40px rgba(63, 124, 255, 0.4), 0 0 0 4px rgba(63, 124, 255, 0.1);
+  background: linear-gradient(135deg, #0052c4 0%, #4a8aff 100%);
+}
+
+.ctaBtn:active {
+  transform: translateY(-1px) scale(1);
+  box-shadow: 0 8px 24px rgba(63, 124, 255, 0.3);
 }
 
 .bottomBar {
-  margin-top: 48px;
+  margin-top: clamp(48px, 6vw, 64px);
   border-top: 1px solid rgba(46, 29, 69, 0.12);
-  padding-top: 24px;
+  padding-top: clamp(24px, 3vw, 32px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: clamp(10px, 1.5vw, 12px);
   align-items: center;
   color: rgba(46, 29, 69, 0.85);
-  font-size: 14px;
+  font-size: clamp(13px, 1.5vw, 15px);
+  will-change: transform, opacity;
 }
 
 .termsLink {
@@ -304,10 +398,35 @@
   font-weight: 600;
   text-decoration: none;
   letter-spacing: 0.5px;
+  position: relative;
+  transition: color 0.3s ease;
+  padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.termsLink::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3f7cff, #6c9fff);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer[data-dir="rtl"] .termsLink::after {
+  transform-origin: right;
 }
 
 .termsLink:hover {
-  text-decoration: underline;
+  color: #2d5fcc;
+}
+
+.termsLink:hover::after {
+  transform: scaleX(1);
 }
 
 .rightsText {
@@ -327,11 +446,35 @@
   color: #c99c1a;
   text-decoration: none;
   font-weight: 600;
+  position: relative;
+  transition: color 0.3s ease;
+  padding: 2px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.designerLink::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #c99c1a, #dcb650);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer[data-dir="rtl"] .designerLink::after {
+  transform-origin: right;
 }
 
 .designerLink:hover {
-  text-decoration: none;
   color: #dcb650;
+}
+
+.designerLink:hover::after {
+  transform: scaleX(1);
 }
 
 .ctaBtn span:last-child {
@@ -382,96 +525,171 @@
 /* Tablet */
 @media (max-width: 1024px) {
   .footer {
-    padding: 64px clamp(24px, 4vw, 80px);
+    padding: clamp(72px, 10vw, 100px) clamp(24px, 5vw, 80px);
+  }
+
+  .inner {
+    padding-bottom: clamp(100px, 15vw, 160px);
+  }
+
+  .copyBlock {
+    gap: clamp(24px, 3vw, 30px);
   }
 
   .socialCard {
-    width: 60px;
-    height: 60px;
+    width: clamp(60px, 6.5vw, 68px);
+    height: clamp(60px, 6.5vw, 68px);
   }
 
   .socialIcon {
-    width: 28px;
-    height: 28px;
+    width: clamp(28px, 3vw, 30px);
+    height: clamp(28px, 3vw, 30px);
+  }
+
+  .contactAction {
+    width: min(400px, 100%);
   }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
   .footer {
-    padding: 56px 24px;
+    padding: clamp(64px, 8vw, 80px) clamp(20px, 4vw, 32px);
   }
 
   .inner {
-    padding-bottom: 120px;
+    padding-bottom: clamp(100px, 15vw, 140px);
+  }
+
+  .copyBlock {
+    gap: clamp(20px, 3vw, 28px);
   }
 
   .socialCard {
-    width: 56px;
-    height: 56px;
-    min-width: 44px;
-    min-height: 44px;
+    width: clamp(56px, 7vw, 64px);
+    height: clamp(56px, 7vw, 64px);
+    min-width: 52px;
+    min-height: 52px;
+  }
+
+  .socialIcon {
+    width: clamp(26px, 3vw, 30px);
+    height: clamp(26px, 3vw, 30px);
   }
 
   .ctaBtn {
-    min-height: 44px;
-    padding: 12px 32px;
+    min-height: 48px;
+    padding: 14px clamp(28px, 5vw, 40px);
+    font-size: 15px;
   }
 
   .bottomBar {
-    margin-top: 36px;
-    font-size: 13px;
+    margin-top: clamp(32px, 4vw, 48px);
+    font-size: clamp(12px, 1.5vw, 14px);
+    gap: clamp(8px, 1vw, 10px);
   }
 
   .contactDetails {
     align-items: stretch;
+    gap: clamp(14px, 2vw, 18px);
   }
 
   .contactAction {
     width: 100%;
+    padding: clamp(14px, 2vw, 18px) clamp(16px, 2.5vw, 20px);
+  }
+
+  .contactActionIcon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 
 /* Small mobile */
 @media (max-width: 480px) {
   .footer {
-    padding: 48px 18px;
+    padding: clamp(56px, 7vw, 72px) clamp(18px, 3vw, 24px);
   }
 
   .inner {
-    padding-bottom: 140px;
+    padding-bottom: clamp(120px, 18vw, 160px);
   }
 
-  .linkList {
-    position: static;
-    text-align: center;
-    margin-top: 24px;
+  .copyBlock {
+    gap: clamp(18px, 2.5vw, 24px);
+  }
+
+  .stars {
+    gap: 6px;
+    letter-spacing: 4px;
+  }
+
+  .logoContainer {
+    margin: clamp(20px, 3vw, 28px) 0;
+  }
+
+  .socialRow {
+    gap: 12px;
+    margin: clamp(24px, 3vw, 32px) 0;
   }
 
   .socialCard {
     width: 52px;
     height: 52px;
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .socialIcon {
+    width: 26px;
+    height: 26px;
   }
 
   .ctaBtn {
     width: 100%;
     max-width: 100%;
+    padding: 14px 28px;
+    font-size: 14px;
   }
 
   .bottomBar {
-    gap: 6px;
+    gap: clamp(6px, 1vw, 8px);
     text-align: center;
+    padding-top: clamp(20px, 2.5vw, 28px);
   }
 
   .contactDetails {
     align-items: center;
+    gap: 14px;
+  }
+
+  .contactAction {
+    padding: 14px 16px;
+  }
+
+  .addressLine {
+    font-size: 0.9rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .contactAction {
-    transition: none;
-    transform: none;
+  .footer,
+  .stars span,
+  .logoContainer,
+  .scriptTitle,
+  .subtitle,
+  .addressLine,
+  .contactAction,
+  .socialCard,
+  .socialIcon,
+  .ctaBtn,
+  .bottomBar,
+  .termsLink,
+  .designerLink {
+    animation: none !important;
+    transition: none !important;
   }
 
   .contactAction::after {
@@ -482,6 +700,19 @@
   .contactAction:focus-visible {
     transform: none;
     box-shadow: 0 18px 34px rgba(75, 59, 115, 0.16);
+  }
+
+  .socialCard:hover {
+    transform: none;
+  }
+
+  .ctaBtn:hover {
+    transform: none;
+  }
+
+  .termsLink::after,
+  .designerLink::after {
+    display: none;
   }
 }
 

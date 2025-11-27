@@ -9,6 +9,7 @@ import {
   getPhoneHref,
   handlePhoneIntent,
 } from "@/lib/contactInfo";
+import { useFooterAnimations } from "@/hooks/useFooterAnimations";
 
 const SOCIAL_LINKS = [
   {
@@ -130,7 +131,7 @@ const MailIcon = () => (
 );
 
 export default function Footer() {
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
   const currentYear = new Date().getFullYear();
   const rightsCopy = t('footer.rights').replace('{{year}}', currentYear.toString());
   const rawPhone = t('footer.phone');
@@ -143,17 +144,31 @@ export default function Footer() {
   const phoneHref = getPhoneHref();
   const mailHref = getMailHref();
 
+  const {
+    footerRef,
+    starsRef,
+    titleRef,
+    logoRef,
+    subtitleRef,
+    addressRef,
+    contactActionsRef,
+    socialCardsRef,
+    ctaBtnRef,
+    bottomBarRef,
+    bottomLinksRef,
+  } = useFooterAnimations({ isRTL: dir === "rtl" });
+
   return (
-    <footer className={styles.footer}>
+    <footer ref={footerRef} className={styles.footer} data-dir={dir}>
       <div className={styles.inner}>
         <div className={styles.copyBlock}>
-          <div className={styles.stars} aria-hidden="true">
+          <div ref={starsRef} className={styles.stars} aria-hidden="true">
             {Array.from({ length: 5 }).map((_, idx) => (
               <span key={idx}>★</span>
             ))}
           </div>
-          <p className={styles.scriptTitle}>{t('footer.readyTitle')}</p>
-          <div className={styles.logoContainer}>
+          <p ref={titleRef} className={styles.scriptTitle}>{t('footer.readyTitle')}</p>
+          <div ref={logoRef} className={styles.logoContainer}>
             <Image
               src="/LM Logo.svg"
               alt="Lunier Marina Logo"
@@ -162,12 +177,15 @@ export default function Footer() {
               className={styles.logoImage}
             />
           </div>
-          <p className={styles.subtitle}>
+          <p ref={subtitleRef} className={styles.subtitle}>
             {t('footer.slogan')}
           </p>
           <div className={styles.contactDetails}>
-            <p className={styles.addressLine}>{t('footer.address')}</p>
+            <p ref={addressRef} className={styles.addressLine}>{t('footer.address')}</p>
             <a
+              ref={(el) => {
+                if (el) contactActionsRef.current[0] = el;
+              }}
               href={phoneHref}
               onClick={(event) => handlePhoneIntent(event)}
               className={styles.contactAction}
@@ -188,6 +206,9 @@ export default function Footer() {
               </span>
             </a>
             <a
+              ref={(el) => {
+                if (el) contactActionsRef.current[1] = el;
+              }}
               href={mailHref}
               className={styles.contactAction}
               data-variant="email"
@@ -206,9 +227,12 @@ export default function Footer() {
             </a>
           </div>
           <div className={styles.socialRow}>
-            {SOCIAL_LINKS.map((social) => (
+            {SOCIAL_LINKS.map((social, index) => (
               <Link
                 key={social.name}
+                ref={(el) => {
+                  if (el) socialCardsRef.current[index] = el;
+                }}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -221,19 +245,40 @@ export default function Footer() {
               </Link>
             ))}
           </div>
-          <Link href="/contact" className={styles.ctaBtn}>
+          <Link ref={ctaBtnRef} href="/contact" className={styles.ctaBtn}>
             <span>{t('nav.connect')}</span>
             <span aria-hidden="true">➝</span>
           </Link>
         </div>
-        <div className={styles.bottomBar}>
-          <Link href="/terms" className={styles.termsLink}>
+        <div ref={bottomBarRef} className={styles.bottomBar}>
+          <Link 
+            ref={(el) => {
+              if (el) bottomLinksRef.current[0] = el;
+            }}
+            href="/terms" 
+            className={styles.termsLink}
+          >
             {t('footer.terms')}
           </Link>
-          <p className={styles.rightsText}>{rightsCopy}</p>
-          <p className={styles.designerText}>
+          <p 
+            ref={(el) => {
+              if (el) bottomLinksRef.current[1] = el;
+            }}
+            className={styles.rightsText}
+          >
+            {rightsCopy}
+          </p>
+          <p 
+            ref={(el) => {
+              if (el) bottomLinksRef.current[2] = el;
+            }}
+            className={styles.designerText}
+          >
             <span className={styles.designerLabel}>{t('footer.designerBy')}</span>{' '}
             <Link
+              ref={(el) => {
+                if (el) bottomLinksRef.current[3] = el;
+              }}
               href={RWAD_LINK}
               target="_blank"
               rel="noopener noreferrer"

@@ -7,7 +7,8 @@
         "blog": "Blog",
         "reviews": "Reviews",
         "faq": "FAQ",
-        "connect": "Connect us"
+        "connect": "Connect us",
+        "close": "Close menu"
     },
     "hero": {
         "brand": "Lunier Marina",

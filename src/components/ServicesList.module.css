@@ -109,7 +109,9 @@
     border: 1px solid var(--border-soft);
     border-radius: 1rem;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex: 0 0 auto;
     width: 400px;
     min-width: 320px;
@@ -119,12 +121,17 @@
     text-decoration: none;
     color: inherit;
     cursor: pointer;
+    will-change: transform;
 }
 
 .card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
     border-color: var(--accent);
+}
+
+.card:active {
+    transform: translateY(-3px) scale(1.01);
 }
 
 .imageWrapper {
@@ -132,10 +139,17 @@
     width: 100%;
     height: 300px;
     flex-shrink: 0;
+    overflow: hidden;
 }
 
 .image {
     object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.card:hover .image {
+    transform: scale(1.05);
 }
 
 .content {
@@ -220,14 +234,21 @@
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    transition: all 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 15px rgba(12, 79, 173, 0.3);
     margin-top: 0.5rem;
+    will-change: transform;
 }
 
 .knowMoreButton:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(12, 79, 173, 0.4);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(12, 79, 173, 0.45);
+}
+
+.knowMoreButton:active {
+    transform: translateY(-1px) scale(1);
 }
 
 .buttonText {
@@ -245,6 +266,13 @@
     background: rgba(255, 255, 255, 0.2);
     font-size: 1.25rem;
     flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.3s ease;
+}
+
+.knowMoreButton:hover .buttonArrow {
+    transform: translateX(2px);
+    background: rgba(255, 255, 255, 0.3);
 }
 
 /* 1336×768 and below */

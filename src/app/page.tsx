@@ -145,7 +145,7 @@ export default function Home() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.hero}>
+      <div className={styles.hero} data-animate-on-load>
         <div className={styles.heroSlider}>
           {heroBgImages.map((imageUrl, index) => (
             <div
@@ -190,7 +190,7 @@ export default function Home() {
         </section>
       </div>
 
-      <section className={styles.experienceSection}>
+      <section className={styles.experienceSection} data-animate-on-scroll>
         <div className={styles.experienceCard}>
           <article className={styles.arabicCopy}>
             <p className={styles.arabicTitle}>{t('about.title')}</p>
