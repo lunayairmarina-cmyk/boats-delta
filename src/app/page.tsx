@@ -21,7 +21,8 @@ const partnerLogos = Array.from({ length: 8 }, (_, index) => ({
 
 export default function Home() {
   const { t, language } = useLanguage();
-  const [heroBgImage, setHeroBgImage] = useState("/api/images/slug/ocean-sunrise");
+  const [heroBgImages, setHeroBgImages] = useState<string[]>(["/api/images/slug/ocean-sunrise"]);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [cardImageId, setCardImageId] = useState<string | null>(null);
   const [logoImageId, setLogoImageId] = useState<string | null>(null);
 
@@ -42,16 +43,50 @@ export default function Home() {
   useEffect(() => {
     const updateImages = async () => {
       try {
-        // Fetch hero background image
-        const heroResponse = await fetch("/api/admin/images?slug=ocean-sunrise", {
+        // Fetch hero banner images (hero-home section)
+        const bannerResponse = await fetch("/api/admin/images?section=hero-home", {
           cache: 'no-store',
         });
-        if (heroResponse.ok) {
-          const images = await heroResponse.json();
-          const image = Array.isArray(images) && images.length > 0 ? images[0] : null;
-          if (image?._id) {
-            // Use image ID for better cache control (cache headers handle freshness)
-            setHeroBgImage(`/api/images/${image._id}`);
+        if (bannerResponse.ok) {
+          const bannerImages = await bannerResponse.json();
+          if (Array.isArray(bannerImages) && bannerImages.length > 0) {
+            // Sort by order (API already sorts, but ensure it's correct)
+            const sortedImages = bannerImages.sort((a: any, b: any) => {
+              const orderA = a.metadata?.order || 0;
+              const orderB = b.metadata?.order || 0;
+              return orderA - orderB;
+            });
+            // Use all banner images in order
+            const imageUrls = sortedImages
+              .map((img: any) => img._id ? `/api/images/${img._id}` : null)
+              .filter((url: string | null) => url !== null) as string[];
+            if (imageUrls.length > 0) {
+              setHeroBgImages(imageUrls);
+            } else {
+              // Fallback to ocean-sunrise if hero-home doesn't exist yet
+              const fallbackResponse = await fetch("/api/admin/images?slug=ocean-sunrise", {
+                cache: 'no-store',
+              });
+              if (fallbackResponse.ok) {
+                const fallbackImages = await fallbackResponse.json();
+                const fallbackImage = Array.isArray(fallbackImages) && fallbackImages.length > 0 ? fallbackImages[0] : null;
+                if (fallbackImage?._id) {
+                  setHeroBgImages([`/api/images/${fallbackImage._id}`]);
+                }
+              }
+            }
+          } else {
+            // Fallback to ocean-sunrise if hero-home doesn't exist yet
+            const fallbackResponse = await fetch("/api/admin/images?slug=ocean-sunrise", {
+              cache: 'no-store',
+            });
+            if (fallbackResponse.ok) {
+              const fallbackImages = await fallbackResponse.json();
+              const fallbackImage = Array.isArray(fallbackImages) && fallbackImages.length > 0 ? fallbackImages[0] : null;
+              if (fallbackImage?._id) {
+                setHeroBgImages([`/api/images/${fallbackImage._id}`]);
+              }
+            }
           }
         }
 
@@ -97,16 +132,43 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  // Auto-rotate slides
+  useEffect(() => {
+    if (heroBgImages.length <= 1) return;
+    
+    const slideInterval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroBgImages.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(slideInterval);
+  }, [heroBgImages.length]);
+
   return (
     <main className={styles.page}>
-      <div 
-        className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(145deg, rgba(1, 6, 18, 0.85), rgba(9, 30, 58, 0.55)), url(${heroBgImage})`,
-        }}
-      >
-
-
+      <div className={styles.hero}>
+        <div className={styles.heroSlider}>
+          {heroBgImages.map((imageUrl, index) => (
+            <div
+              key={index}
+              className={`${styles.heroSlide} ${index === currentSlide ? styles.active : ''}`}
+              style={{
+                backgroundImage: `linear-gradient(145deg, rgba(1, 6, 18, 0.85), rgba(9, 30, 58, 0.55)), url(${imageUrl})`,
+              }}
+            />
+          ))}
+        </div>
+        {heroBgImages.length > 1 && (
+          <div className={styles.sliderIndicators}>
+            {heroBgImages.map((_, index) => (
+              <button
+                key={index}
+                className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
+                onClick={() => setCurrentSlide(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
         <section className={styles.heroContent}>
           <span className={styles.heroBrand}>{t('hero.brand')}</span>
           <h1 className={styles.heroTitle}>{t('hero.subtitle')}</h1>
