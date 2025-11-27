@@ -628,6 +628,10 @@
     padding: 48px 24px;
   }
 
+  .processSteps {
+    align-items: center;
+  }
+
   .servicesGrid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -638,6 +642,8 @@
   }
 
   .processStep {
+    width: 100%;
+    max-width: 520px;
     grid-template-columns: 60px 1fr;
     gap: 20px;
     padding: 24px;
@@ -688,6 +694,10 @@
     padding: 40px 18px;
   }
 
+  .processSteps {
+    align-items: center;
+  }
+
   .heroActions,
   .ctaActions {
     flex-direction: column;
@@ -710,6 +720,9 @@
   }
 
   .processStep {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
     flex-direction: column;
     grid-template-columns: 1fr;
     text-align: center;

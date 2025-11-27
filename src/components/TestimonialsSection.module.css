@@ -41,8 +41,9 @@
 
 .testimonialsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: clamp(18px, 3vw, 28px);
+  align-items: stretch;
 }
 
 .testimonialCard {
@@ -56,19 +57,32 @@
   box-shadow: 0 35px 55px rgba(15, 13, 53, 0.08);
   backdrop-filter: blur(6px);
   min-height: 120px;
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.testimonialCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 40px 60px rgba(15, 13, 53, 0.12);
 }
 
 .avatar {
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid rgba(124, 108, 255, 0.1);
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
 }
 
 .testimonialCopy {
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
 }
 
 .personName {
@@ -82,6 +96,8 @@
   margin: 0;
   font-size: 14px;
   color: #6c6a86;
+  line-height: 1.4;
+  word-wrap: break-word;
 }
 
 /* 1336×768 and below */
@@ -91,6 +107,7 @@
   }
 
   .testimonialsGrid {
+    grid-template-columns: repeat(3, 1fr);
     gap: clamp(16px, 2.5vw, 24px);
   }
 }
@@ -99,6 +116,11 @@
 @media (max-width: 1024px) {
   .testimonialsGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: clamp(16px, 2vw, 20px);
+  }
+  
+  .testimonialCard {
+    padding: 22px;
   }
 }
 

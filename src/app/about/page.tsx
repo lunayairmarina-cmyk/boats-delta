@@ -501,7 +501,7 @@ const ABOUT_CONTENT: Record<
         "برج المرجان، طريق الأمير سلطان، حي الروضة، جدة",
         { type: "phone", label: "هاتف", value: "‎+966 53 445 7744" },
         { type: "email", label: "بريد", value: "cap.harbi@boatpro.club" },
-        { type: "phone", label: "هاتف", value: "‎+966 53 445 7744" },
+     
       ],
       panelTitle: "اعمل معنا",
       panelBody:

@@ -101,35 +101,6 @@ export const useServicesAnimations = ({
         });
       }
 
-      // Process Section - Reveal animation
-      if (processRef.current) {
-        const processHeader = processRef.current.querySelectorAll("[data-animate='process']");
-        gsap.from(processHeader, {
-          opacity: 0,
-          y: 40,
-          duration: 0.9,
-          ease: "power2.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: processRef.current,
-            start: "top 85%",
-          },
-        });
-
-        const processSteps = processRef.current.querySelectorAll("[data-animate='process-step']");
-        gsap.from(processSteps, {
-          opacity: 0,
-          x: -40,
-          duration: 0.8,
-          ease: "power2.out",
-          stagger: 0.15,
-          scrollTrigger: {
-            trigger: processRef.current,
-            start: "top 80%",
-          },
-        });
-      }
-
       // Final CTA - Fade/slide animation
       if (ctaRef.current) {
         const ctaTargets = ctaRef.current.querySelectorAll("[data-animate='cta']");

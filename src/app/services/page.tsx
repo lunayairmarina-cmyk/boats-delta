@@ -476,13 +476,13 @@ export default function ServicesPage() {
       {/* Process Section */}
       <section className={styles.processSection} ref={processRef}>
         <div className={styles.sectionHeader}>
-          <p className={styles.sectionBadge} data-animate="process">
+          <p className={styles.sectionBadge}>
             {content.process.badge}
           </p>
-          <h2 className={styles.sectionTitle} data-animate="process">
+          <h2 className={styles.sectionTitle}>
             {content.process.title}
           </h2>
-          <p className={styles.sectionDescription} data-animate="process">
+          <p className={styles.sectionDescription}>
             {content.process.description}
           </p>
         </div>
@@ -491,7 +491,6 @@ export default function ServicesPage() {
             <article
               key={step.step}
               className={styles.processStep}
-              data-animate="process-step"
               data-index={index}
             >
               <div className={styles.stepNumber}>{step.step}</div>
