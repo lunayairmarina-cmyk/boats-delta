@@ -11,10 +11,27 @@
     },
     "hero": {
         "title": "Lunier Marina",
-        "subtitle": "Exceptional Marine Luxury",
+        "subtitle": "Exceptional Marine\u00A0Luxury",
         "description": "This is where comprehensive yacht management services come into play, ensuring that owners can enjoy their time at sea and leave the complexities of operations and logistics to the professionals.",
         "cta_connect": "Connect With Us",
-        "cta_know_more": "Know More"
+        "cta_know_more": "Know More",
+        "stats": {
+            "experience": {
+                "value": 18,
+                "label": "Years of marine expertise",
+                "suffix": "+"
+            },
+            "fleet": {
+                "value": 42,
+                "label": "Vessels under tailored care",
+                "suffix": "+"
+            },
+            "partners": {
+                "value": 28,
+                "label": "Trusted global partners",
+                "suffix": "+"
+            }
+        }
     },
     "dashboard": {
         "title": "Performance dashboard",
@@ -45,14 +62,14 @@
     },
     "commitment": {
         "title": "Our Commitment",
-        "performance_title": "Highest Standards of Performance and Responsibility",
-        "performance_desc": "At Lunier Marina, we are committed to providing services that are not limited to luxury alone but extend to include quality, safety, and sustainability.",
+        "performance_title": "High Standards,\nPractical Delivery",
+        "performance_desc": "We go beyond luxury, blending quality, safety, into every voyage so you enjoy the sea with complete peace of mind, backed by standards & transparent reporting.",
         "quality_title": "Quality and Safety",
-        "quality_desc": "We apply the highest safety and security standards in every operation and management process to ensure your yacht is in excellent technical condition, providing you and your guests with a safe and comfortable cruise at all times.",
+        "quality_desc": "We enforce rigorous inspection routines, detailed checklists, and rapid-response protocols so your yacht stays in peak condition so each passage remains calm & secure.",
         "environment_title": "Environmental Responsibility",
-        "environment_desc": "We are committed to preserving the marine environment. We work hard to adopt eco-friendly practices in all our operations, from using sustainable products to implementing programs to reduce the environmental impact of our operations. We believe that the beauty of the sea is a wealth that must be preserved for future generations.",
-        "confidentiality_title": "Absolute Confidentiality, Unwavering Trust",
-        "confidentiality_desc": "We understand that privacy is a top priority for our clients. Therefore, we handle all information related to owners, guests, and itinerary plans with the utmost confidentiality and professionalism. Your trust is our most valuable asset, and we are committed to protecting it at all times."
+        "environment_desc": "We choose sustainable materials, limit emissions across every route, and train each crew on responsible practices so the sea you enjoy today stays pristine for tomorrow.",
+        "confidentiality_title": "Privacy First, Trust Always",
+        "confidentiality_desc": "Owner, guest, and itinerary details stay protected with strict discretion before, during, and after every journey, so your privacy and trust remain uncompromised."
     },
     "team": {
         "title": "Our Team",
@@ -134,14 +151,22 @@
         "slogan": "More than just management, it's a partnership towards luxury and excellence.",
         "address": "Al Murjan Tower, Prince Sultan Road, Al Rawdah District, Jeddah, Saudi Arabia.",
         "phone": "0534457744",
+        "phone_cta": "Call or WhatsApp",
+        "phone_hint": "Tap to call on mobile · Opens WhatsApp on desktop",
         "email": "cap.harbi@boatpro.club",
+        "email_cta": "Send us an email",
+        "email_hint": "Launches your default email app",
         "website": "https://seaexpertis.com/",
         "boatpro_website": "https://boatpro.club/",
         "company_integrated": "Integrated Marine Services Holding Co. Ltd.",
         "company_boatpro": "Boat Pro Marine Services",
         "company_boatpro_desc": "Specialized in operating an application for renting boats, yachts, and marine recreational vehicles",
         "company_lunier": "Lunier Marina Marine Services",
-        "company_lunier_desc": "Specialized in yacht, marina, and facility management and operation services."
+        "company_lunier_desc": "Specialized in yacht, marina, and facility management and operation services.",
+        "terms": "Terms & Conditions",
+        "rights": "© {{year}} Lunier Marina. All rights reserved.",
+        "designerBy": "Designed by",
+        "designer": "RWAD Team"
     },
     "blog": {
         "badge": "Our Blog",
@@ -159,5 +184,31 @@
         "tags": "Tags",
         "relatedPosts": "Related Posts",
         "minRead": "min read"
+    },
+    "yachtApp": {
+        "headline": "Manage Your Yacht Anytime, Anywhere.",
+        "description": "Experience seamless control over your vessel with our proprietary application. From crew scheduling to real-time expense tracking, everything is at your fingertips.",
+        "features": {
+            "monitoring": "Real-time Monitoring",
+            "support": "24/7 Support",
+            "booking": "Booking Portal"
+        },
+        "download": "DOWNLOAD NOW",
+        "appStore": "Download on the App Store",
+        "googlePlay": "GET IT ON Google Play",
+        "testimonial": "\"The most intuitive yacht management app I've ever used. It has completely streamlined our operations.\"",
+        "testimonialAuthor": "- Captain Mark, M/Y Serenity",
+        "phone": {
+            "vesselName": "M/Y Serenity",
+            "active": "Active",
+            "vesselStatus": "Vessel Status",
+            "allSystemsOperational": "All Systems Operational",
+            "crewSchedule": "Crew Schedule",
+            "crewStatus": "3 Active • 2 On Leave",
+            "nextMaintenance": "Next Maintenance",
+            "maintenanceDate": "Engine Service - Dec 15",
+            "monthlyExpenses": "Monthly Expenses",
+            "expensesAmount": "$24,500 / $30,000"
+        }
     }
 }

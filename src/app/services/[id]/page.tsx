@@ -86,3 +86,4 @@ export default async function ServiceDetailPage({ params }: PageParams) {
     return <ServiceDetailClient initialData={detail} serviceId={id} />;
 }
 
+

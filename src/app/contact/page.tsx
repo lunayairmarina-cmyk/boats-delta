@@ -3,7 +3,19 @@
 import Image from "next/image";
 import ContactSection from "@/components/ContactSection";
 import { useLanguage, Locale } from "@/context/LanguageContext";
+import {
+  getMailHref,
+  getPhoneHref,
+  handlePhoneIntent,
+} from "@/lib/contactInfo";
 import styles from "./page.module.css";
+
+type HighlightItem = {
+  label: string;
+  value: string;
+  helper: string;
+  type?: "phone" | "email";
+};
 
 const CONTACT_CONTENT: Record<
   Locale,
@@ -13,7 +25,7 @@ const CONTACT_CONTENT: Record<
       title: string;
       lead: string;
     };
-    highlights: Array<{ label: string; value: string; helper: string }>;
+    highlights: HighlightItem[];
     access: Array<{ title: string; body: string; action: string }>;
     map: {
       badge: string;
@@ -36,11 +48,13 @@ const CONTACT_CONTENT: Record<
         label: "Concierge line",
         value: "0534457744",
         helper: "Daily • 7am – 11pm AST",
+        type: "phone",
       },
       {
         label: "Email",
         value: "cap.harbi@boatpro.club",
         helper: "Responses within 24h",
+        type: "email",
       },
       {
         label: "Head office",
@@ -91,11 +105,13 @@ const CONTACT_CONTENT: Record<
         label: "خط الكونسييرج",
         value: "0534457744",
         helper: "يومياً • 7 صباحاً – 11 مساءً بتوقيت السعودية",
+        type: "phone",
       },
       {
         label: "البريد الإلكتروني",
         value: "cap.harbi@boatpro.club",
         helper: "نرد خلال 24 ساعة",
+        type: "email",
       },
       {
         label: "المكتب الرئيسي",
@@ -139,6 +155,40 @@ const CONTACT_CONTENT: Record<
 export default function ContactPage() {
   const { language, dir } = useLanguage();
   const content = CONTACT_CONTENT[language];
+  const phoneHref = getPhoneHref();
+  const mailHref = getMailHref();
+
+  const renderHighlightValue = (item: HighlightItem) => {
+    if (item.type === "phone") {
+      return (
+        <a
+          href={phoneHref}
+          onClick={(event) => handlePhoneIntent(event)}
+          className={`${styles.highlightValue} ${styles.highlightLink}`}
+          data-variant="phone"
+          dir="ltr"
+          aria-label={`${item.label} ${item.value}`}
+        >
+          {item.value}
+        </a>
+      );
+    }
+
+    if (item.type === "email") {
+      return (
+        <a
+          href={mailHref}
+          className={`${styles.highlightValue} ${styles.highlightLink}`}
+          data-variant="email"
+          aria-label={`${item.label} ${item.value}`}
+        >
+          {item.value}
+        </a>
+      );
+    }
+
+    return <span className={styles.highlightValue}>{item.value}</span>;
+  };
 
   return (
     <main className={styles.page} style={{ direction: dir }}>
@@ -152,7 +202,7 @@ export default function ContactPage() {
             {content.highlights.map((item) => (
               <article key={item.label} className={styles.highlightCard}>
                 <p className={styles.highlightLabel}>{item.label}</p>
-                <p className={styles.highlightValue}>{item.value}</p>
+                {renderHighlightValue(item)}
                 <p className={styles.highlightHelper}>{item.helper}</p>
               </article>
             ))}

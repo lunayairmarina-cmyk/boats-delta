@@ -98,6 +98,8 @@
   font-size: 15px;
   line-height: 1.75;
   color: rgba(25, 27, 62, 0.72);
+  text-align: start;
+  text-wrap: balance;
 }
 
 .badge {

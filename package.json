@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx scripts/seed.ts",
-    "seed:blogs": "tsx scripts/seed-blogs.ts"
+    "seed:blogs": "tsx scripts/seed-blogs.ts",
+    "seed:services-banner": "tsx scripts/seed-services-banner.ts",
+    "seed:experience-section": "tsx scripts/seed-experience-section.ts"
   },
   "dependencies": {
     "gsap": "^3.13.0",

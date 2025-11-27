@@ -428,6 +428,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 18px;
+  align-items: stretch;
 }
 
 .partnerCard {
@@ -439,6 +440,18 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-height: 260px;
+}
+
+.partnerCard h3 {
+  text-wrap: balance;
+}
+
+.partnerCard p {
+  flex-grow: 1;
+  margin-bottom: auto;
+  text-wrap: balance;
+  color: #4a5478;
 }
 
 .partnerCard a {
@@ -447,6 +460,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  margin-top: 12px;
 }
 
 .careersSection {
@@ -476,6 +490,55 @@
   flex-direction: column;
   gap: 8px;
   color: #4a5476;
+}
+
+.careerContactLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.careerContactLink {
+  color: #0c4fad;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(12, 79, 173, 0.3);
+  transition: color 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
+}
+
+.careerContactLink[data-variant="phone"] {
+  color: #7a3eff;
+  border-bottom-color: rgba(122, 62, 255, 0.35);
+}
+
+.careerContactLink:hover,
+.careerContactLink:focus-visible {
+  color: #3f7cff;
+  border-bottom-color: currentColor;
+  transform: translateX(3px);
+}
+
+.careerContactLink[data-variant="phone"]:hover,
+.careerContactLink[data-variant="phone"]:focus-visible {
+  color: #a07dff;
+}
+
+.careerContactLink:focus-visible {
+  outline: 2px solid rgba(63, 124, 255, 0.35);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.careerContactLink[dir="ltr"] {
+  unicode-bidi: plaintext;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .careerContactLink {
+    transition: none;
+    transform: none;
+  }
 }
 
 .careersPanel {

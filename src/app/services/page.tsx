@@ -322,23 +322,46 @@ export default function ServicesPage() {
   const ctaRef = useRef<HTMLElement | null>(null);
   const { language, dir } = useLanguage();
   const content = SERVICES_CONTENT[language];
-  const [heroBgImage, setHeroBgImage] = useState("/api/images/slug/ocean-sunrise");
+  const [heroBgImage, setHeroBgImage] = useState("/api/images/slug/services-banner");
   const [featuredImageId, setFeaturedImageId] = useState<string | null>(null);
 
   // Fetch the latest image URLs
   useEffect(() => {
     const updateImages = async () => {
       try {
-        const response = await fetch("/api/admin/images?slug=ocean-sunrise", {
+        // Fetch services banner
+        const bannerResponse = await fetch("/api/admin/images?section=services-banner", {
           cache: 'no-store',
         });
-        if (response.ok) {
-          const images = await response.json();
-          const image = Array.isArray(images) && images.length > 0 ? images[0] : null;
-          if (image?._id) {
-            // Use image ID for better cache control (cache headers handle freshness)
-            setHeroBgImage(`/api/images/${image._id}`);
-            setFeaturedImageId(image._id);
+        if (bannerResponse.ok) {
+          const bannerImages = await bannerResponse.json();
+          const bannerImage = Array.isArray(bannerImages) && bannerImages.length > 0 ? bannerImages[0] : null;
+          if (bannerImage?._id) {
+            setHeroBgImage(`/api/images/${bannerImage._id}`);
+          } else {
+            // Fallback to ocean-sunrise if services-banner doesn't exist yet
+            const fallbackResponse = await fetch("/api/admin/images?slug=ocean-sunrise", {
+              cache: 'no-store',
+            });
+            if (fallbackResponse.ok) {
+              const fallbackImages = await fallbackResponse.json();
+              const fallbackImage = Array.isArray(fallbackImages) && fallbackImages.length > 0 ? fallbackImages[0] : null;
+              if (fallbackImage?._id) {
+                setHeroBgImage(`/api/images/${fallbackImage._id}`);
+              }
+            }
+          }
+        }
+        
+        // Fetch featured image (ocean-sunrise for featured section)
+        const featuredResponse = await fetch("/api/admin/images?slug=ocean-sunrise", {
+          cache: 'no-store',
+        });
+        if (featuredResponse.ok) {
+          const featuredImages = await featuredResponse.json();
+          const featuredImage = Array.isArray(featuredImages) && featuredImages.length > 0 ? featuredImages[0] : null;
+          if (featuredImage?._id) {
+            setFeaturedImageId(featuredImage._id);
           }
         }
       } catch (error) {

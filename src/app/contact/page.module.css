@@ -1,4 +1,4 @@
-.page {
+﻿.page {
   background: #fff;
   color: #0b1e3c;
 }
@@ -81,6 +81,91 @@
   font-size: 20px;
   font-weight: 600;
   letter-spacing: 0.5px;
+}
+
+.highlightLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fef7f2;
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 12px;
+  transition: color 0.2s ease, transform 0.2s ease, text-shadow 0.2s ease;
+}
+
+.highlightLink::after {
+  content: "↗";
+  font-size: 0.85em;
+  opacity: 0.7;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.highlightLink[data-variant="phone"]::after {
+  content: "📞";
+  font-size: 1rem;
+}
+
+.highlightLink[data-variant="email"]::after {
+  content: "✉";
+  font-size: 0.9rem;
+}
+
+.highlightLink:hover,
+.highlightLink:focus-visible {
+  color: #ded0ff;
+  text-shadow: 0 0 12px rgba(200, 183, 255, 0.65);
+  transform: translateX(3px);
+}
+
+.highlightLink:hover::after,
+.highlightLink:focus-visible::after {
+  transform: translateX(2px);
+  opacity: 1;
+}
+
+.highlightLink:focus-visible {
+  outline: 2px solid rgba(200, 183, 255, 0.45);
+  outline-offset: 4px;
+}
+
+.highlightLink[dir="ltr"] {
+  unicode-bidi: plaintext;
+}
+
+.highlightLink span {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.highlightLink:hover span,
+.highlightLink:focus-visible span {
+  opacity: 0.95;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlightLink {
+    transition: none;
+    transform: none;
+    text-shadow: none;
+  }
+
+  .highlightLink::after {
+    transition: none;
+  }
+
+  .highlightLink:hover,
+  .highlightLink:focus-visible {
+    transform: none;
+  }
+
+  .highlightLink span {
+    transition: none;
+  }
 }
 
 .highlightHelper {
@@ -280,7 +365,7 @@
   gap: 8px;
 }
 
-/* 1336×768 and below */
+/* 1336├ù768 and below */
 @media (max-width: 1336px) {
   .hero {
     padding: clamp(64px, 10vw, 120px) clamp(24px, 5vw, 120px);

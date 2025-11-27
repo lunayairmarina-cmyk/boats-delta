@@ -133,3 +133,4 @@ export function useServiceDetailAnimations({
     }, [headerRef, imagesRef, descriptionRef, benefitsRef, relatedRef, dir]);
 }
 
+

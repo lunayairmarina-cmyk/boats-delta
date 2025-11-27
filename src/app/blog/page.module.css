@@ -78,7 +78,7 @@
 /* Hero Section */
 .hero {
     position: relative;
-    padding: 8rem 2rem 6rem;
+    padding: 9rem 2rem 6rem;
     background: linear-gradient(135deg, #f7e8ff 0%, #faf5ff 50%, #e0e7ff 100%);
     overflow: hidden;
 }
@@ -436,7 +436,7 @@
     }
 
     .hero {
-        padding: 5rem clamp(24px, 4vw, 64px) 3rem;
+        padding: 7rem clamp(24px, 4vw, 64px) 3rem;
     }
 
     .postsSection {
@@ -463,7 +463,7 @@
 /* Mobile */
 @media (max-width: 768px) {
     .hero {
-        padding: 5rem 1.5rem 3rem;
+        padding: 7rem 1.5rem 3rem;
     }
 
     .filtersSection {
@@ -501,7 +501,7 @@
 /* Small mobile */
 @media (max-width: 480px) {
     .hero {
-        padding: 4rem 1rem 2.5rem;
+        padding: 6rem 1rem 2.5rem;
     }
 
     .heroTitle {

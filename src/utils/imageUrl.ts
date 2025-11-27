@@ -40,3 +40,4 @@ export function getImageUrl(slug: string, timestamp?: number): string {
     return `/api/images/slug/${slug}?v=${Date.now()}`;
 }
 
+
