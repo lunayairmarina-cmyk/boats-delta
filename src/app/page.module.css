@@ -76,12 +76,17 @@
   text-align: center;
 }
 
+.heroCopyEnglish {
+  width: 100%;
+}
+
 .heroActions {
   margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
 }
+
 
 .primaryBtn,
 .outlineBtn {
@@ -172,6 +177,35 @@
   .servicesSection {
     padding: 0 clamp(24px, 6vw, 100px);
     gap: clamp(28px, 4vw, 80px);
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero {
+    padding-top: 70px;
+    gap: clamp(24px, 6vh, 100px);
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 769px) {
+  .heroActions {
+    display: none;
+  }
+
+  .primaryBtn,
+  .outlineBtn {
+    flex: 0 0 calc(50% - 12px);
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1336px) and (min-width: 769px) {
+  .heroCopyEnglish {
+    margin-top: -30px;
+  }
+
+  .heroActions {
+    display: none;
   }
 }
 

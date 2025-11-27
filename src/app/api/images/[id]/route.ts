@@ -1,23 +1,28 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
+import { GridFSBucket, GridFSFile } from 'mongodb';
+
+type StoredGridFile = GridFSFile & { contentType?: string };
 
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
     try {
         await connectDB();
         const db = mongoose.connection.db;
-        // @ts-ignore GridFSBucket typing is not exposed through mongoose
-        const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
+        if (!db) {
+            throw new Error('Database connection is not initialized.');
+        }
+        const bucket = new GridFSBucket(db, { bucketName: 'images' });
 
         const _id = new mongoose.Types.ObjectId(params.id);
 
-        const files = await bucket.find({ _id }).toArray();
+        const files = (await bucket.find({ _id }).toArray()) as StoredGridFile[];
         if (!files || files.length === 0) {
             return NextResponse.json({ error: 'File not found' }, { status: 404 });
         }
 
-        const file = files[0] as any;
+        const file = files[0];
         const stream = bucket.openDownloadStream(_id);
         
         // Add cache busting based on upload date

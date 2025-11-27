@@ -20,40 +20,38 @@ type ServiceRecord = {
     createdAt?: string;
 };
 
-type LeanServiceLike = ServiceRecord & {
+type LeanServiceLike = Omit<ServiceRecord, '_id' | 'createdAt'> & {
     _id: string | { toString: () => string };
     createdAt?: string | Date;
+    priceAr?: string;
+    category?: string;
 };
+
+const toServiceId = (value: LeanServiceLike['_id']): string =>
+    typeof value === 'string' ? value : value?.toString?.() ?? '';
+
+const toServiceDate = (value?: string | Date): string | undefined =>
+    value instanceof Date ? value.toISOString() : value;
 
 function normalizeServices(data: Array<IService | LeanServiceLike>): ServiceRecord[] {
     return data.map((item) => {
-        const source =
+        const source: LeanServiceLike =
             typeof (item as IService).toObject === 'function'
                 ? ((item as IService).toObject() as LeanServiceLike)
                 : (item as LeanServiceLike);
 
-        const id =
-            typeof source._id === 'string'
-                ? source._id
-                : (source as any)._id?.toString?.() ?? '';
-
-        const createdAt =
-            (source as any).createdAt instanceof Date
-                ? (source as any).createdAt.toISOString()
-                : (source as any).createdAt;
-
         return {
-            _id: id,
+            _id: toServiceId(source._id),
             title: source.title,
             titleAr: source.titleAr,
             description: source.description,
             descriptionAr: source.descriptionAr,
             image: source.image,
             price: source.price,
-            priceAr: (source as any).priceAr,
+            priceAr: source.priceAr,
             slug: source.slug,
-            category: (source as any).category,
-            createdAt,
+            category: source.category,
+            createdAt: toServiceDate(source.createdAt),
         };
     });
 }

@@ -25,36 +25,27 @@ type BlogRecord = {
     updatedAt: string;
 };
 
-type LeanBlogLike = BlogRecord & {
+type LeanBlogLike = Omit<BlogRecord, '_id' | 'createdAt' | 'updatedAt'> & {
     _id: string | { toString: () => string };
     createdAt?: string | Date;
     updatedAt?: string | Date;
 };
 
+const toIdString = (value: LeanBlogLike['_id']): string =>
+    typeof value === 'string' ? value : value?.toString?.() ?? '';
+
+const toDateString = (value?: string | Date): string =>
+    value instanceof Date ? value.toISOString() : value ?? '';
+
 function normalizeBlogs(data: Array<IBlog | LeanBlogLike>): BlogRecord[] {
     return data.map((item) => {
-        const source =
+        const source: LeanBlogLike =
             typeof (item as IBlog).toObject === 'function'
                 ? ((item as IBlog).toObject() as LeanBlogLike)
                 : (item as LeanBlogLike);
 
-        const id =
-            typeof source._id === 'string'
-                ? source._id
-                : (source as any)._id?.toString?.() ?? '';
-
-        const createdAt =
-            (source as any).createdAt instanceof Date
-                ? (source as any).createdAt.toISOString()
-                : (source as any).createdAt;
-
-        const updatedAt =
-            (source as any).updatedAt instanceof Date
-                ? (source as any).updatedAt.toISOString()
-                : (source as any).updatedAt;
-
         return {
-            _id: id,
+            _id: toIdString(source._id),
             title: source.title,
             titleAr: source.titleAr,
             excerpt: source.excerpt,
@@ -68,8 +59,8 @@ function normalizeBlogs(data: Array<IBlog | LeanBlogLike>): BlogRecord[] {
             authorAr: source.authorAr,
             published: source.published,
             tags: source.tags,
-            createdAt,
-            updatedAt,
+            createdAt: toDateString(source.createdAt),
+            updatedAt: toDateString(source.updatedAt),
         };
     });
 }

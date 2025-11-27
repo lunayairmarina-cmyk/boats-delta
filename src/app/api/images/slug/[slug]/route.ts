@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
+import { GridFSBucket, GridFSFile } from 'mongodb';
+
+type StoredGridFile = GridFSFile & { contentType?: string };
 
 export async function GET(request: Request, props: { params: Promise<{ slug: string }> }) {
     const params = await props.params;
     const slug = params.slug?.toLowerCase();
     
     // Extract query parameters for cache busting (v parameter is ignored but helps with cache invalidation)
-    const url = new URL(request.url);
-    const versionParam = url.searchParams.get('v');
 
     if (!slug) {
         return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
@@ -20,8 +21,8 @@ export async function GET(request: Request, props: { params: Promise<{ slug: str
         if (!db) {
             throw new Error('Database connection is not initialized.');
         }
-        const bucket = new mongoose.mongo.GridFSBucket(db as any, { bucketName: 'images' });
-        const filesCollection = db.collection('images.files');
+        const bucket = new GridFSBucket(db, { bucketName: 'images' });
+        const filesCollection = db.collection<StoredGridFile>('images.files');
 
         const [file] = await filesCollection
             .find({ 'metadata.slug': slug })
@@ -33,7 +34,7 @@ export async function GET(request: Request, props: { params: Promise<{ slug: str
             return NextResponse.json({ error: 'Image not found' }, { status: 404 });
         }
 
-        const stream = bucket.openDownloadStream((file as any)._id);
+        const stream = bucket.openDownloadStream(file._id);
         
         // Add cache busting based on upload date
         const uploadDate = file.uploadDate ? new Date(file.uploadDate).getTime() : Date.now();
@@ -58,7 +59,7 @@ export async function GET(request: Request, props: { params: Promise<{ slug: str
         // @ts-expect-error Node stream is compatible with the Response body but lacks types
         return new Response(stream, {
             headers: {
-                'Content-Type': (file as any).contentType || 'application/octet-stream',
+                'Content-Type': file.contentType || 'application/octet-stream',
                 'Cache-Control': 'public, max-age=0, must-revalidate, no-cache',
                 'ETag': etag,
                 'Last-Modified': lastModified,

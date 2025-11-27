@@ -1,5 +1,5 @@
 import connectDB from '@/lib/db';
-import Service, { IService } from '@/models/Service';
+import Service, { IService, IServiceBenefit } from '@/models/Service';
 import { Types } from 'mongoose';
 
 export type LocalizedText = {
@@ -96,7 +96,7 @@ function normalizeService(service: IService): ServiceDetailDto {
         caption: localizedPair(item.caption, item.captionAr, plain.title),
     }));
 
-    const benefits = (plain.benefits ?? []).map((benefit: any, index: number) => ({
+    const benefits = (plain.benefits ?? []).map((benefit: IServiceBenefit, index: number) => ({
         id: `${id}-benefit-${index}`,
         icon: resolveMedia(benefit.icon),
         title: localizedPair(benefit.title, benefit.titleAr, plain.title),

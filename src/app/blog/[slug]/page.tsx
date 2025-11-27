@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -26,7 +26,6 @@ interface BlogPost {
 
 export default function BlogPostPage() {
     const params = useParams();
-    const router = useRouter();
     const slug = params.slug as string;
     const { language, t, dir } = useLanguage();
     const [post, setPost] = useState<BlogPost | null>(null);
@@ -201,7 +200,6 @@ export default function BlogPostPage() {
     }
 
     const readingTime = post ? calculateReadingTime(post.content) : 0;
-    const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
     return (
         <main className={styles.blogPostPage} style={{ direction: dir }}>
@@ -335,7 +333,7 @@ export default function BlogPostPage() {
                         <div className={styles.relatedContainer}>
                             <h2 className={styles.relatedTitle} data-animate="related">{t('blog.relatedPosts')}</h2>
                             <div className={styles.relatedGrid}>
-                                {relatedPosts.map((relatedPost, index) => (
+                                {relatedPosts.map((relatedPost) => (
                                     <Link
                                         key={relatedPost._id}
                                         href={`/blog/${relatedPost.slug || relatedPost._id}`}

@@ -4,6 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./Footer.module.css";
 import { useLanguage } from "@/context/LanguageContext";
+import {
+  getMailHref,
+  getPhoneHref,
+  handlePhoneIntent,
+} from "@/lib/contactInfo";
 
 const SOCIAL_LINKS = [
   {
@@ -95,8 +100,55 @@ const SOCIAL_LINKS = [
   },
 ];
 
+const RWAD_LINK =
+  "https://api.whatsapp.com/send/?phone=966541430116&text&type=phone_number&app_absent=0";
+
+const PhoneIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      d="M18.8 13.7c-1 0-2 .2-3 .5-.3.1-.6 0-.8-.2l-1.4-1.4a1 1 0 0 1 0-1.5l1.7-1.7a1 1 0 0 0 0-1.4L12.8 5a1 1 0 0 0-1.4 0L9.5 6.9c-.2.2-.3.5-.2.8.3 1 .5 2 .5 3s-.2 2-.5 3c-.1.3 0 .6.2.8l2.1 2.1c2 2 5 2.5 7.5 1.2a6 6 0 0 0 3.4-3.4c1.3-2.5.7-5.5-1.2-7.5L18.7 7a1 1 0 0 0-1.4 0l-1.6 1.6a1 1 0 0 0 0 1.4l1.7 1.7a1 1 0 0 1 0 1.5l-1.4 1.4c-.2.2-.5.3-.8.2-1-.3-2-.5-3-.5"
+      fill="currentColor"
+      stroke="currentColor"
+      strokeWidth="0.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const MailIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+    />
+    <path
+      d="m4 7 8 6 8-6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export default function Footer() {
   const { t } = useLanguage();
+  const currentYear = new Date().getFullYear();
+  const rightsCopy = t('footer.rights').replace('{{year}}', currentYear.toString());
+  const rawPhone = t('footer.phone');
+  const emailAddress = t('footer.email');
+  const phoneLabel = t('footer.phone_cta');
+  const emailLabel = t('footer.email_cta');
+  const phoneHint = t('footer.phone_hint');
+  const emailHint = t('footer.email_hint');
+
+  const phoneHref = getPhoneHref();
+  const mailHref = getMailHref();
 
   return (
     <footer className={styles.footer}>
@@ -120,10 +172,45 @@ export default function Footer() {
           <p className={styles.subtitle}>
             {t('footer.slogan')}
           </p>
-          <div style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>
-            <p>{t('footer.address')}</p>
-            <p dir="ltr">{t('footer.phone')}</p>
-            <p>{t('footer.email')}</p>
+          <div className={styles.contactDetails}>
+            <p className={styles.addressLine}>{t('footer.address')}</p>
+            <a
+              href={phoneHref}
+              onClick={(event) => handlePhoneIntent(event)}
+              className={styles.contactAction}
+              data-variant="phone"
+              aria-label={`${phoneLabel} ${rawPhone}. ${phoneHint}`}
+            >
+              <span className={styles.contactActionIcon} aria-hidden="true">
+                <PhoneIcon />
+              </span>
+              <span className={styles.contactActionCopy}>
+                <span className={styles.contactActionLabel}>{phoneLabel}</span>
+                <span className={styles.contactActionValue} dir="ltr">
+                  {rawPhone}
+                </span>
+                <span className={styles.contactActionHint} aria-hidden="true">
+                  {phoneHint}
+                </span>
+              </span>
+            </a>
+            <a
+              href={mailHref}
+              className={styles.contactAction}
+              data-variant="email"
+              aria-label={`${emailLabel} ${emailAddress}. ${emailHint}`}
+            >
+              <span className={styles.contactActionIcon} aria-hidden="true">
+                <MailIcon />
+              </span>
+              <span className={styles.contactActionCopy}>
+                <span className={styles.contactActionLabel}>{emailLabel}</span>
+                <span className={styles.contactActionValue}>{emailAddress}</span>
+                <span className={styles.contactActionHint} aria-hidden="true">
+                  {emailHint}
+                </span>
+              </span>
+            </a>
           </div>
           <div className={styles.socialRow}>
             {SOCIAL_LINKS.map((social) => (
@@ -146,15 +233,23 @@ export default function Footer() {
             <span aria-hidden="true">➝</span>
           </Link>
         </div>
-
-        <button type="button" className={styles.arrowBtn} aria-label="Next">
-          ➝
-        </button>
-
-        <ul className={styles.linkList}>
-          <li><a href="https://seaexpertis.com/" target="_blank" rel="noopener noreferrer">Sea Expertis</a></li>
-          <li><a href="https://boatpro.club/" target="_blank" rel="noopener noreferrer">Boat Pro</a></li>
-        </ul>
+        <div className={styles.bottomBar}>
+          <Link href="/terms" className={styles.termsLink}>
+            {t('footer.terms')}
+          </Link>
+          <p className={styles.rightsText}>{rightsCopy}</p>
+          <p className={styles.designerText}>
+            <span className={styles.designerLabel}>{t('footer.designerBy')}</span>{' '}
+            <Link
+              href={RWAD_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.designerLink}
+            >
+              {t('footer.designer')}
+            </Link>
+          </p>
+        </div>
       </div>
     </footer>
   );

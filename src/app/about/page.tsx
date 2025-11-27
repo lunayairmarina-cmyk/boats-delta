@@ -2,10 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAboutAnimations } from "@/hooks/useAboutAnimations";
 import { useLanguage, Locale } from "@/context/LanguageContext";
+import {
+  getMailHref,
+  getPhoneHref,
+  handlePhoneIntent,
+} from "@/lib/contactInfo";
 import styles from "./page.module.css";
+
+type CareerDetail =
+  | string
+  | {
+      type: "phone" | "email";
+      label: string;
+      value: string;
+    };
 
 const ABOUT_CONTENT: Record<
   Locale,
@@ -64,7 +77,7 @@ const ABOUT_CONTENT: Record<
       badge: string;
       title: string;
       description: string;
-      details: string[];
+      details: CareerDetail[];
       panelTitle: string;
       panelBody: string;
       panelCta: string;
@@ -220,8 +233,8 @@ const ABOUT_CONTENT: Record<
       items: [
         {
           year: "2012",
-          title: "Dubai Harbour Origins",
-          body: "Lunier Marina launches as a micro-agency managing two private yachts with a three-person crew.",
+          title: "Jeddah Marina Origins",
+          body: "Lunier Marina launches in Jeddah as a micro-agency managing two private yachts with a three-person crew.",
         },
         {
           year: "2016",
@@ -248,7 +261,7 @@ const ABOUT_CONTENT: Record<
       cards: [
         {
           name: "Lunier Marina Marine Services",
-          focus: "Yacht, marina, and facilities management at Saudi ports",
+          focus: "Yacht, marina, and facilities management at Saudi ports with turnkey compliance and hospitality support",
           url: "https://seaexpertis.com/",
           link: "visit site",
         },
@@ -273,9 +286,9 @@ const ABOUT_CONTENT: Record<
         "Passionate about marine hospitality or engineering? We champion talent that thrives on precision, discretion, and bold imagination. Share your credentials or partnership proposal to co-create the next era of luxury on water.",
       details: [
         "Al Murjan Tower, Prince Sultan Road, Al Rawdah District, Jeddah, Saudi Arabia.",
-        "Phone: 0534457744",
-        "Email: cap.harbi@boatpro.club",
-        "https://seaexpertis.com • https://boatpro.club",
+        { type: "phone", label: "Phone", value: "0534457744" },
+        { type: "email", label: "Email", value: "cap.harbi@boatpro.club" },
+        { type: "phone", label: "Phone", value: "0534457744" },
       ],
       panelTitle: "Work with us",
       panelBody:
@@ -411,7 +424,7 @@ const ABOUT_CONTENT: Record<
       cards: [
         {
           title: "الأداء والمسؤولية",
-          body: "كل اتفاقية مرتبطة بمؤشرات قابلة للقياس ولوحات متابعة ومسارات تصعيد واضحة يقودها مديرو يخوت كبار.",
+          body: "كل اتفاقية مرتبطة بمؤشرات قابلة للقياس ولوحات متابعة ومسارات تصعيد واضحة يقودها مديرو يخوت.",
         },
         {
           title: "الجودة والسلامة",
@@ -433,8 +446,8 @@ const ABOUT_CONTENT: Record<
       items: [
         {
           year: "2012",
-          title: "البدايات في دبي هاربور",
-          body: "انطلقت لونيير مارينا كوكالة صغيرة تدير يختين خاصين بطاقم مكون من ثلاثة أفراد.",
+          title: "البدايات من جدة",
+          body: "انطلقت لونيير مارينا من جدة كوكالة صغيرة تدير يختين خاصين بطاقم مكون من ثلاثة أفراد.",
         },
         {
           year: "2016",
@@ -461,7 +474,7 @@ const ABOUT_CONTENT: Record<
       cards: [
         {
           name: "شركة لونيير مارينا للخدمات البحرية",
-          focus: "إدارة اليخوت والمراسي والمرافق في موانئ المملكة",
+          focus: "إدارة اليخوت والمراسي والمرافق في موانئ المملكة مع دعم امتثال وضيافة متكامل",
           url: "https://seaexpertis.com/",
           link: "زيارة الموقع",
         },
@@ -486,9 +499,9 @@ const ABOUT_CONTENT: Record<
         "شغوف بالضيافة البحرية أو الهندسة؟ ندعم المواهب الدقيقة والمتكتمة وواسعة الخيال. شاركنا سيرتك أو مقترحك لنبتكر معاً عصر الرفاهية القادم.",
       details: [
         "برج المرجان، طريق الأمير سلطان، حي الروضة، جدة",
-        "هاتف: ‎+966 53 445 7744",
-        "بريد: cap.harbi@boatpro.club",
-        "https://seaexpertis.com • https://boatpro.club",
+        { type: "phone", label: "هاتف", value: "‎+966 53 445 7744" },
+        { type: "email", label: "بريد", value: "cap.harbi@boatpro.club" },
+        { type: "phone", label: "هاتف", value: "‎+966 53 445 7744" },
       ],
       panelTitle: "اعمل معنا",
       panelBody:
@@ -505,6 +518,92 @@ const ABOUT_CONTENT: Record<
   },
 };
 
+interface HeroStatsProps {
+  stats: Array<{ value: string; label: string }>;
+  language: Locale;
+}
+
+const AboutHeroStats = ({ stats, language }: HeroStatsProps) => {
+  const statsRef = useRef<HTMLDivElement | null>(null);
+  const statTargets = useMemo(
+    () =>
+      stats.map((stat) => {
+        const numeric = Number(String(stat.value).replace(/[^\d.]/g, ""));
+        return Number.isFinite(numeric) ? numeric : 0;
+      }),
+    [stats],
+  );
+  const [statValues, setStatValues] = useState(() => statTargets.map(() => 0));
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    if (!statsRef.current || hasAnimated) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setHasAnimated(true);
+        }
+      },
+      { threshold: 0.35 },
+    );
+
+    observer.observe(statsRef.current);
+
+    return () => observer.disconnect();
+  }, [hasAnimated]);
+
+  useEffect(() => {
+    if (!hasAnimated) {
+      return;
+    }
+
+    let animationFrame: number;
+    let startTime: number | null = null;
+    const duration = 1700;
+
+    const animate = (timestamp: number) => {
+      if (startTime === null) {
+        startTime = timestamp;
+      }
+
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+
+      setStatValues(statTargets.map((target) => Math.round(target * eased)));
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [hasAnimated, statTargets]);
+
+  return (
+    <div className={styles.heroStats} ref={statsRef}>
+      {stats.map((stat, index) => {
+        const currentValue = statValues[index] ?? 0;
+        const formattedValue = currentValue.toLocaleString(language === "ar" ? "ar-SA" : "en-US");
+        const targetValue = statTargets[index] ?? 0;
+
+        return (
+          <article data-animate="hero" key={stat.label}>
+            <strong aria-label={`${targetValue} ${stat.label}`} aria-live="polite">
+              {formattedValue}
+            </strong>
+            <span>{stat.label}</span>
+          </article>
+        );
+      })}
+    </div>
+  );
+};
+
 export default function AboutPage() {
   const rootRef = useRef<HTMLElement | null>(null);
   const heroRef = useRef<HTMLElement | null>(null);
@@ -515,7 +614,8 @@ export default function AboutPage() {
   const ctaRef = useRef<HTMLElement | null>(null);
   const { language, dir } = useLanguage();
   const content = ABOUT_CONTENT[language];
-
+  const phoneHref = getPhoneHref();
+  const mailHref = getMailHref();
   useAboutAnimations({
     rootRef,
     heroRef,
@@ -544,14 +644,7 @@ export default function AboutPage() {
         <p className={styles.heroLead} data-animate="hero">
           {content.hero.lead}
         </p>
-        <div className={styles.heroStats}>
-          {content.hero.stats.map((stat) => (
-            <article data-animate="hero" key={stat.label}>
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-            </article>
-          ))}
-        </div>
+        <AboutHeroStats key={language} stats={content.hero.stats} language={language} />
       </section>
 
       <section className={styles.storySection} ref={storyRef}>
@@ -721,9 +814,47 @@ export default function AboutPage() {
           <h2>{content.careers.title}</h2>
           <p>{content.careers.description}</p>
           <ul>
-            {content.careers.details.map((detail) => (
-              <li key={detail}>{detail}</li>
-            ))}
+            {content.careers.details.map((detail, idx) => {
+              if (typeof detail === "string") {
+                return (
+                  <li key={`detail-${idx}`} className={styles.careerContactLine}>
+                    {detail}
+                  </li>
+                );
+              }
+
+              if (detail.type === "phone") {
+                return (
+                  <li key={`phone-${idx}`} className={styles.careerContactLine}>
+                    <span>{detail.label}:</span>
+                    <a
+                      href={phoneHref}
+                      dir="ltr"
+                      onClick={(event) => handlePhoneIntent(event)}
+                      className={styles.careerContactLink}
+                      data-variant="phone"
+                      aria-label={`${detail.label} ${detail.value}`}
+                    >
+                      {detail.value}
+                    </a>
+                  </li>
+                );
+              }
+
+              return (
+                <li key={`email-${idx}`} className={styles.careerContactLine}>
+                  <span>{detail.label}:</span>
+                  <a
+                    href={mailHref}
+                    className={styles.careerContactLink}
+                    data-variant="email"
+                    aria-label={`${detail.label} ${detail.value}`}
+                  >
+                    {detail.value}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className={styles.careersPanel}>

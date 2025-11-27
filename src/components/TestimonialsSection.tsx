@@ -99,7 +99,7 @@ export default function TestimonialsSection() {
           } else {
             urls[slug] = `/api/images/slug/${slug}?v=${Date.now()}`;
           }
-        } catch (error) {
+        } catch {
           urls[slug] = `/api/images/slug/${slug}?v=${Date.now()}`;
         }
       }

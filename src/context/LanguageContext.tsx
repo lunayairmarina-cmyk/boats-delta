@@ -15,12 +15,23 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-type TranslationDictionary = Record<string, string | Record<string, any>>;
+type TranslationValue = string | number | boolean | null | TranslationDictionary | TranslationValue[];
+type TranslationDictionary = {
+    [key: string]: TranslationValue;
+};
 
 const LANGUAGE_STORAGE_KEY = 'lm_language';
 
+const getStoredLanguage = (): Locale => {
+    if (typeof window === 'undefined') {
+        return 'ar';
+    }
+    const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    return saved === 'ar' || saved === 'en' ? saved : 'ar';
+};
+
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-    const [languageState, setLanguageState] = useState<Locale>('ar');
+    const [languageState, setLanguageState] = useState<Locale>(() => getStoredLanguage());
 
     const persistLanguage = (lang: Locale) => {
         try {
@@ -44,26 +55,18 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
     const t = (key: string): string => {
         const keys = key.split('.');
-        let value: any = translations[languageState];
+        let value: TranslationValue = translations[languageState];
         for (const k of keys) {
-            if (value && typeof value === 'object' && k in value) {
-                value = value[k];
+            if (value && typeof value === 'object' && !Array.isArray(value) && k in value) {
+                value = (value as TranslationDictionary)[k];
             } else {
-                return key; // Fallback to key if not found
+                return key;
             }
         }
         return typeof value === 'string' ? value : key;
     };
 
     const dir = languageState === 'ar' ? 'rtl' : 'ltr';
-
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-        const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
-        if (saved === 'ar' || saved === 'en') {
-            setLanguageState(saved);
-        }
-    }, []);
 
     useEffect(() => {
         document.documentElement.lang = languageState;

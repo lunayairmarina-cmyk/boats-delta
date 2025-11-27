@@ -3,17 +3,16 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import styles from './ImageManager.module.css';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage, Locale } from '@/context/LanguageContext';
 
 type ImageSection =
     | 'hero-home'
     | 'experience-section'
     | 'why-choose-us'
     | 'testimonials'
-    | 'partner-logos'
     | 'about-page'
     | 'contact-page'
-    | 'general';
+    | 'services-banner';
 
 interface GridFSFile {
     _id: string;
@@ -27,6 +26,29 @@ interface GridFSFile {
     };
 }
 
+type SectionCopy = Record<ImageSection, { label: string; group: string }>;
+
+const IMAGE_SECTIONS: Record<Locale, SectionCopy> = {
+    en: {
+        'hero-home': { label: 'Hero Banner (Main Slider)', group: 'Homepage' },
+        'experience-section': { label: 'Experience Section (ocean-sunrise)', group: 'Homepage' },
+        'why-choose-us': { label: 'Why Choose Us (relationship-crew)', group: 'Homepage' },
+        'testimonials': { label: 'Testimonial Avatars (portrait-vip-1 to 12)', group: 'Homepage' },
+        'about-page': { label: 'About Page Images', group: 'About Page' },
+        'contact-page': { label: 'Contact Page Images', group: 'Contact Page' },
+        'services-banner': { label: 'Services Page Banner', group: 'Services Page' },
+    },
+    ar: {
+        'hero-home': { label: 'البانر الرئيسي (السلايدر)', group: 'الصفحة الرئيسية' },
+        'experience-section': { label: 'قسم التجربة (ocean-sunrise)', group: 'الصفحة الرئيسية' },
+        'why-choose-us': { label: 'لماذا تختارنا (relationship-crew)', group: 'الصفحة الرئيسية' },
+        'testimonials': { label: 'صور الشهادات (portrait-vip-1 إلى 12)', group: 'الصفحة الرئيسية' },
+        'about-page': { label: 'صور صفحة من نحن', group: 'صفحة من نحن' },
+        'contact-page': { label: 'صور صفحة الاتصال', group: 'صفحة الاتصال' },
+        'services-banner': { label: 'بانر صفحة الخدمات', group: 'صفحة الخدمات' },
+    },
+};
+
 export default function ImageManager() {
     const { language } = useLanguage();
     const [activeSection, setActiveSection] = useState<ImageSection>('hero-home');
@@ -38,28 +60,6 @@ export default function ImageManager() {
 
     const isHeroSection = activeSection === 'hero-home';
 
-    const sections = {
-        en: {
-            'hero-home': { label: 'Hero Banner (Main Slider)', group: 'Homepage' },
-            'experience-section': { label: 'Experience Section (ocean-sunrise)', group: 'Homepage' },
-            'why-choose-us': { label: 'Why Choose Us (relationship-crew)', group: 'Homepage' },
-            'testimonials': { label: 'Testimonial Avatars (portrait-vip-1 to 12)', group: 'Homepage' },
-            'partner-logos': { label: 'Partner/Client Logos', group: 'Homepage' },
-            'about-page': { label: 'About Page Images', group: 'About Page' },
-            'contact-page': { label: 'Contact Page Images', group: 'Contact Page' },
-            'general': { label: 'General/Other Images', group: 'Other' },
-        },
-        ar: {
-            'hero-home': { label: 'البانر الرئيسي (السلايدر)', group: 'الصفحة الرئيسية' },
-            'experience-section': { label: 'قسم التجربة (ocean-sunrise)', group: 'الصفحة الرئيسية' },
-            'why-choose-us': { label: 'لماذا تختارنا (relationship-crew)', group: 'الصفحة الرئيسية' },
-            'testimonials': { label: 'صور الشهادات (portrait-vip-1 إلى 12)', group: 'الصفحة الرئيسية' },
-            'partner-logos': { label: 'شعارات الشركاء/العملاء', group: 'الصفحة الرئيسية' },
-            'about-page': { label: 'صور صفحة من نحن', group: 'صفحة من نحن' },
-            'contact-page': { label: 'صور صفحة الاتصال', group: 'صفحة الاتصال' },
-            'general': { label: 'صور عامة/أخرى', group: 'أخرى' },
-        }
-    };
 
     const copy = language === 'ar'
         ? {
@@ -195,7 +195,7 @@ export default function ImageManager() {
     }, [isHeroSection, orderedImages, fetchImages]);
 
     const groupedSections = useMemo(() => {
-        const sectionData = sections[language];
+        const sectionData = IMAGE_SECTIONS[language];
         const groups: Record<string, Array<{ key: ImageSection; label: string }>> = {};
 
         Object.entries(sectionData).forEach(([key, value]) => {
@@ -206,7 +206,7 @@ export default function ImageManager() {
         });
 
         return groups;
-    }, [language, sections]);
+    }, [language]);
 
     const formatDate = (dateString: string) => {
         try {

@@ -479,7 +479,9 @@ async function ensureImage({
 async function seedServices() {
     await connectDB();
     const db = mongoose.connection.db;
-    // @ts-ignore GridFSBucket typing is not exposed through mongoose
+    if (!db) {
+        throw new Error('Database connection is not initialized.');
+    }
     const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
 
     for (const seed of serviceSeeds) {

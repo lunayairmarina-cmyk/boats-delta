@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
+import { GridFSBucket } from 'mongodb';
 
 function normalizeSlug(value: string | null): string | undefined {
     if (!value) return undefined;
@@ -32,9 +33,8 @@ export async function POST(request: Request) {
         if (!db) {
             throw new Error('Database connection is not initialized.');
         }
-        // GridFSBucket typing is not exposed through mongoose
-        const bucket = new mongoose.mongo.GridFSBucket(db as any, { bucketName: 'images' });
-        const filesCollection = db.collection('images.files');
+        const bucket = new GridFSBucket(db, { bucketName: 'images' });
+        const filesCollection = db.collection<{ _id: mongoose.Types.ObjectId }>('images.files');
 
         if (slugInput) {
             const existingFiles = await filesCollection

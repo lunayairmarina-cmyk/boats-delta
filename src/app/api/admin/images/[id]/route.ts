@@ -1,14 +1,28 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
+import { GridFSBucket } from 'mongodb';
+
+interface ImageFileDoc {
+    _id: mongoose.Types.ObjectId;
+    filename?: string;
+    metadata?: {
+        section?: string;
+        slug?: string;
+        order?: number;
+        [key: string]: unknown;
+    };
+}
 
 export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
     try {
         await connectDB();
         const db = mongoose.connection.db;
-        // @ts-ignore GridFSBucket typing is not exposed through mongoose
-        const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
+        if (!db) {
+            throw new Error('Database connection is not initialized.');
+        }
+        const bucket = new GridFSBucket(db, { bucketName: 'images' });
 
         await bucket.delete(new mongoose.Types.ObjectId(params.id));
 
@@ -27,9 +41,8 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         if (!db) {
             throw new Error('Database connection is not initialized.');
         }
-        // @ts-ignore GridFSBucket typing is not exposed through mongoose
-        const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
-        const filesCollection = db.collection('images.files');
+        const bucket = new GridFSBucket(db, { bucketName: 'images' });
+        const filesCollection = db.collection<ImageFileDoc>('images.files');
 
         // Get the existing file metadata
         const existingFile = await filesCollection.findOne({
@@ -98,7 +111,7 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
         if (!db) {
             throw new Error('Database connection is not initialized.');
         }
-        const filesCollection = db.collection('images.files');
+        const filesCollection = db.collection<ImageFileDoc>('images.files');
 
         // Check if this is a services image
         const existingFile = await filesCollection.findOne({

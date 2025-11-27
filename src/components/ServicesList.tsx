@@ -78,8 +78,6 @@ export default function ServicesList({
         ? `${styles.servicesSection} ${styles.compactSection}`
         : styles.servicesSection;
 
-    const buttonLabel = language === 'ar' ? 'استفسر الآن' : 'Inquire Now';
-
     return (
         <section className={sectionClassName}>
             <div className={`${styles.container} ${compact ? styles.compactContainer : ''}`} style={{ direction: dir }}>

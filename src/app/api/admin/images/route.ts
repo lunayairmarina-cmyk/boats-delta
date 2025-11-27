@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
+import { GridFSBucket } from 'mongodb';
 
 export async function GET(request: NextRequest) {
     try {
         await connectDB();
         const db = mongoose.connection.db;
-        // @ts-ignore GridFSBucket typing is not exposed through mongoose
-        const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
+        if (!db) {
+            throw new Error('Database connection is not initialized.');
+        }
+        const bucket = new GridFSBucket(db, { bucketName: 'images' });
 
         const searchParams = request.nextUrl.searchParams;
         const section = searchParams.get('section');
@@ -24,13 +27,13 @@ export async function GET(request: NextRequest) {
             };
         } else if (section) {
             // If a specific section is requested
-            // Don't allow accessing services sections
+            // Don't allow accessing services-primary and services-gallery sections
             if (section === 'services-primary' || section === 'services-gallery') {
                 return NextResponse.json({ error: 'Services images are not accessible' }, { status: 403 });
             }
             query = { 'metadata.section': section };
         } else {
-            // Exclude services images when no specific section is requested
+            // Exclude services-primary and services-gallery when no specific section is requested
             query = {
                 'metadata.section': { $nin: ['services-primary', 'services-gallery'] }
             };

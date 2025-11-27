@@ -41,7 +41,6 @@ async function addImages() {
             throw new Error('Database connection is not initialized.');
         }
 
-        // @ts-ignore GridFSBucket typing is not exposed through mongoose
         const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
         const filesCollection = db.collection('images.files');
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import styles from './ServiceManager.module.css';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage, Locale } from '@/context/LanguageContext';
 
 interface Blog {
     _id: string;
@@ -26,7 +26,43 @@ type EditableBlog = Omit<Partial<Blog>, 'tags'> & {
     tags?: string[] | string;
 };
 
-const TEXT: Record<string, any> = {
+type LocaleCopy = {
+    headerTitle: string;
+    addButton: string;
+    confirmDelete: string;
+    modal: {
+        eyebrowNew: string;
+        eyebrowEdit: string;
+        newTitle: string;
+        editTitle: string;
+        closeLabel: string;
+    };
+    fields: {
+        titleEn: string;
+        titleAr: string;
+        excerptEn: string;
+        excerptAr: string;
+        contentEn: string;
+        contentAr: string;
+        featuredImage: string;
+        category: string;
+        author: string;
+        authorAr: string;
+        published: string;
+        tags: string;
+    };
+    actions: {
+        remove: string;
+        cancel: string;
+        save: string;
+        saving: string;
+    };
+    errors: {
+        generic: string;
+    };
+};
+
+const TEXT: Record<Locale, LocaleCopy> = {
     en: {
         headerTitle: 'Blog Management',
         addButton: 'Add New Blog Post',
@@ -229,10 +265,16 @@ export default function BlogManager() {
                 method: 'DELETE',
             });
             if (res.ok) {
-                setBlogs((prev) => prev.filter((blog) => blog._id !== id));
+                // Refetch blogs to ensure UI is in sync with database
+                await fetchBlogs();
+            } else {
+                const errorData = await res.json().catch(() => ({ error: 'Failed to delete blog' }));
+                console.error('Delete failed:', errorData);
+                alert(errorData.error || 'Failed to delete blog');
             }
         } catch (error) {
-            console.error(error);
+            console.error('Error deleting blog:', error);
+            alert('Error deleting blog. Please try again.');
         }
     };
 
