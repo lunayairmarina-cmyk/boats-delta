@@ -26,8 +26,11 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         const stream = bucket.openDownloadStream(_id);
         
         const uploadDate = file.uploadDate ? new Date(file.uploadDate).getTime() : Date.now();
-        const etag = `"${uploadDate}"`;
+        const etag = `"${uploadDate}-${params.id}"`;
         const lastModified = file.uploadDate ? new Date(file.uploadDate).toUTCString() : new Date().toUTCString();
+        
+        // 1 year cache (31536000 seconds)
+        const maxAge = 31536000;
 
         const ifNoneMatch = request.headers.get('if-none-match');
         const ifModifiedSince = request.headers.get('if-modified-since');
@@ -38,7 +41,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
                 headers: {
                     'ETag': etag,
                     'Last-Modified': lastModified,
-                    'Cache-Control': 'public, max-age=0, must-revalidate',
+                    'Cache-Control': `public, max-age=${maxAge}, immutable`,
                 },
             });
         }
@@ -47,10 +50,9 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         return new Response(stream, {
             headers: {
                 'Content-Type': file.contentType || 'video/mp4',
-                'Cache-Control': 'public, max-age=0, must-revalidate, no-cache',
+                'Cache-Control': `public, max-age=${maxAge}, immutable`,
                 'ETag': etag,
                 'Last-Modified': lastModified,
-                'Pragma': 'no-cache',
             },
         });
 
