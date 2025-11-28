@@ -583,6 +583,19 @@
     overflow: hidden;
 }
 
+@supports (height: 100dvh) {
+    @media (max-width: 768px) {
+        .mobileMenu {
+            height: 100dvh;
+        }
+
+        .mobileMenuContent {
+            height: 100dvh;
+            max-height: 100dvh;
+        }
+    }
+}
+
 .mobileMenu[data-dir="rtl"] .mobileMenuContent {
     box-shadow: 8px 0 32px rgba(0, 0, 0, 0.4);
 }
