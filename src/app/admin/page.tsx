@@ -4,27 +4,30 @@ import { useRef, useState } from 'react';
 import ImageManager from '@/components/admin/ImageManager';
 import ServiceManager from '@/components/admin/ServiceManager';
 import BlogManager from '@/components/admin/BlogManager';
+import VideoManager from '@/components/admin/VideoManager';
 import styles from './page.module.css';
 import { useLanguage } from '@/context/LanguageContext';
 
-type TabKey = 'services' | 'blogs' | 'images';
+type TabKey = 'services' | 'blogs' | 'images' | 'videos';
 
 export default function AdminDashboard() {
     const [activeTab, setActiveTab] = useState<TabKey>('services');
     const { language, dir } = useLanguage();
     const copy = language === 'ar'
-        ? { services: 'الخدمات', images: 'مكتبة الصور', blogs: 'المدونة' }
-        : { services: 'Services', images: 'Image Library', blogs: 'Blog' };
+        ? { services: 'الخدمات', images: 'مكتبة الصور', blogs: 'المدونة', videos: 'الفيديو' }
+        : { services: 'Services', images: 'Image Library', blogs: 'Blog', videos: 'Video' };
     const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
         services: null,
         blogs: null,
         images: null,
+        videos: null,
     });
 
     const tabs: Array<{ key: TabKey; label: string }> = [
         { key: 'services', label: copy.services },
         { key: 'blogs', label: copy.blogs },
         { key: 'images', label: copy.images },
+        { key: 'videos', label: copy.videos },
     ];
 
     const handleArrowNavigation = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -34,7 +37,7 @@ export default function AdminDashboard() {
         }
 
         event.preventDefault();
-        const order: TabKey[] = ['services', 'blogs', 'images'];
+        const order: TabKey[] = ['services', 'blogs', 'images', 'videos'];
         const currentIndex = order.indexOf(activeTab);
         const isRtl = dir === 'rtl';
         const delta = event.key === 'ArrowRight' ? (isRtl ? -1 : 1) : isRtl ? 1 : -1;
@@ -71,6 +74,7 @@ export default function AdminDashboard() {
                 {activeTab === 'services' && <ServiceManager />}
                 {activeTab === 'blogs' && <BlogManager />}
                 {activeTab === 'images' && <ImageManager />}
+                {activeTab === 'videos' && <VideoManager />}
             </div>
         </div>
     );

@@ -10,14 +10,11 @@ import CommitmentShowcase from "@/components/CommitmentShowcase";
 import RelationshipSection from "@/components/RelationshipSection";
 import ServicesList from "@/components/ServicesList";
 import YachtAppSection from "@/components/YachtAppSection";
+import VideoSection from "@/components/VideoSection";
 import styles from "./page.module.css";
 import { useLanguage } from "@/context/LanguageContext";
 
 
-const partnerLogos = Array.from({ length: 8 }, (_, index) => ({
-  id: index + 1,
-  label: "Logoipsum",
-}));
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -224,15 +221,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className={styles.logosRow}>
-          {partnerLogos.map((logo) => (
-            <span key={logo.id}>{logo.label}</span>
-          ))}
-        </div>
         <p className={styles.trustCopy}>
           {t('partnerships.subtitle')}
         </p>
       </section>
+
+      <VideoSection />
 
       <RelationshipSection />
 

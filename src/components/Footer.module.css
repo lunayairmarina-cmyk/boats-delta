@@ -22,7 +22,7 @@
   margin: 0 auto;
   text-align: center;
   position: relative;
-  padding-bottom: clamp(110px, 18vw, 180px);
+  padding-bottom: clamp(16px, 2vw, 28px);
   overflow: visible;
   min-height: fit-content;
 }
@@ -278,6 +278,13 @@
   transform: translateY(-4px) scale(1.02);
 }
 
+/* Hide WhatsApp icon on mobile */
+@media (max-width: 768px) {
+  .socialCard[data-mobile-hide="true"] {
+    display: none;
+  }
+}
+
 .socialIcon {
   width: clamp(28px, 3.5vw, 32px);
   height: clamp(28px, 3.5vw, 32px);
@@ -513,7 +520,7 @@
   }
 
   .inner {
-    padding-bottom: clamp(80px, 12vw, 160px);
+    padding-bottom: clamp(14px, 1.5vw, 24px);
   }
 
   .linkList {
@@ -529,7 +536,7 @@
   }
 
   .inner {
-    padding-bottom: clamp(100px, 15vw, 160px);
+    padding-bottom: clamp(12px, 1.2vw, 20px);
   }
 
   .copyBlock {
@@ -558,7 +565,7 @@
   }
 
   .inner {
-    padding-bottom: clamp(100px, 15vw, 140px);
+    padding-bottom: clamp(16px, 1.5vw, 24px);
   }
 
   .copyBlock {
@@ -614,7 +621,7 @@
   }
 
   .inner {
-    padding-bottom: clamp(120px, 18vw, 160px);
+    padding-bottom: clamp(14px, 1.5vw, 20px);
   }
 
   .copyBlock {

@@ -238,6 +238,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className={styles.socialCard}
                 data-brand={social.brand}
+                data-mobile-hide={social.brand === "whatsapp" ? "true" : undefined}
                 aria-label={social.name}
               >
                 <span className={styles.socialIcon}>{social.icon}</span>
