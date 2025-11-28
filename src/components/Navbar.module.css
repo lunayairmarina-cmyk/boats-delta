@@ -715,7 +715,7 @@
 }
 
 .mobileLanguage {
-    margin: 8px 24px var(--touch-target-min);
+    margin: 24px 24px calc(var(--touch-target-min) * 0.5);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     padding: 14px 20px;
@@ -743,7 +743,7 @@
 
 .mobileCta {
     margin: 0 24px calc(var(--touch-target-min) + env(safe-area-inset-bottom, 0px));
-    margin-top: auto;
+    margin-top: 8px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
