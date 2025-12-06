@@ -14,15 +14,19 @@ type ImageSection =
     | 'contact-page'
     | 'services-banner';
 
+type MediaType = 'image' | 'video';
+
 interface GridFSFile {
     _id: string;
     filename: string;
     uploadDate: string;
     metadata?: {
         category?: string;
-        section?: ImageSection;
+        section?: ImageSection | string;
         slug?: string;
         order?: number;
+        contentType?: string;
+        mediaType?: MediaType;
     };
 }
 
@@ -53,46 +57,78 @@ export default function ImageManager() {
     const { language, dir } = useLanguage();
     const [activeSection, setActiveSection] = useState<ImageSection>('hero-home');
     const [images, setImages] = useState<GridFSFile[]>([]);
+    const [heroVideos, setHeroVideos] = useState<GridFSFile[]>([]);
     const [replacing, setReplacing] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [replacingImageId, setReplacingImageId] = useState<string | null>(null);
     const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [newImageFile, setNewImageFile] = useState<File | null>(null);
+    const [newVideoFile, setNewVideoFile] = useState<File | null>(null);
+    const [deleting, setDeleting] = useState<string | null>(null);
 
     const isHeroSection = activeSection === 'hero-home';
-
 
     const copy = language === 'ar'
         ? {
             title: 'إدارة الصور',
-            description: 'تحديث صور الموقع حسب الأقسام (لا يمكن إضافة أو حذف الصور)',
+            description: 'تحديث صور الموقع حسب الأقسام',
+            heroDescription: 'إدارة صور وفيديوهات البانر الرئيسي - يمكنك إضافة وحذف وإعادة ترتيب العناصر',
             section: 'القسم',
             selectImage: 'اختر صورة للاستبدال',
             replaceImage: 'استبدال الصورة',
             replacing: 'جاري الاستبدال…',
             imagesInSection: 'الصور في هذا القسم',
+            heroMediaTitle: 'وسائط البانر الرئيسي',
             noImages: 'لا توجد صور في هذا القسم بعد',
+            noHeroMedia: 'لا توجد صور أو فيديوهات في البانر بعد',
             moveUp: 'تحريك لأعلى',
             moveDown: 'تحريك لأسفل',
             order: 'الترتيب:',
             slide: 'الشريحة',
             heroHint: 'استخدم أزرار التحريك لضبط ترتيب الشرائح في الصفحة',
             updateNote: 'ملاحظة: يمكنك فقط تحديث الصور الموجودة. لا يمكن إضافة أو حذف الصور.',
+            heroNote: 'نصيحة: يمكنك إضافة صور وفيديوهات متعددة للبانر الرئيسي. سيتم عرضها كسلايدر.',
+            addImage: 'إضافة صورة',
+            addVideo: 'إضافة فيديو',
+            uploadImage: 'رفع الصورة',
+            uploadVideo: 'رفع الفيديو',
+            uploading: 'جاري الرفع…',
+            delete: 'حذف',
+            deleting: 'جاري الحذف…',
+            confirmDelete: 'هل أنت متأكد من حذف هذا العنصر؟',
+            imageType: 'صورة',
+            videoType: 'فيديو',
         }
         : {
             title: 'Image Management',
-            description: 'Update website images by section (add and delete are disabled)',
+            description: 'Update website images by section',
+            heroDescription: 'Manage hero banner images and videos - add, delete, and reorder items',
             section: 'Section',
             selectImage: 'Select Image to Replace',
             replaceImage: 'Replace Image',
             replacing: 'Replacing…',
             imagesInSection: 'Images in this section',
+            heroMediaTitle: 'Hero Banner Media',
             noImages: 'No images in this section yet',
+            noHeroMedia: 'No images or videos in the banner yet',
             moveUp: 'Move Up',
             moveDown: 'Move Down',
             order: 'Order:',
             slide: 'Slide',
             heroHint: 'Use move buttons to adjust the order of slides on the site',
             updateNote: 'Note: You can only update existing images. Adding and deleting images is disabled.',
+            heroNote: 'Tip: You can add multiple images and videos to the hero banner. They will display as a slider.',
+            addImage: 'Add Image',
+            addVideo: 'Add Video',
+            uploadImage: 'Upload Image',
+            uploadVideo: 'Upload Video',
+            uploading: 'Uploading…',
+            delete: 'Delete',
+            deleting: 'Deleting…',
+            confirmDelete: 'Are you sure you want to delete this item?',
+            imageType: 'Image',
+            videoType: 'Video',
         };
 
     const orderedImages = useMemo(() => {
@@ -103,6 +139,20 @@ export default function ImageManager() {
         });
     }, [images]);
 
+    // Combine images and videos for hero section
+    const heroMedia = useMemo(() => {
+        if (!isHeroSection) return [];
+        const allMedia: (GridFSFile & { isVideo: boolean })[] = [
+            ...orderedImages.map(img => ({ ...img, isVideo: false })),
+            ...heroVideos.map(vid => ({ ...vid, isVideo: true })),
+        ];
+        return allMedia.sort((a, b) => {
+            const orderA = typeof a.metadata?.order === 'number' ? a.metadata.order : new Date(a.uploadDate).getTime();
+            const orderB = typeof b.metadata?.order === 'number' ? b.metadata.order : new Date(b.uploadDate).getTime();
+            return orderA - orderB;
+        });
+    }, [orderedImages, heroVideos, isHeroSection]);
+
     const fetchImages = useCallback(async () => {
         const res = await fetch(`/api/admin/images?section=${activeSection}`);
         if (res.ok) {
@@ -111,9 +161,22 @@ export default function ImageManager() {
         }
     }, [activeSection]);
 
+    const fetchHeroVideos = useCallback(async () => {
+        if (!isHeroSection) {
+            setHeroVideos([]);
+            return;
+        }
+        const res = await fetch('/api/admin/videos?section=hero-home');
+        if (res.ok) {
+            const data = await res.json();
+            setHeroVideos(data);
+        }
+    }, [isHeroSection]);
+
     useEffect(() => {
         fetchImages();
-    }, [fetchImages]);
+        fetchHeroVideos();
+    }, [fetchImages, fetchHeroVideos]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, imageId: string) => {
         if (!e.target.files?.[0]) {
@@ -141,7 +204,6 @@ export default function ImageManager() {
                 setSelectedFile(null);
                 setReplacingImageId(null);
                 await fetchImages();
-                // Reset file input
                 const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
                 fileInputs.forEach(input => input.value = '');
             } else {
@@ -156,43 +218,133 @@ export default function ImageManager() {
         }
     };
 
+    const handleAddImage = async () => {
+        if (!newImageFile || !isHeroSection) return;
+        setUploading(true);
+
+        const formData = new FormData();
+        formData.append('file', newImageFile);
+        formData.append('section', 'hero-home');
+        formData.append('category', 'hero');
+        // Set order to be after all existing items
+        const maxOrder = Math.max(...heroMedia.map(m => m.metadata?.order || 0), 0);
+        formData.append('order', String(maxOrder + 100));
+
+        try {
+            const res = await fetch('/api/admin/upload-image', {
+                method: 'POST',
+                body: formData,
+            });
+            if (res.ok) {
+                setNewImageFile(null);
+                await fetchImages();
+                const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
+                fileInputs.forEach(input => input.value = '');
+            } else {
+                const error = await res.json();
+                alert(error.error || 'Failed to upload image');
+            }
+        } catch (error) {
+            console.error('Upload failed', error);
+            alert('Failed to upload image');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleAddVideo = async () => {
+        if (!newVideoFile || !isHeroSection) return;
+        setUploading(true);
+
+        const formData = new FormData();
+        formData.append('file', newVideoFile);
+        formData.append('section', 'hero-home');
+        formData.append('category', 'hero');
+        const maxOrder = Math.max(...heroMedia.map(m => m.metadata?.order || 0), 0);
+        formData.append('order', String(maxOrder + 100));
+
+        try {
+            const res = await fetch('/api/admin/videos', {
+                method: 'POST',
+                body: formData,
+            });
+            if (res.ok) {
+                setNewVideoFile(null);
+                await fetchHeroVideos();
+                const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
+                fileInputs.forEach(input => input.value = '');
+            } else {
+                const error = await res.json();
+                alert(error.error || 'Failed to upload video');
+            }
+        } catch (error) {
+            console.error('Upload failed', error);
+            alert('Failed to upload video');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleDelete = async (id: string, isVideo: boolean) => {
+        if (!confirm(copy.confirmDelete)) return;
+        setDeleting(id);
+
+        try {
+            const endpoint = isVideo ? `/api/admin/videos/${id}` : `/api/admin/images/${id}`;
+            const res = await fetch(endpoint, { method: 'DELETE' });
+            if (res.ok) {
+                if (isVideo) {
+                    await fetchHeroVideos();
+                } else {
+                    await fetchImages();
+                }
+            } else {
+                const error = await res.json();
+                alert(error.error || 'Failed to delete');
+            }
+        } catch (error) {
+            console.error('Delete failed', error);
+            alert('Failed to delete');
+        } finally {
+            setDeleting(null);
+        }
+    };
+
     const handleReorder = useCallback(async (currentIndex: number, direction: 'up' | 'down') => {
         if (!isHeroSection) return;
         const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-        if (targetIndex < 0 || targetIndex >= orderedImages.length) return;
+        if (targetIndex < 0 || targetIndex >= heroMedia.length) return;
 
-        const reordered = [...orderedImages];
+        const reordered = [...heroMedia];
         const [moved] = reordered.splice(currentIndex, 1);
         reordered.splice(targetIndex, 0, moved);
 
         const updates = reordered.map((file, index) => ({
             id: file._id,
             order: (index + 1) * 100,
+            isVideo: file.isVideo,
         }));
-
-        setImages(
-            reordered.map((file, index) => ({
-                ...file,
-                metadata: { ...file.metadata, order: updates[index].order },
-            }))
-        );
 
         setIsUpdatingOrder(true);
         try {
             await Promise.all(
-                updates.map((item) =>
-                    fetch(`/api/admin/images/${item.id}`, {
+                updates.map((item) => {
+                    const endpoint = item.isVideo
+                        ? `/api/admin/videos/${item.id}`
+                        : `/api/admin/images/${item.id}`;
+                    return fetch(endpoint, {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ order: item.order }),
-                    })
-                )
+                    });
+                })
             );
         } finally {
             setIsUpdatingOrder(false);
             await fetchImages();
+            await fetchHeroVideos();
         }
-    }, [isHeroSection, orderedImages, fetchImages]);
+    }, [isHeroSection, heroMedia, fetchImages, fetchHeroVideos]);
 
     const groupedSections = useMemo(() => {
         const sectionData = IMAGE_SECTIONS[language];
@@ -221,7 +373,9 @@ export default function ImageManager() {
             <div className={styles.header}>
                 <div>
                     <h3 className={styles.title}>{copy.title}</h3>
-                    <p className={styles.subtitle}>{copy.description}</p>
+                    <p className={styles.subtitle}>
+                        {isHeroSection ? copy.heroDescription : copy.description}
+                    </p>
                 </div>
             </div>
 
@@ -244,93 +398,231 @@ export default function ImageManager() {
                                 </optgroup>
                             ))}
                         </select>
-                        <p className={styles.updateNote}>{copy.updateNote}</p>
+                        <p className={styles.updateNote}>
+                            {isHeroSection ? copy.heroNote : copy.updateNote}
+                        </p>
                     </div>
+
+                    {/* Hero Section: Add Image/Video Controls */}
+                    {isHeroSection && (
+                        <div className={styles.uploadSection}>
+                            <div className={styles.uploadGroup}>
+                                <input
+                                    type="file"
+                                    id="new-image-upload"
+                                    className={styles.hiddenInput}
+                                    accept="image/*"
+                                    onChange={(e) => setNewImageFile(e.target.files?.[0] || null)}
+                                />
+                                <label htmlFor="new-image-upload" className={styles.fileLabel}>
+                                    📷 {copy.addImage}
+                                </label>
+                                {newImageFile && (
+                                    <>
+                                        <span className={styles.fileName}>{newImageFile.name}</span>
+                                        <button
+                                            type="button"
+                                            className={styles.uploadButton}
+                                            onClick={handleAddImage}
+                                            disabled={uploading}
+                                        >
+                                            {uploading ? copy.uploading : copy.uploadImage}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                            <div className={styles.uploadGroup}>
+                                <input
+                                    type="file"
+                                    id="new-video-upload"
+                                    className={styles.hiddenInput}
+                                    accept="video/*"
+                                    onChange={(e) => setNewVideoFile(e.target.files?.[0] || null)}
+                                />
+                                <label htmlFor="new-video-upload" className={styles.fileLabel}>
+                                    🎬 {copy.addVideo}
+                                </label>
+                                {newVideoFile && (
+                                    <>
+                                        <span className={styles.fileName}>{newVideoFile.name}</span>
+                                        <button
+                                            type="button"
+                                            className={styles.uploadButton}
+                                            onClick={handleAddVideo}
+                                            disabled={uploading}
+                                        >
+                                            {uploading ? copy.uploading : copy.uploadVideo}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     <div className={styles.listHeader}>
-                        <h4 className={styles.panelTitle}>{copy.imagesInSection}</h4>
-                        {isHeroSection && orderedImages.length > 1 && (
+                        <h4 className={styles.panelTitle}>
+                            {isHeroSection ? copy.heroMediaTitle : copy.imagesInSection}
+                        </h4>
+                        {isHeroSection && heroMedia.length > 1 && (
                             <p className={styles.heroHint}>{copy.heroHint}</p>
                         )}
                     </div>
 
-                    {orderedImages.length === 0 && (
-                        <p className={styles.emptyState}>{copy.noImages}</p>
-                    )}
-
-                    <div className={styles.imageGrid}>
-                        {orderedImages.map((img, index) => {
-                            const slug = img.metadata?.slug;
-                            return (
-                                <div key={img._id} className={styles.imageCard}>
-                                    <div className={styles.imagePreview}>
-                                        <Image
-                                            src={`/api/images/${img._id}`}
-                                            alt={img.filename}
-                                            fill
-                                            className={styles.thumbnail}
-                                            sizes="300px"
-                                        />
-                                    </div>
-                                    <div className={styles.imageInfo}>
-                                        <p className={styles.imageName}>{img.filename}</p>
-                                        <p className={styles.imageDate}>{formatDate(img.uploadDate)}</p>
-                                        {slug && <p className={styles.imageSlug}>slug: {slug}</p>}
-                                        {isHeroSection && (
-                                            <p className={styles.imageOrder}>
-                                                {copy.slide} {index + 1} • {copy.order} {img.metadata?.order ?? '—'}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div className={styles.imageActions}>
-                                        {isHeroSection && orderedImages.length > 1 && (
-                                            <div className={styles.orderButtons}>
+                    {/* Hero Section: Combined Media Grid */}
+                    {isHeroSection ? (
+                        <>
+                            {heroMedia.length === 0 && (
+                                <p className={styles.emptyState}>{copy.noHeroMedia}</p>
+                            )}
+                            <div className={styles.imageGrid}>
+                                {heroMedia.map((item, index) => {
+                                    const slug = item.metadata?.slug;
+                                    return (
+                                        <div key={item._id} className={styles.imageCard}>
+                                            <div className={styles.imagePreview}>
+                                                {item.isVideo ? (
+                                                    <video
+                                                        src={`/api/videos/${item._id}`}
+                                                        className={styles.videoThumbnail}
+                                                        muted
+                                                        preload="metadata"
+                                                    />
+                                                ) : (
+                                                    <Image
+                                                        src={`/api/images/${item._id}`}
+                                                        alt={item.filename}
+                                                        fill
+                                                        className={styles.thumbnail}
+                                                        sizes="300px"
+                                                    />
+                                                )}
+                                                <span className={styles.mediaTypeBadge}>
+                                                    {item.isVideo ? `🎬 ${copy.videoType}` : `📷 ${copy.imageType}`}
+                                                </span>
+                                            </div>
+                                            <div className={styles.imageInfo}>
+                                                <p className={styles.imageName}>{item.filename}</p>
+                                                <p className={styles.imageDate}>{formatDate(item.uploadDate)}</p>
+                                                {slug && <p className={styles.imageSlug}>slug: {slug}</p>}
+                                                <p className={styles.imageOrder}>
+                                                    {copy.slide} {index + 1} • {copy.order} {item.metadata?.order ?? '—'}
+                                                </p>
+                                            </div>
+                                            <div className={styles.imageActions}>
+                                                {heroMedia.length > 1 && (
+                                                    <div className={styles.orderButtons}>
+                                                        <button
+                                                            type="button"
+                                                            className={styles.orderButton}
+                                                            disabled={index === 0 || isUpdatingOrder}
+                                                            onClick={() => handleReorder(index, 'up')}
+                                                            aria-label={copy.moveUp}
+                                                        >
+                                                            ↑
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className={styles.orderButton}
+                                                            disabled={index === heroMedia.length - 1 || isUpdatingOrder}
+                                                            onClick={() => handleReorder(index, 'down')}
+                                                            aria-label={copy.moveDown}
+                                                        >
+                                                            ↓
+                                                        </button>
+                                                    </div>
+                                                )}
+                                                {!item.isVideo && (
+                                                    <div className={styles.replaceGroup}>
+                                                        <input
+                                                            type="file"
+                                                            id={`file-replace-${item._id}`}
+                                                            className={styles.hiddenInput}
+                                                            onChange={(e) => handleFileSelect(e, item._id)}
+                                                            accept="image/*"
+                                                        />
+                                                        <label htmlFor={`file-replace-${item._id}`} className={styles.replaceLabel}>
+                                                            {copy.selectImage}
+                                                        </label>
+                                                        {replacingImageId === item._id && selectedFile && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleReplace(item._id)}
+                                                                className={styles.replaceButton}
+                                                                disabled={replacing}
+                                                            >
+                                                                {replacing ? copy.replacing : copy.replaceImage}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                )}
                                                 <button
                                                     type="button"
-                                                    className={styles.orderButton}
-                                                    disabled={index === 0 || isUpdatingOrder}
-                                                    onClick={() => handleReorder(index, 'up')}
-                                                    aria-label={copy.moveUp}
+                                                    className={styles.deleteButton}
+                                                    onClick={() => handleDelete(item._id, item.isVideo)}
+                                                    disabled={deleting === item._id}
                                                 >
-                                                    ↑
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className={styles.orderButton}
-                                                    disabled={index === orderedImages.length - 1 || isUpdatingOrder}
-                                                    onClick={() => handleReorder(index, 'down')}
-                                                    aria-label={copy.moveDown}
-                                                >
-                                                    ↓
+                                                    {deleting === item._id ? copy.deleting : copy.delete}
                                                 </button>
                                             </div>
-                                        )}
-                                        <div className={styles.replaceGroup}>
-                                            <input
-                                                type="file"
-                                                id={`file-replace-${img._id}`}
-                                                className={styles.hiddenInput}
-                                                onChange={(e) => handleFileSelect(e, img._id)}
-                                                accept="image/*"
-                                            />
-                                            <label htmlFor={`file-replace-${img._id}`} className={styles.replaceLabel}>
-                                                {copy.selectImage}
-                                            </label>
-                                            {replacingImageId === img._id && selectedFile && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleReplace(img._id)}
-                                                    className={styles.replaceButton}
-                                                    disabled={replacing}
-                                                >
-                                                    {replacing ? copy.replacing : copy.replaceImage}
-                                                </button>
-                                            )}
                                         </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            {orderedImages.length === 0 && (
+                                <p className={styles.emptyState}>{copy.noImages}</p>
+                            )}
+                            <div className={styles.imageGrid}>
+                                {orderedImages.map((img) => {
+                                    const slug = img.metadata?.slug;
+                                    return (
+                                        <div key={img._id} className={styles.imageCard}>
+                                            <div className={styles.imagePreview}>
+                                                <Image
+                                                    src={`/api/images/${img._id}`}
+                                                    alt={img.filename}
+                                                    fill
+                                                    className={styles.thumbnail}
+                                                    sizes="300px"
+                                                />
+                                            </div>
+                                            <div className={styles.imageInfo}>
+                                                <p className={styles.imageName}>{img.filename}</p>
+                                                <p className={styles.imageDate}>{formatDate(img.uploadDate)}</p>
+                                                {slug && <p className={styles.imageSlug}>slug: {slug}</p>}
+                                            </div>
+                                            <div className={styles.imageActions}>
+                                                <div className={styles.replaceGroup}>
+                                                    <input
+                                                        type="file"
+                                                        id={`file-replace-${img._id}`}
+                                                        className={styles.hiddenInput}
+                                                        onChange={(e) => handleFileSelect(e, img._id)}
+                                                        accept="image/*"
+                                                    />
+                                                    <label htmlFor={`file-replace-${img._id}`} className={styles.replaceLabel}>
+                                                        {copy.selectImage}
+                                                    </label>
+                                                    {replacingImageId === img._id && selectedFile && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleReplace(img._id)}
+                                                            className={styles.replaceButton}
+                                                            disabled={replacing}
+                                                        >
+                                                            {replacing ? copy.replacing : copy.replaceImage}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

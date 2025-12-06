@@ -2,26 +2,32 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import ContactSection from "@/components/ContactSection";
 import FaqSection from "@/components/FaqSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import CommitmentShowcase from "@/components/CommitmentShowcase";
 import RelationshipSection from "@/components/RelationshipSection";
 import ServicesList from "@/components/ServicesList";
-import YachtAppSection from "@/components/YachtAppSection";
+
 import VideoSection from "@/components/VideoSection";
 import styles from "./page.module.css";
 import { useLanguage } from "@/context/LanguageContext";
 
-
+interface HeroMediaItem {
+  id: string;
+  url: string;
+  type: 'image' | 'video';
+  order: number;
+}
 
 export default function Home() {
   const { t, language } = useLanguage();
-  const [heroBgImages, setHeroBgImages] = useState<string[]>(["/api/images/slug/ocean-sunrise"]);
+  const [heroMedia, setHeroMedia] = useState<HeroMediaItem[]>([{ id: 'default', url: '/api/images/slug/ocean-sunrise', type: 'image', order: 0 }]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [cardImageId, setCardImageId] = useState<string | null>(null);
   const [logoImageId, setLogoImageId] = useState<string | null>(null);
+  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
 
   // Preload hero background image for better LCP
   useEffect(() => {
@@ -36,53 +42,72 @@ export default function Home() {
     };
   }, []);
 
-  // Fetch the latest image URLs
+  // Fetch the latest media URLs (images and videos)
   useEffect(() => {
-    const updateImages = async () => {
+    const updateMedia = async () => {
       try {
+        const mediaItems: HeroMediaItem[] = [];
+
         // Fetch hero banner images (hero-home section)
         const bannerResponse = await fetch("/api/admin/images?section=hero-home", {
           cache: 'no-store',
         });
         if (bannerResponse.ok) {
           const bannerImages = await bannerResponse.json();
-          if (Array.isArray(bannerImages) && bannerImages.length > 0) {
-            // Sort by order (API already sorts, but ensure it's correct)
-            const sortedImages = bannerImages.sort((a: any, b: any) => {
-              const orderA = a.metadata?.order || 0;
-              const orderB = b.metadata?.order || 0;
-              return orderA - orderB;
-            });
-            // Use all banner images in order
-            const imageUrls = sortedImages
-              .map((img: any) => img._id ? `/api/images/${img._id}` : null)
-              .filter((url: string | null) => url !== null) as string[];
-            if (imageUrls.length > 0) {
-              setHeroBgImages(imageUrls);
-            } else {
-              // Fallback to ocean-sunrise if hero-home doesn't exist yet
-              const fallbackResponse = await fetch("/api/admin/images?slug=ocean-sunrise", {
-                cache: 'no-store',
-              });
-              if (fallbackResponse.ok) {
-                const fallbackImages = await fallbackResponse.json();
-                const fallbackImage = Array.isArray(fallbackImages) && fallbackImages.length > 0 ? fallbackImages[0] : null;
-                if (fallbackImage?._id) {
-                  setHeroBgImages([`/api/images/${fallbackImage._id}`]);
-                }
+          if (Array.isArray(bannerImages)) {
+            bannerImages.forEach((img: { _id?: string; metadata?: { order?: number } }) => {
+              if (img._id) {
+                mediaItems.push({
+                  id: img._id,
+                  url: `/api/images/${img._id}`,
+                  type: 'image',
+                  order: img.metadata?.order || 0,
+                });
               }
-            }
-          } else {
-            // Fallback to ocean-sunrise if hero-home doesn't exist yet
-            const fallbackResponse = await fetch("/api/admin/images?slug=ocean-sunrise", {
-              cache: 'no-store',
             });
-            if (fallbackResponse.ok) {
-              const fallbackImages = await fallbackResponse.json();
-              const fallbackImage = Array.isArray(fallbackImages) && fallbackImages.length > 0 ? fallbackImages[0] : null;
-              if (fallbackImage?._id) {
-                setHeroBgImages([`/api/images/${fallbackImage._id}`]);
+          }
+        }
+
+        // Fetch hero banner videos (hero-home section)
+        const videoResponse = await fetch("/api/admin/videos?section=hero-home", {
+          cache: 'no-store',
+        });
+        if (videoResponse.ok) {
+          const heroVideos = await videoResponse.json();
+          if (Array.isArray(heroVideos)) {
+            heroVideos.forEach((vid: { _id?: string; metadata?: { order?: number } }) => {
+              if (vid._id) {
+                mediaItems.push({
+                  id: vid._id,
+                  url: `/api/videos/${vid._id}`,
+                  type: 'video',
+                  order: vid.metadata?.order || 0,
+                });
               }
+            });
+          }
+        }
+
+        // Sort by order
+        mediaItems.sort((a, b) => a.order - b.order);
+
+        if (mediaItems.length > 0) {
+          setHeroMedia(mediaItems);
+        } else {
+          // Fallback to ocean-sunrise if no hero media exists
+          const fallbackResponse = await fetch("/api/admin/images?slug=ocean-sunrise", {
+            cache: 'no-store',
+          });
+          if (fallbackResponse.ok) {
+            const fallbackImages = await fallbackResponse.json();
+            const fallbackImage = Array.isArray(fallbackImages) && fallbackImages.length > 0 ? fallbackImages[0] : null;
+            if (fallbackImage?._id) {
+              setHeroMedia([{
+                id: fallbackImage._id,
+                url: `/api/images/${fallbackImage._id}`,
+                type: 'image',
+                order: 0,
+              }]);
             }
           }
         }
@@ -93,25 +118,22 @@ export default function Home() {
         });
         if (experienceResponse.ok) {
           const experienceImages = await experienceResponse.json();
-          // Find ocean-sunrise image for card (should be in experience-section)
-          const cardImage = experienceImages.find((img: any) => 
-            img.metadata?.slug === 'ocean-sunrise' || 
+          const cardImage = experienceImages.find((img: { metadata?: { slug?: string; section?: string } }) =>
+            img.metadata?.slug === 'ocean-sunrise' ||
             (img.metadata?.section === 'experience-section' && !img.metadata?.slug?.includes('logo'))
           );
           if (cardImage?._id) {
             setCardImageId(cardImage._id);
           } else if (experienceImages.length > 0) {
-            // Fallback: use first non-logo image if ocean-sunrise not found
-            const nonLogoImage = experienceImages.find((img: any) => 
+            const nonLogoImage = experienceImages.find((img: { metadata?: { slug?: string }; filename?: string }) =>
               !img.metadata?.slug?.includes('logo') && !img.filename?.toLowerCase().includes('logo')
             );
             if (nonLogoImage?._id) {
               setCardImageId(nonLogoImage._id);
             }
           }
-          // Find logo image
-          const logoImage = experienceImages.find((img: any) => 
-            img.metadata?.slug === 'lm-logo' || 
+          const logoImage = experienceImages.find((img: { metadata?: { slug?: string }; filename?: string }) =>
+            img.metadata?.slug === 'lm-logo' ||
             img.filename?.toLowerCase().includes('logo')
           );
           if (logoImage?._id) {
@@ -119,49 +141,107 @@ export default function Home() {
           }
         }
       } catch (error) {
-        console.error('Failed to fetch images:', error);
+        console.error('Failed to fetch media:', error);
       }
     };
-    updateImages();
-    
+    updateMedia();
+
     // Re-fetch every 30 seconds to check for updates
-    const interval = setInterval(updateImages, 30000);
+    const interval = setInterval(updateMedia, 30000);
     return () => clearInterval(interval);
   }, []);
 
+  // Handle video playback when slide changes
+  const handleSlideChange = useCallback((newIndex: number) => {
+    // Pause all videos
+    Object.values(videoRefs.current).forEach(video => {
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
+
+    // Play video if current slide is a video
+    const currentMedia = heroMedia[newIndex];
+    if (currentMedia?.type === 'video') {
+      const videoEl = videoRefs.current[currentMedia.id];
+      if (videoEl) {
+        videoEl.play().catch(() => {
+          // Autoplay may be blocked, that's okay
+        });
+      }
+    }
+
+    setCurrentSlide(newIndex);
+  }, [heroMedia]);
+
   // Auto-rotate slides
   useEffect(() => {
-    if (heroBgImages.length <= 1) return;
-    
+    if (heroMedia.length <= 1) return;
+
+    const currentMedia = heroMedia[currentSlide];
+
+    // For videos, wait for them to end before changing
+    if (currentMedia?.type === 'video') {
+      const videoEl = videoRefs.current[currentMedia.id];
+      if (videoEl) {
+        const handleEnded = () => {
+          handleSlideChange((currentSlide + 1) % heroMedia.length);
+        };
+        videoEl.addEventListener('ended', handleEnded);
+        return () => videoEl.removeEventListener('ended', handleEnded);
+      }
+    }
+
+    // For images, use timeout
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroBgImages.length);
-    }, 5000); // Change slide every 5 seconds
+      handleSlideChange((currentSlide + 1) % heroMedia.length);
+    }, 5000);
 
     return () => clearInterval(slideInterval);
-  }, [heroBgImages.length]);
+  }, [heroMedia, currentSlide, handleSlideChange]);
 
   return (
     <main className={styles.page}>
       <div className={styles.hero} data-animate-on-load>
         <div className={styles.heroSlider}>
-          {heroBgImages.map((imageUrl, index) => (
+          {heroMedia.map((media, index) => (
             <div
-              key={index}
+              key={media.id}
               className={`${styles.heroSlide} ${index === currentSlide ? styles.active : ''}`}
-              style={{
-                backgroundImage: `linear-gradient(145deg, rgba(1, 6, 18, 0.85), rgba(9, 30, 58, 0.55)), url(${imageUrl})`,
-              }}
-            />
+            >
+              {media.type === 'video' ? (
+                <video
+                  ref={(el) => { videoRefs.current[media.id] = el; }}
+                  className={styles.heroVideo}
+                  src={media.url}
+                  muted
+                  playsInline
+                  loop={false}
+                  preload="metadata"
+                />
+              ) : (
+                <div
+                  className={styles.heroImageBg}
+                  style={{
+                    backgroundImage: `linear-gradient(145deg, rgba(1, 6, 18, 0.85), rgba(9, 30, 58, 0.55)), url(${media.url})`,
+                  }}
+                />
+              )}
+              {media.type === 'video' && (
+                <div className={styles.heroVideoOverlay} />
+              )}
+            </div>
           ))}
         </div>
-        {heroBgImages.length > 1 && (
+        {heroMedia.length > 1 && (
           <div className={styles.sliderIndicators}>
-            {heroBgImages.map((_, index) => (
+            {heroMedia.map((media, index) => (
               <button
-                key={index}
-                className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
-                onClick={() => setCurrentSlide(index)}
-                aria-label={`Go to slide ${index + 1}`}
+                key={media.id}
+                className={`${styles.indicator} ${index === currentSlide ? styles.active : ''} ${media.type === 'video' ? styles.videoIndicator : ''}`}
+                onClick={() => handleSlideChange(index)}
+                aria-label={`Go to slide ${index + 1}${media.type === 'video' ? ' (video)' : ''}`}
               />
             ))}
           </div>
@@ -170,9 +250,8 @@ export default function Home() {
           <span className={styles.heroBrand}>{t('hero.brand')}</span>
           <h1 className={styles.heroTitle}>{t('hero.subtitle')}</h1>
           <p
-            className={`${styles.heroCopy} ${
-              language === 'en' ? styles.heroCopyEnglish : ''
-            }`}
+            className={`${styles.heroCopy} ${language === 'en' ? styles.heroCopyEnglish : ''
+              }`}
           >
             {t('hero.description')}
           </p>
@@ -237,7 +316,7 @@ export default function Home() {
         showHeader={false}
       />
 
-      <YachtAppSection />
+
       <CommitmentShowcase />
       <TestimonialsSection />
       <ContactSection />

@@ -382,3 +382,50 @@
         margin-inline-start: 0;
     }
 }
+
+/* Upload Section for Hero Banner */
+.uploadSection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.uploadGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Video Thumbnail */
+.videoThumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+/* Media Type Badge */
+.mediaTypeBadge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+}
+
+[data-dir="rtl"] .mediaTypeBadge {
+    left: auto;
+    right: 8px;
+}

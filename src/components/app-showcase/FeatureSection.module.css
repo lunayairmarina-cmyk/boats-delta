@@ -1,0 +1,456 @@
+.section {
+    padding: 6rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+}
+
+@media (min-width: 1024px) {
+    .section {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8rem 2rem;
+    }
+
+    .section.reversed {
+        flex-direction: row-reverse;
+    }
+}
+
+/* --- LIGHT BACKGROUND VARIANT --- */
+.lightBg {
+    background-color: #f8fafc;
+}
+
+.lightBg .title {
+    color: #0a1628;
+}
+
+.lightBg .description {
+    color: #475569;
+}
+
+.lightBg .waveDivider {
+    color: #0c4fad;
+}
+
+/* --- DARK BACKGROUND VARIANT --- */
+.darkBg {
+    background-color: #0a1628;
+}
+
+/* Phone Mockup Wrapper */
+.mockupWrapper {
+    flex: 1;
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+}
+
+/* Phone Frame */
+.phoneMockup {
+    width: 300px;
+    height: 600px;
+    background: #000000;
+    border-radius: 44px;
+    border: 8px solid #333333;
+    position: relative;
+    box-shadow:
+        0 0 0 2px #1a1a1a,
+        0 30px 60px rgba(0, 0, 0, 0.6),
+        0 0 100px rgba(191, 149, 63, 0.15);
+    overflow: hidden;
+    z-index: 2;
+}
+
+.phoneMockup::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 20px;
+    background: #f1f5f9;
+    border-radius: 0 0 12px 12px;
+    z-index: 10;
+}
+
+.phoneScreen {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    padding: 2.5rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Phone Header */
+.phoneHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.backArrow {
+    color: #fff;
+    font-size: 1rem;
+}
+
+.boatName {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Screen Title */
+.screenTitle {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.screenSubtitle {
+    font-size: 0.6rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+
+/* Icon Colors */
+.iconBlue {
+    color: #60a5fa;
+}
+
+.iconGreen {
+    color: #4ade80;
+}
+
+.iconOrange {
+    color: #fb923c;
+}
+
+.iconPurple {
+    color: #c084fc;
+}
+
+.iconRed {
+    color: #f87171;
+}
+
+.iconYellow {
+    color: #facc15;
+}
+
+/* Tank Levels UI */
+.tankLevels {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tankItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.tankLabel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.tankBar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.tankFill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.tankFillDiesel {
+    background: linear-gradient(90deg, #f59e0b 0%, #f97316 100%);
+    width: 65%;
+}
+
+.tankFillWater {
+    background: linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%);
+    width: 80%;
+}
+
+.tankFillWaste {
+    background: linear-gradient(90deg, #64748b 0%, #475569 100%);
+    width: 30%;
+}
+
+.tankFillGas {
+    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+    width: 45%;
+}
+
+.tankScale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.5rem;
+    color: #94a3b8;
+    margin-top: 0.15rem;
+}
+
+/* Checklist UI */
+.checklistContent {
+    flex: 1;
+    overflow: hidden;
+}
+
+.checklistHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.historyBtn {
+    font-size: 0.55rem;
+    color: #0c4fad;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.checklistSection {
+    margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.checklistItems {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.checklistItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.65rem;
+    color: #cbd5e1;
+}
+
+.itemCheck {
+    color: #22c55e;
+    font-weight: bold;
+}
+
+/* Services UI */
+.servicesContent {
+    flex: 1;
+    overflow: hidden;
+}
+
+.servicesTitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.servicesList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.serviceItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.serviceInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.serviceType {
+    font-size: 0.5rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+.serviceName {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+.serviceDue {
+    font-size: 0.55rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.dueRed {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.dueOrange {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.dueGreen {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.dueGray {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* Phone Bottom Nav */
+.phoneNav {
+    padding: 16px 24px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10, 22, 40, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: auto;
+}
+
+.navItem {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    color: #64748b;
+    transition: all 0.3s ease;
+}
+
+.navItem.active {
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+/* Content Side */
+.content {
+    flex: 1;
+    padding: 2rem;
+    position: relative;
+}
+
+.waveDivider {
+    color: #0c4fad;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #94A3B8;
+    max-width: 500px;
+}
+
+/* Old styles compatibility */
+.imageWrapper,
+.imageContainer {
+    display: none;
+}
+
+.bgNumber {
+    display: none;
+}
+
+.floatingCard {
+    display: none;
+}
+
+.featureList {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 1023px) {
+    .content {
+        text-align: center;
+    }
+
+    .description {
+        margin: 0 auto;
+    }
+
+    .mockupWrapper {
+        min-height: 400px;
+    }
+
+    .phoneMockup {
+        width: 240px;
+        height: 480px;
+    }
+}
+
+@media (max-width: 640px) {
+    .section {
+        padding: 4rem 1rem;
+    }
+
+    .mockupWrapper {
+        min-height: 350px;
+    }
+
+    .phoneMockup {
+        width: 220px;
+        height: 440px;
+    }
+}

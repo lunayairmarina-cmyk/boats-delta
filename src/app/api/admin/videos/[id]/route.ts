@@ -80,9 +80,9 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
             uploadStream.on('error', reject);
         });
 
-        return NextResponse.json({ 
-            fileId: uploadStream.id.toString(), 
-            message: 'Video updated successfully' 
+        return NextResponse.json({
+            fileId: uploadStream.id.toString(),
+            message: 'Video updated successfully'
         });
     } catch (error) {
         console.error('Update video error:', error);
@@ -90,5 +90,41 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
     }
 }
 
+export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
+    try {
+        await connectDB();
+        const db = mongoose.connection.db;
+        if (!db) {
+            throw new Error('Database connection is not initialized.');
+        }
+        const filesCollection = db.collection<VideoFileDoc>('videos.files');
+
+        const body = await request.json();
+        const { order, section } = body;
+
+        const updateFields: Record<string, unknown> = {};
+        if (typeof order === 'number') {
+            updateFields['metadata.order'] = order;
+        }
+        if (section) {
+            updateFields['metadata.section'] = section;
+        }
+
+        if (Object.keys(updateFields).length === 0) {
+            return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+        }
+
+        await filesCollection.updateOne(
+            { _id: new mongoose.Types.ObjectId(params.id) },
+            { $set: updateFields }
+        );
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Update video metadata error:', error);
+        return NextResponse.json({ error: 'Failed to update video metadata' }, { status: 500 });
+    }
+}
 
 

@@ -8,7 +8,17 @@
         "reviews": "Reviews",
         "faq": "FAQ",
         "connect": "Connect us",
-        "close": "Close menu"
+        "close": "Close menu",
+        "services_dropdown": {
+            "interior": "Interior",
+            "exterior": "Exterior",
+            "maintenance": "Maintenance",
+            "project_management": "Project Management",
+            "captain_crew": "Captain & Crew",
+            "concierge": "Concierge",
+            "hurricane_planning": "Hurricane Planning",
+            "all_services": "All Services"
+        }
     },
     "hero": {
         "brand": "Lunier Marina",
@@ -16,7 +26,7 @@
         "subtitle": "Exceptional Marine\u00A0Luxury",
         "description": "This is where comprehensive yacht management services come into play, ensuring that owners can enjoy their time at sea and leave the complexities of operations and logistics to the professionals.",
         "cta_connect": "Connect With Us",
-        "cta_know_more": "Know More",
+        "cta_know_more": "Learn More",
         "stats": {
             "experience": {
                 "value": 18,
@@ -38,6 +48,11 @@
     "dashboard": {
         "title": "Performance dashboard",
         "efficiency": "98% efficiency"
+    },
+    "relationship_section": {
+        "badge": "Upcoming services",
+        "title": "Upcoming service monitoring",
+        "description": "This section of our management app allows you to view when services are due. The colors change automatically according to due dates for annual service for your yacht. You will also receive a notification 2 months prior so arrangements can be made by our service team and when the service is due!"
     },
     "about": {
         "title": "Exceptional Marine Luxury",
@@ -211,6 +226,153 @@
             "maintenanceDate": "Engine Service - Dec 15",
             "monthlyExpenses": "Monthly Expenses",
             "expensesAmount": "$24,500 / $30,000"
+        }
+    },
+    "appPage": {
+        "overlay": {
+            "comingSoon": "Coming Soon",
+            "title": "Our App Is\nUnder Development",
+            "titleSuffix": "Under Development",
+            "titlePrefix": "Our App Is",
+            "subtitle": "We're crafting the ultimate yacht management experience. Be the first to know when we launch.",
+            "features": {
+                "monitoring": "Real-time Monitoring",
+                "checklists": "Digital Checklists",
+                "tracking": "Service Tracking"
+            },
+            "cta": "Get Notified"
+        },
+        "hero": {
+            "label": "Premium Yacht Management",
+            "title": "Yacht app: The ultimate yacht monitoring",
+            "titleSuffix": "experience.",
+            "description": "Imagine being able to monitor your yacht or boat from anywhere in the world right from your fingertips. Our proprietary management app is now the ultimate tool for yacht owners not only in our direct fleet of managed vessels but across the country to stay updated on maintenance, upkeep, service, photos, and vessel information!",
+            "askQuestion": "Ask a Question",
+            "downloadAppStore": "Download on the",
+            "appStore": "App Store",
+            "getFromGoogle": "GET IT ON",
+            "googlePlay": "Google Play"
+        },
+        "benefits": {
+            "title": "Main App benefits"
+        },
+        "features": {
+            "tankLevels": {
+                "title": "View your Tank levels",
+                "description": "Have the ability to view your current tank levels from anywhere! Our team and captains update these levels after each visit and outing! You will receive a notification that this was updated!"
+            },
+            "checklist": {
+                "title": "Stay updated with our custom checklist",
+                "description": "A Lumière Marina team member will visit the boat and build out a completely custom checklist. This includes, exterior detailing, interior detailing, sea strainers, full systems check, hours and much more! This is updated each week by our team or your crew!"
+            },
+            "services": {
+                "title": "Upcoming service monitoring",
+                "description": "This section of our management app allows you to view when services are due. The colors change automatically according to due dates for annual service for your yacht. You will also receive a notification 2 months prior so arrangements can be made by our service team and when the service is due!"
+            }
+        },
+        "mockup": {
+            "common": {
+                "boatName": "Golden Eye",
+                "lastUpdatedToday": "Last updated: Today",
+                "lastUpdatedYesterday": "Last updated: Yesterday"
+            },
+            "checklist": {
+                "title": "Checklist",
+                "history": "History",
+                "exterior": "Exterior",
+                "washdown": "Full washdown",
+                "windshield": "Windshield polished",
+                "decks": "Decks cleaned",
+                "cupholders": "Cupholders cleaned and dried",
+                "interior": "Interior",
+                "sinks": "Sinks polished",
+                "floors": "Cleaned floors",
+                "fingerprints": "Fingerprints removed",
+                "bellowDeck": "Bellow deck",
+                "strainer": "Gen strainer cleaned"
+            },
+            "tanks": {
+                "title": "Tank levels",
+                "diesel": "Diesel",
+                "water": "Water",
+                "waste": "Waste",
+                "gas": "Gas"
+            },
+            "dashboard": {
+                "tankLevels": "Tank levels",
+                "checklist": "Checklist",
+                "safety": "Safety",
+                "systems": "Systems",
+                "docs": "Docs",
+                "crew": "Crew",
+                "service": "Service",
+                "history": "History",
+                "info": "Info",
+                "view": "View",
+                "details": "Details",
+                "dueSoon": "Due Soon",
+                "valid": "Valid",
+                "good": "Good",
+                "active": "Active",
+                "onBoard": "On Board",
+                "done": "Done"
+            },
+            "services": {
+                "title": "Upcoming services",
+                "serviceType": "Service type",
+                "bottomPaint": "Bottom Paint",
+                "engineService": "Engine Service",
+                "driveService": "Drive Service",
+                "generatorService": "Generator Service",
+                "seakeeperService": "Seakeeper service",
+                "acService": "AC Service",
+                "noDueDate": "No Due Date"
+            }
+        },
+        "faq": {
+            "title": "Frequently Asked Questions",
+            "items": {
+                "q1": {
+                    "question": "How does this information get to the app?",
+                    "answer": "This is a great question. When a Lumière Marina team member visits the boat, we update tank levels, submit the checklist and upload photos for the owner. This happens instantly once we hit submit! The rest of the information is input by our yacht managers as well as our administrative team as needed."
+                },
+                "q2": {
+                    "question": "Can I request crew for my boat?",
+                    "answer": "Yes! You absolutely can. In the 'crew/ make ready' section of the app you can request a captain, stewardess or deckhand. You can add a date and time and provide trip details in the notes section. We will then accept the request when crew is placed. You also have the ability to select 'make ready' for the owner operators who want to show up to a fully ready boat!"
+                },
+                "q3": {
+                    "question": "What other information does the app hold?",
+                    "answer": "This app is truly limitless when it comes to information. We upload vessel documents (hurricane plans, insurance COI's, registrations etc) all with expiration dates and notifications. We also store useful information like vessel specs, system information, USCG safety items and locations!"
+                }
+            }
+        },
+        "contact": {
+            "title": "Get in Touch",
+            "subtitle": "Have a question or want to work together? We'd love to hear from you.",
+            "labels": {
+                "fullName": "Full Name",
+                "email": "Email Address",
+                "phone": "Phone (Optional)",
+                "subject": "Subject",
+                "message": "Message"
+            },
+            "errors": {
+                "fullNameRequired": "Full Name is required",
+                "emailRequired": "Email is required",
+                "emailInvalid": "Please enter a valid email address",
+                "phoneInvalid": "Please enter a valid phone number",
+                "subjectRequired": "Subject is required",
+                "messageRequired": "Message is required",
+                "messageShort": "Message must be at least 10 characters"
+            },
+            "button": {
+                "send": "Send Message",
+                "sending": "Sending..."
+            },
+            "success": {
+                "title": "Message Sent via Carrier Pigeon!",
+                "message": "We'll get back to you as soon as possible."
+            }
         }
     }
 }

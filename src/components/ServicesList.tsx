@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
@@ -16,6 +16,7 @@ interface Service {
     price?: string;
     priceAr?: string;
     slug?: string;
+    category?: string;
 }
 
 interface ServicesListProps {
@@ -24,6 +25,11 @@ interface ServicesListProps {
     subtitle?: string;
     showHeader?: boolean;
     compact?: boolean;
+}
+
+interface GroupedServices {
+    mainService: Service;
+    subServices: Service[];
 }
 
 export default function ServicesList({
@@ -66,6 +72,44 @@ export default function ServicesList({
         };
     }, [language]);
 
+    // Group services by category
+    const groupedServices = useMemo(() => {
+        const mainCategories = ['yacht-boat-management', 'marina-club-management'];
+        const groups: GroupedServices[] = [];
+
+        mainCategories.forEach((category) => {
+            // Find main service (has slug matching category)
+            const mainService = services.find(
+                (s) => s.category === category && s.slug === category
+            );
+
+            // Find all sub-services with this category (but different slug)
+            const subServices = services.filter(
+                (s) => s.category === category && s.slug && s.slug !== category
+            );
+
+            if (mainService) {
+                groups.push({
+                    mainService,
+                    subServices,
+                });
+            } else if (subServices.length > 0) {
+                // If no main service found, use first sub-service as main
+                groups.push({
+                    mainService: subServices[0],
+                    subServices: subServices.slice(1),
+                });
+            }
+        });
+
+        // If no grouped services found, return all services as flat list
+        if (groups.length === 0) {
+            return services.map((s) => ({ mainService: s, subServices: [] }));
+        }
+
+        return groups;
+    }, [services]);
+
     if (loading) {
         return <div className="py-20 text-center">Loading services...</div>;
     }
@@ -77,6 +121,8 @@ export default function ServicesList({
     const sectionClassName = compact
         ? `${styles.servicesSection} ${styles.compactSection}`
         : styles.servicesSection;
+
+    const isArabic = language === 'ar';
 
     return (
         <section className={sectionClassName}>
@@ -110,42 +156,73 @@ export default function ServicesList({
                         </Link>
                     </div>
 
-                    <div className={styles.horizontalScroll}>
-                        {services.map((service) => {
-                            const isArabic = language === 'ar';
-                            const sanitizedTitle = service.title?.trim() ?? '';
-                            const sanitizedTitleAr = service.titleAr?.trim() ?? '';
-                            const sanitizedDescription = service.description?.trim() ?? '';
-                            const sanitizedDescriptionAr = service.descriptionAr?.trim() ?? '';
-
-                            const displayTitle = isArabic
-                                ? sanitizedTitleAr || sanitizedTitle
-                                : sanitizedTitle || sanitizedTitleAr;
-                            const displayDescription = isArabic
-                                ? sanitizedDescriptionAr || sanitizedDescription
-                                : sanitizedDescription || sanitizedDescriptionAr;
+                    <div className={styles.servicesGrouped}>
+                        {groupedServices.map((group) => {
+                            const mainTitle = isArabic
+                                ? group.mainService.titleAr || group.mainService.title
+                                : group.mainService.title || group.mainService.titleAr;
+                            const mainDescription = isArabic
+                                ? group.mainService.descriptionAr || group.mainService.description
+                                : group.mainService.description || group.mainService.descriptionAr;
 
                             return (
-                                <Link
-                                    key={service._id}
-                                    href={`/services/${service.slug || service._id}`}
-                                    className={styles.card}
-                                    style={{ direction: isArabic ? 'rtl' : 'ltr' }}
-                                >
-                                    <div className={styles.imageWrapper}>
-                                        <Image
-                                            src={`/api/images/${service.image}`}
-                                            alt={displayTitle}
-                                            fill
-                                            className={styles.image}
-                                            sizes="(max-width: 768px) 400px, 500px"
-                                        />
-                                    </div>
-                                    <div className={styles.content}>
-                                        <h3 className={styles.cardTitle}>{displayTitle}</h3>
-                                        <p className={styles.cardDesc}>{displayDescription}</p>
-                                    </div>
-                                </Link>
+                                <div key={group.mainService._id} className={styles.serviceGroup}>
+                                    <Link
+                                        href={`/services/${group.mainService.slug || group.mainService._id}`}
+                                        className={styles.mainServiceCard}
+                                        style={{ direction: isArabic ? 'rtl' : 'ltr' }}
+                                    >
+                                        <div className={styles.imageWrapper}>
+                                            <Image
+                                                src={`/api/images/${group.mainService.image}`}
+                                                alt={mainTitle}
+                                                fill
+                                                className={styles.image}
+                                                sizes="(max-width: 768px) 400px, 500px"
+                                            />
+                                        </div>
+                                        <div className={styles.content}>
+                                            <h3 className={styles.cardTitle}>{mainTitle}</h3>
+                                            <p className={styles.cardDesc}>{mainDescription}</p>
+                                        </div>
+                                    </Link>
+
+                                    {group.subServices.length > 0 && (
+                                        <div className={styles.subServices}>
+                                            {group.subServices.map((subService) => {
+                                                const subTitle = isArabic
+                                                    ? subService.titleAr || subService.title
+                                                    : subService.title || subService.titleAr;
+                                                const subDescription = isArabic
+                                                    ? subService.descriptionAr || subService.description
+                                                    : subService.description || subService.descriptionAr;
+
+                                                return (
+                                                    <Link
+                                                        key={subService._id}
+                                                        href={`/services/${subService.slug || subService._id}`}
+                                                        className={styles.subServiceCard}
+                                                        style={{ direction: isArabic ? 'rtl' : 'ltr' }}
+                                                    >
+                                                        <div className={styles.subServiceImageWrapper}>
+                                                            <Image
+                                                                src={`/api/images/${subService.image}`}
+                                                                alt={subTitle}
+                                                                fill
+                                                                className={styles.subServiceImage}
+                                                                sizes="(max-width: 768px) 200px, 250px"
+                                                            />
+                                                        </div>
+                                                        <div className={styles.subServiceContent}>
+                                                            <h4 className={styles.subServiceTitle}>{subTitle}</h4>
+                                                            <p className={styles.subServiceDesc}>{subDescription}</p>
+                                                        </div>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
                             );
                         })}
                     </div>

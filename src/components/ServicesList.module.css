@@ -79,6 +79,127 @@
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
+.servicesGrouped {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.serviceGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.mainServiceCard {
+    background: var(--cta-secondary);
+    border: 1px solid var(--border-soft);
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    will-change: transform;
+}
+
+.mainServiceCard:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+    border-color: var(--accent);
+}
+
+.subServices {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-left: 0;
+}
+
+@media (min-width: 640px) {
+    .subServices {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        padding-left: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .subServices {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        padding-left: 2rem;
+    }
+}
+
+.subServiceCard {
+    background: var(--cta-secondary);
+    border: 1px solid var(--border-soft);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.subServiceCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-color: var(--accent);
+    background: var(--cta-secondary);
+}
+
+.subServiceImageWrapper {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.subServiceImage {
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.subServiceCard:hover .subServiceImage {
+    transform: scale(1.1);
+}
+
+.subServiceContent {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.subServiceTitle {
+    font-family: "Playfair Display", serif;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #0f172a;
+}
+
+.subServiceDesc {
+    color: #0f172a;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
 @media (min-width: 768px) {
     .horizontalScroll {
         margin: 0 -48px;
