@@ -42,11 +42,11 @@ export const useFooterAnimations = ({ isRTL }: UseFooterAnimationsProps) => {
       // Check if footer is already in viewport - if so, skip animation
       const footerRect = footerRef.current?.getBoundingClientRect();
       const isFooterVisible = footerRect && footerRect.top < window.innerHeight;
-      
+
       if (!isFooterVisible) {
         // Only set opacity 0 if footer is not yet visible
         gsap.set(footerRef.current, { opacity: 0 });
-        
+
         // Footer fade-in - only animate when scrolled into view
         ScrollTrigger.create({
           trigger: footerRef.current,
@@ -245,7 +245,7 @@ export const useFooterAnimations = ({ isRTL }: UseFooterAnimationsProps) => {
     const socialCards = socialCardsRef.current.filter(Boolean);
     const contactActions = contactActionsRef.current.filter(Boolean);
     const ctaBtn = ctaBtnRef.current;
-    const bottomLinks = bottomLinksRef.current.filter(Boolean) as (HTMLAnchorElement | null)[];
+
 
     const handleSocialHover = (element: HTMLElement, isEnter: boolean) => {
       const icon = element.querySelector('[class*="socialIcon"]') as HTMLElement;

@@ -16,8 +16,6 @@ import {
     History as HistoryIcon,
     Ship,
     LayoutDashboard,
-    Calendar,
-    Settings,
     ChevronLeft,
     Check
 } from 'lucide-react';

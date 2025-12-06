@@ -139,10 +139,10 @@ export default function ServicesList({
                     <div className={styles.contentSection}>
                         <div className={styles.contentBadge}>
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="2" y="12" width="3" height="6" fill="#0c4fad" rx="1"/>
-                                <rect x="7" y="8" width="3" height="10" fill="#0c4fad" rx="1"/>
-                                <rect x="12" y="4" width="3" height="14" fill="#0c4fad" rx="1"/>
-                                <rect x="17" y="6" width="2" height="12" fill="#0c4fad" rx="1"/>
+                                <rect x="2" y="12" width="3" height="6" fill="#0c4fad" rx="1" />
+                                <rect x="7" y="8" width="3" height="10" fill="#0c4fad" rx="1" />
+                                <rect x="12" y="4" width="3" height="14" fill="#0c4fad" rx="1" />
+                                <rect x="17" y="6" width="2" height="12" fill="#0c4fad" rx="1" />
                             </svg>
                             <span>WITH US</span>
                         </div>
@@ -158,12 +158,12 @@ export default function ServicesList({
 
                     <div className={styles.servicesGrouped}>
                         {groupedServices.map((group) => {
-                            const mainTitle = isArabic
+                            const mainTitle = (isArabic
                                 ? group.mainService.titleAr || group.mainService.title
-                                : group.mainService.title || group.mainService.titleAr;
-                            const mainDescription = isArabic
+                                : group.mainService.title || group.mainService.titleAr) || '';
+                            const mainDescription = (isArabic
                                 ? group.mainService.descriptionAr || group.mainService.description
-                                : group.mainService.description || group.mainService.descriptionAr;
+                                : group.mainService.description || group.mainService.descriptionAr) || '';
 
                             return (
                                 <div key={group.mainService._id} className={styles.serviceGroup}>
@@ -190,12 +190,12 @@ export default function ServicesList({
                                     {group.subServices.length > 0 && (
                                         <div className={styles.subServices}>
                                             {group.subServices.map((subService) => {
-                                                const subTitle = isArabic
+                                                const subTitle = (isArabic
                                                     ? subService.titleAr || subService.title
-                                                    : subService.title || subService.titleAr;
-                                                const subDescription = isArabic
+                                                    : subService.title || subService.titleAr) || '';
+                                                const subDescription = (isArabic
                                                     ? subService.descriptionAr || subService.description
-                                                    : subService.description || subService.descriptionAr;
+                                                    : subService.description || subService.descriptionAr) || '';
 
                                                 return (
                                                     <Link

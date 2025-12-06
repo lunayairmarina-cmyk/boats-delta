@@ -11,8 +11,6 @@ import {
     ChevronLeft,
     LayoutDashboard,
     Ship,
-    Calendar,
-    Settings,
     Check
 } from 'lucide-react';
 

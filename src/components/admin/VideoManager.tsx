@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import styles from './VideoManager.module.css';
-import { useLanguage, Locale } from '@/context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface GridFSFile {
     _id: string;
@@ -240,6 +240,7 @@ export default function VideoManager() {
         </div>
     );
 }
+
 
 
 

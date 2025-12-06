@@ -86,7 +86,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         if (!isDesktop) {
-            setSidebarOpen(false);
+            setSidebarOpen(false); // eslint-disable-line react-hooks/exhaustive-deps
         }
     }, [pathname, isDesktop]);
 
@@ -117,9 +117,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 <button
                     key={locale}
                     type="button"
-                    className={`${styles.languageOption} ${
-                        language === locale ? styles.languageOptionActive : ''
-                    }`}
+                    className={`${styles.languageOption} ${language === locale ? styles.languageOptionActive : ''
+                        }`}
                     aria-pressed={language === locale}
                     onClick={() => handleLanguageChange(locale)}
                 >
