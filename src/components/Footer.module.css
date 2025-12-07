@@ -13,6 +13,23 @@
   min-height: fit-content;
 }
 
+.boatsImage {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.boatsImageContent {
+  object-fit: cover;
+  object-position: bottom center;
+}
+
 .footer[data-dir="rtl"] {
   direction: rtl;
 }
@@ -25,6 +42,7 @@
   padding-bottom: clamp(16px, 2vw, 28px);
   overflow: visible;
   min-height: fit-content;
+  z-index: 1;
 }
 
 .copyBlock {

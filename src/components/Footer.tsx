@@ -160,6 +160,17 @@ export default function Footer() {
 
   return (
     <footer ref={footerRef} className={styles.footer} data-dir={dir}>
+      <div className={styles.boatsImage}>
+        <Image
+          src="/footer-boats.webp"
+          alt=""
+          fill
+          className={styles.boatsImageContent}
+          sizes="100vw"
+          priority={false}
+          aria-hidden="true"
+        />
+      </div>
       <div className={styles.inner}>
         <div className={styles.copyBlock}>
           <div ref={starsRef} className={styles.stars} aria-hidden="true">
