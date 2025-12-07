@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./Navbar.module.css";
 import { useLanguage } from "@/context/LanguageContext";
@@ -12,6 +12,7 @@ import { Anchor, Ship, Wrench, ClipboardList, Users, Sparkles } from "lucide-rea
 
 export default function Navbar() {
     const pathname = usePathname();
+    const router = useRouter();
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [currentHash, setCurrentHash] = useState(() => (typeof window !== "undefined" ? window.location.hash : ""));
@@ -130,6 +131,17 @@ export default function Navbar() {
         setMenuOpen(false);
     };
 
+    const handleServiceLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        // Close mobile menu if open
+        setMenuOpen(false);
+        // Let Next.js Link handle navigation, but ensure scroll to top
+        router.push(href);
+        // Scroll to top immediately
+        if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+    };
+
     useEffect(() => {
         if (typeof document === "undefined") return undefined;
 
@@ -219,7 +231,7 @@ export default function Navbar() {
                                                     key={child.href}
                                                     href={child.href}
                                                     className={styles.megaDropdownCard}
-                                                    onClick={handleNavLinkSelect}
+                                                    onClick={(e) => handleServiceLinkClick(e, child.href)}
                                                 >
                                                     <div className={styles.megaCardIcon}>
                                                         <span className={styles.megaCardIconEmoji}>{child.icon}</span>

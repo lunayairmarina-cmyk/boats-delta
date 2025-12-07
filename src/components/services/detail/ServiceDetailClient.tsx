@@ -91,6 +91,11 @@ const ServiceDetailClient = ({ initialData, serviceId }: ServiceDetailClientProp
         };
     }, [fetchLatest]);
 
+    // Scroll to top when component mounts or serviceId changes
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, [serviceId]);
+
     const service = data.service;
 
     const gallery = useMemo(

@@ -39,8 +39,8 @@ const ServiceImages = forwardRef<HTMLElement, ServiceImagesProps>(
                     </h2>
                     <p className={styles.sectionSubtitle} data-animate="images">
                         {language === 'ar'
-                            ? 'صور عالية الدقة منسقة من نظام GridFS لعرض أدق التفاصيل.'
-                            : 'High-fidelity imagery streamed directly from GridFS to capture every detail.'}
+                            ? 'صور عالية الدقة لعرض أدق التفاصيل.'
+                            : 'High-fidelity imagery to capture every detail.'}
                     </p>
                 </div>
 
