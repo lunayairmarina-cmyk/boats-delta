@@ -20,6 +20,51 @@ type FetchState = 'idle' | 'loading' | 'refreshing' | 'error';
 
 const pickLocale = (language: 'ar' | 'en', value: LocalizedText) => (language === 'ar' ? value.ar : value.en);
 
+const translateCategory = (category: string | null | undefined, language: 'ar' | 'en'): string => {
+    if (!category) {
+        return language === 'ar' ? 'مخصص' : 'Custom';
+    }
+
+    const categoryMap: Record<string, { en: string; ar: string }> = {
+        'yacht-boat-management': {
+            en: 'Yacht Management',
+            ar: 'إدارة اليخوت'
+        },
+        'yacht-marina-management': {
+            en: 'Marina Services',
+            ar: 'خدمات المراسي'
+        },
+        'marina-club-management': {
+            en: 'Marina Services',
+            ar: 'خدمات المراسي'
+        },
+        'maintenance': {
+            en: 'Maintenance',
+            ar: 'الصيانة'
+        },
+        'project_management': {
+            en: 'Project Management',
+            ar: 'إدارة المشاريع'
+        },
+        'captain_crew': {
+            en: 'Captain & Crew',
+            ar: 'القبطان والطاقم'
+        },
+        'concierge': {
+            en: 'Concierge',
+            ar: 'خدمات الكونسيرج'
+        }
+    };
+
+    const translation = categoryMap[category.toLowerCase()];
+    if (translation) {
+        return language === 'ar' ? translation.ar : translation.en;
+    }
+
+    // Fallback: return the category as-is if no translation found
+    return category;
+};
+
 const ServiceDetailClient = ({ initialData, serviceId }: ServiceDetailClientProps) => {
     const { language, dir } = useLanguage();
     const [data, setData] = useState<ServiceDetailResponse>(initialData);
@@ -163,7 +208,7 @@ const ServiceDetailClient = ({ initialData, serviceId }: ServiceDetailClientProp
             },
             {
                 label: categoryLabel,
-                value: service.category ?? (language === 'ar' ? 'مخصص' : 'Custom'),
+                value: translateCategory(service.category, language),
             },
         ];
     }, [gallery.length, benefits.length, service.category, service.mainImage, language]);
