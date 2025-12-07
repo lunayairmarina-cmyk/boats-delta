@@ -185,7 +185,118 @@
 
 @media (max-width: 768px) {
   .relationshipSection {
-    gap: 80px;
+    gap: 40px;
+  }
+
+  .dashboardWidget {
+    padding: clamp(32px, 6vw, 48px);
+    border-radius: 32px;
+  }
+
+  .serviceListCard {
+    max-width: 100%;
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .serviceItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .serviceDate {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .serviceInfo,
+  .serviceDate {
+    width: 100%;
+  }
+
+  .relationshipCopy h3 {
+    font-size: clamp(28px, 6vw, 38px);
+  }
+
+  .relationshipCopy p {
+    font-size: 16px;
+    max-width: 100%;
+  }
+
+  .whyText h2 {
+    font-size: clamp(32px, 7vw, 42px);
+  }
+
+  .whyBody {
+    font-size: 16px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .relationshipSection {
+    gap: 32px;
+  }
+
+  .dashboardWidget {
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .serviceListCard {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .serviceListHeader {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .serviceListIcon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .serviceItem {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .serviceName {
+    font-size: 12px;
+  }
+
+  .serviceStatus {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+
+  .serviceLabel {
+    font-size: 9px;
+  }
+
+  .relationshipCopy h3 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+
+  .relationshipCopy p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .whyText h2 {
+    font-size: clamp(28px, 8vw, 36px);
+  }
+
+  .whyBody {
+    font-size: 15px;
+  }
+
+  .whyPhoto {
+    border-radius: 24px;
   }
 }
 

@@ -10,7 +10,7 @@ import CommitmentShowcase from "@/components/CommitmentShowcase";
 import RelationshipSection from "@/components/RelationshipSection";
 import ServicesList from "@/components/ServicesList";
 
-import VideoSection from "@/components/VideoSection";
+// import VideoSection from "@/components/VideoSection";
 import styles from "./page.module.css";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -291,10 +291,10 @@ export default function Home() {
             <Image
               src={logoImageId ? `/api/images/${logoImageId}` : "/LM Logo.svg"}
               alt="Lunier Marina Logo"
-              width={120}
-              height={48}
+              width={600}
+              height={240}
               className={styles.logoImage}
-              sizes="120px"
+              sizes="600px"
               loading="lazy"
             />
           </div>
@@ -305,7 +305,7 @@ export default function Home() {
         </p>
       </section>
 
-      <VideoSection />
+      {/* <VideoSection /> */}
 
       <RelationshipSection />
 

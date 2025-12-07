@@ -15,12 +15,14 @@
   position: relative;
   color: var(--text-light);
   overflow: hidden;
+  isolation: isolate;
 }
 
 .heroSlider {
   position: absolute;
   inset: 0;
   z-index: 0;
+  pointer-events: none;
 }
 
 .heroSlide {
@@ -30,6 +32,7 @@
   background-position: center;
   opacity: 0;
   transition: opacity 1s ease-in-out;
+  z-index: 0;
 }
 
 .heroSlide.active {
@@ -94,6 +97,7 @@
   inset: 0;
   background-size: cover;
   background-position: center;
+  z-index: 0;
 }
 
 /* Hero Video Styles */
@@ -103,6 +107,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 0;
 }
 
 .heroVideoOverlay {
@@ -110,6 +115,7 @@
   inset: 0;
   background: linear-gradient(145deg, rgba(1, 6, 18, 0.7), rgba(9, 30, 58, 0.4));
   pointer-events: none;
+  z-index: 0;
 }
 
 
@@ -122,7 +128,7 @@
 
 .heroContent {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   margin-top: 0;
   max-width: 620px;
   display: flex;
@@ -179,6 +185,8 @@
 }
 
 .heroActions {
+  position: relative;
+  z-index: 11;
   margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
@@ -188,6 +196,8 @@
 
 .primaryBtn,
 .outlineBtn {
+  position: relative;
+  z-index: 12;
   border-radius: 999px;
   padding: 14px 36px;
   cursor: pointer;
@@ -249,6 +259,8 @@
 .conicButtonLink {
   display: inline-flex;
   text-decoration: none;
+  position: relative;
+  z-index: 13;
 }
 
 /* 1336×768 and below */
@@ -454,7 +466,7 @@
   position: relative;
   margin-top: -160px;
   padding: 0 clamp(24px, 6vw, 120px) 80px;
-  z-index: 2;
+  z-index: 5;
 }
 
 .experienceCard {
@@ -541,7 +553,7 @@
 
 .logoStack .logoImage {
   width: auto;
-  height: clamp(60px, 8vw, 100px);
+  height: clamp(180px, 20vw, 450px);
   object-fit: contain;
 }
 
