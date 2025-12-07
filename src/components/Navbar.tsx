@@ -10,12 +10,46 @@ import { useMobileMenuAnimations } from "@/hooks/useMobileMenuAnimations";
 import { useDesktopNavbarAnimations } from "@/hooks/useDesktopNavbarAnimations";
 import { Anchor, Ship, Wrench, ClipboardList, Users, Sparkles } from "lucide-react";
 
+type Service = {
+    _id: string;
+    title: string;
+    description: string;
+    slug?: string;
+    category?: string;
+};
+
+const getServiceIcon = (category?: string) => {
+    if (!category) return <Anchor size={24} strokeWidth={1.5} />;
+    
+    const categoryLower = category.toLowerCase();
+    if (categoryLower.includes('yacht') || categoryLower.includes('boat') || categoryLower.includes('management')) {
+        return <Anchor size={24} strokeWidth={1.5} />;
+    }
+    if (categoryLower.includes('marina') || categoryLower.includes('club')) {
+        return <Ship size={24} strokeWidth={1.5} />;
+    }
+    if (categoryLower.includes('maintenance')) {
+        return <Wrench size={24} strokeWidth={1.5} />;
+    }
+    if (categoryLower.includes('project')) {
+        return <ClipboardList size={24} strokeWidth={1.5} />;
+    }
+    if (categoryLower.includes('crew') || categoryLower.includes('captain')) {
+        return <Users size={24} strokeWidth={1.5} />;
+    }
+    if (categoryLower.includes('concierge')) {
+        return <Sparkles size={24} strokeWidth={1.5} />;
+    }
+    return <Anchor size={24} strokeWidth={1.5} />;
+};
+
 export default function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [currentHash, setCurrentHash] = useState(() => (typeof window !== "undefined" ? window.location.hash : ""));
+    const [services, setServices] = useState<Service[]>([]);
     const { t, language, setLanguage, dir } = useLanguage();
 
     // Check if we're on a blog page (must be defined before hook calls)
@@ -45,44 +79,13 @@ export default function Navbar() {
         isRTL: dir === "rtl",
         isBlogPage,
     });
-    const serviceItems = [
-        {
-            label: language === 'ar' ? 'إدارة اليخوت' : 'Yacht Management',
-            subtitle: language === 'ar' ? 'إدارة شاملة 360°' : 'Complete 360° Management',
-            href: "/services/yacht-boat-management",
-            icon: <Anchor size={24} strokeWidth={1.5} />
-        },
-        {
-            label: language === 'ar' ? 'خدمات المراسي' : 'Marina Services',
-            subtitle: language === 'ar' ? 'تشغيل المراسي المتميز' : 'Premium Marina Operations',
-            href: "/services/yacht-marina-management",
-            icon: <Ship size={24} strokeWidth={1.5} />
-        },
-        {
-            label: language === 'ar' ? 'الصيانة' : 'Maintenance',
-            subtitle: language === 'ar' ? 'العناية الفنية المتخصصة' : 'Expert Technical Care',
-            href: "/services/maintenance",
-            icon: <Wrench size={24} strokeWidth={1.5} />
-        },
-        {
-            label: language === 'ar' ? 'إدارة المشاريع' : 'Project Management',
-            subtitle: language === 'ar' ? 'الإشراف على المشاريع البحرية' : 'Maritime Project Oversight',
-            href: "/services/project_management",
-            icon: <ClipboardList size={24} strokeWidth={1.5} />
-        },
-        {
-            label: language === 'ar' ? 'القبطان والطاقم' : 'Captain & Crew',
-            subtitle: language === 'ar' ? 'توظيف طاقم محترف' : 'Professional Crew Recruitment',
-            href: "/services/captain_crew",
-            icon: <Users size={24} strokeWidth={1.5} />
-        },
-        {
-            label: language === 'ar' ? 'خدمات الكونسيرج' : 'Concierge',
-            subtitle: language === 'ar' ? 'خدمات ضيافة فاخرة' : 'Luxury Hospitality Services',
-            href: "/services/concierge",
-            icon: <Sparkles size={24} strokeWidth={1.5} />
-        },
-    ];
+    // Map services to dropdown items
+    const serviceItems = services.map((service) => ({
+        label: service.title,
+        subtitle: service.description?.substring(0, 50) + (service.description?.length > 50 ? '...' : '') || '',
+        href: `/services/${service.slug || service._id}`,
+        icon: getServiceIcon(service.category)
+    }));
 
     const navLinks = [
         { label: t('nav.home'), href: "/" },
@@ -97,6 +100,32 @@ export default function Navbar() {
         { label: "App", href: "/app" },
         { label: t('nav.faq'), href: "/#faq" },
     ];
+
+    // Fetch services for dropdown
+    useEffect(() => {
+        let isMounted = true;
+
+        const fetchServices = async () => {
+            try {
+                const res = await fetch(`/api/services?lang=${language}`, { cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (isMounted && Array.isArray(data)) {
+                        // Take first 6 services
+                        setServices(data.slice(0, 6));
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch services for navbar', error);
+            }
+        };
+
+        fetchServices();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [language]);
 
     useEffect(() => {
         const handleScroll = () => {
