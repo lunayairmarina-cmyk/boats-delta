@@ -290,6 +290,13 @@
   }
 }
 
+/* Laptops: hide hero CTAs to prevent overlap with copy */
+@media (max-width: 1440px) and (min-width: 1025px) {
+  .heroActions {
+    display: none;
+  }
+}
+
 @media (max-width: 1200px) {
   .hero {
     padding-top: 70px;
