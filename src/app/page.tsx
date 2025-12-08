@@ -277,14 +277,6 @@ export default function Home() {
           >
             {t('hero.description')}
           </p>
-          <div className={styles.heroActions}>
-            <Link href="/contact" className={styles.primaryBtn}>
-              {t('hero.cta_connect')} <span aria-hidden="true">➝</span>
-            </Link>
-            <Link href="/contact" className={styles.outlineBtn}>
-              {t('hero.cta_know_more')}
-            </Link>
-          </div>
         </section>
       </div>
 
