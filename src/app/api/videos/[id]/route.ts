@@ -26,6 +26,11 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         const fileLength = typeof file.length === 'number' ? file.length : undefined;
         const range = request.headers.get('range');
         const contentType = file.contentType || 'video/mp4';
+        const uploadDate = file.uploadDate ? new Date(file.uploadDate).getTime() : Date.now();
+        const etag = `"${uploadDate}-${params.id}"`;
+        const lastModified = file.uploadDate ? new Date(file.uploadDate).toUTCString() : new Date().toUTCString();
+        // 1 year cache (31536000 seconds)
+        const maxAge = 31536000;
 
         // Support byte-range requests so browsers can properly stream/seek
         if (range && fileLength !== undefined) {
@@ -61,13 +66,6 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         }
 
         const stream = bucket.openDownloadStream(_id);
-        
-        const uploadDate = file.uploadDate ? new Date(file.uploadDate).getTime() : Date.now();
-        const etag = `"${uploadDate}-${params.id}"`;
-        const lastModified = file.uploadDate ? new Date(file.uploadDate).toUTCString() : new Date().toUTCString();
-        
-        // 1 year cache (31536000 seconds)
-        const maxAge = 31536000;
 
         const ifNoneMatch = request.headers.get('if-none-match');
         const ifModifiedSince = request.headers.get('if-modified-since');

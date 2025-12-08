@@ -840,6 +840,10 @@
 
 /* Mobile */
 @media (max-width: 768px) {
+  .heroBadge {
+    margin-top: 12px; /* lower badge on mobile for better spacing */
+  }
+
   .hero {
     padding: 64px 24px 56px;
   }
