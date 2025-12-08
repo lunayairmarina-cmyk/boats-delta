@@ -75,17 +75,31 @@ export default function Home() {
         if (videoResponse.ok) {
           const heroVideos = await videoResponse.json();
           if (Array.isArray(heroVideos)) {
-            heroVideos.forEach((vid: { _id?: string; metadata?: { order?: number } }) => {
+            heroVideos.forEach((vid: { _id?: string; metadata?: { order?: number; slug?: string } }) => {
               if (vid._id) {
+                const slug = vid.metadata?.slug;
                 mediaItems.push({
                   id: vid._id,
                   url: `/api/videos/${vid._id}`,
                   type: 'video',
-                  order: vid.metadata?.order || 0,
+                  order: slug === 'hero-lonier-video' ? -1000 : (vid.metadata?.order || 0),
                 });
               }
             });
           }
+        }
+
+        // If the priority hero video is missing from the API, add a static fallback
+        const hasPriorityHero = mediaItems.some(
+          (item) => item.type === 'video' && item.order === -1000
+        );
+        if (!hasPriorityHero) {
+          mediaItems.unshift({
+            id: 'hero-lonier-video-static',
+            url: `/لونيير%20.mp4`,
+            type: 'video',
+            order: -1000,
+          });
         }
 
         // Sort by order
@@ -175,6 +189,13 @@ export default function Home() {
     setCurrentSlide(newIndex);
   }, [heroMedia]);
 
+  // Ensure the first slide (especially hero video) starts playing once media is ready
+  useEffect(() => {
+    if (heroMedia.length > 0) {
+      handleSlideChange(0);
+    }
+  }, [heroMedia, handleSlideChange]);
+
   // Auto-rotate slides
   useEffect(() => {
     if (heroMedia.length <= 1) return;
@@ -215,6 +236,7 @@ export default function Home() {
                   ref={(el) => { videoRefs.current[media.id] = el; }}
                   className={styles.heroVideo}
                   src={media.url}
+                  autoPlay
                   muted
                   playsInline
                   loop={false}

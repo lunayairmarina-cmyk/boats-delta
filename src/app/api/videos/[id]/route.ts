@@ -23,6 +23,43 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         }
 
         const file = files[0];
+        const fileLength = typeof file.length === 'number' ? file.length : undefined;
+        const range = request.headers.get('range');
+        const contentType = file.contentType || 'video/mp4';
+
+        // Support byte-range requests so browsers can properly stream/seek
+        if (range && fileLength !== undefined) {
+            const bytesPrefix = 'bytes=';
+            if (!range.startsWith(bytesPrefix)) {
+                return NextResponse.json({ error: 'Invalid Range' }, { status: 416 });
+            }
+
+            const rangeParts = range.replace(bytesPrefix, '').split('-');
+            const start = parseInt(rangeParts[0], 10);
+            const end = rangeParts[1] ? parseInt(rangeParts[1], 10) : fileLength - 1;
+
+            if (Number.isNaN(start) || Number.isNaN(end) || start < 0 || end >= fileLength || start > end) {
+                return NextResponse.json({ error: 'Invalid Range' }, { status: 416 });
+            }
+
+            const chunkSize = end - start + 1;
+            const stream = bucket.openDownloadStream(_id, { start, end });
+
+            // @ts-expect-error Node stream is compatible with the Response body but lacks types
+            return new Response(stream, {
+                status: 206,
+                headers: {
+                    'Content-Range': `bytes ${start}-${end}/${fileLength}`,
+                    'Accept-Ranges': 'bytes',
+                    'Content-Length': chunkSize.toString(),
+                    'Content-Type': contentType,
+                    'Cache-Control': `public, max-age=${maxAge}, immutable`,
+                    'ETag': etag,
+                    'Last-Modified': lastModified,
+                },
+            });
+        }
+
         const stream = bucket.openDownloadStream(_id);
         
         const uploadDate = file.uploadDate ? new Date(file.uploadDate).getTime() : Date.now();
@@ -49,7 +86,8 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         // @ts-expect-error Node stream is compatible with the Response body but lacks types
         return new Response(stream, {
             headers: {
-                'Content-Type': file.contentType || 'video/mp4',
+                'Content-Type': contentType,
+                'Accept-Ranges': 'bytes',
                 'Cache-Control': `public, max-age=${maxAge}, immutable`,
                 'ETag': etag,
                 'Last-Modified': lastModified,
