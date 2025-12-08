@@ -356,6 +356,12 @@
     min-height: 85vh;
   }
 
+  .heroContent {
+    width: 100%;
+    max-width: none;
+    padding-inline: 4px;
+  }
+
   .heroTitle {
     font-size: clamp(48px, 10vw, 72px);
   }
@@ -369,6 +375,11 @@
     min-height: 44px;
     padding: 12px 28px;
     font-size: 14px;
+  }
+
+  /* Hide hero CTA buttons on mobile to reduce clutter */
+  .heroActions {
+    display: none;
   }
 
   .experienceSection {
