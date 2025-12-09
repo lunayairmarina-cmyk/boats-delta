@@ -402,13 +402,28 @@
     border-radius: 12px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     z-index: 2;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-50%) scale(0.95);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.mockupContainer:hover .floatingCard,
+.mockupContainer:focus-within .floatingCard,
+.mockupContainer.interacting .floatingCard {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) scale(1);
+    pointer-events: auto;
     animation: float 4s ease-in-out infinite;
 }
 
 .floatingCardRight {
     right: -20px;
     top: 50%;
-    transform: translateY(-50%);
     width: 180px;
     padding: 1rem;
 }
@@ -416,9 +431,13 @@
 .floatingCardLeft {
     left: -20px;
     top: 30%;
-    transform: translateY(-50%);
     width: 160px;
     padding: 0.75rem;
+}
+
+.mockupContainer:hover .floatingCardLeft,
+.mockupContainer:focus-within .floatingCardLeft,
+.mockupContainer.interacting .floatingCardLeft {
     animation-delay: 1s;
 }
 

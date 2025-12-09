@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './FeatureSection.module.css';
 import MobileFloatingCard from './MobileFloatingCard';
 import { useLanguage } from '@/context/LanguageContext';
@@ -34,6 +34,143 @@ export default function FeatureSection({
     lightBg = false
 }: FeatureProps) {
     const { t } = useLanguage();
+    const mockupWrapperRef = useRef<HTMLDivElement>(null);
+    const [isInteracting, setIsInteracting] = useState(false);
+
+    useEffect(() => {
+        const wrapper = mockupWrapperRef.current;
+        if (!wrapper) return;
+
+        const handleTouchStart = () => {
+            setIsInteracting(true);
+        };
+
+        const handleTouchEnd = () => {
+            setTimeout(() => setIsInteracting(false), 2000);
+        };
+
+        const handleMouseEnter = () => {
+            setIsInteracting(true);
+        };
+
+        const handleMouseLeave = () => {
+            setIsInteracting(false);
+        };
+
+        wrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
+        wrapper.addEventListener('touchend', handleTouchEnd, { passive: true });
+        wrapper.addEventListener('mouseenter', handleMouseEnter);
+        wrapper.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            wrapper.removeEventListener('touchstart', handleTouchStart);
+            wrapper.removeEventListener('touchend', handleTouchEnd);
+            wrapper.removeEventListener('mouseenter', handleMouseEnter);
+            wrapper.removeEventListener('mouseleave', handleMouseLeave);
+        };
+    }, []);
+
+    const renderFloatingCards = () => {
+        if (variant === 'tankLevels') {
+            return (
+                <>
+                    <div className={`${styles.floatingCard} ${styles.floatingCardLeft}`}>
+                        <div className={styles.cardHeader}>
+                            <Fuel size={16} className={styles.iconBlue} />
+                            <span className={styles.cardBoatName}>{t('appPage.mockup.common.boatName')}</span>
+                        </div>
+                        <div className={styles.cardContent}>
+                            <div className={styles.cardLabel}>{t('appPage.mockup.dashboard.tankLevels')}</div>
+                            <div className={styles.cardValue}>75%</div>
+                        </div>
+                    </div>
+                    <div className={`${styles.floatingCard} ${styles.floatingCardRight}`}>
+                        <div className={styles.cardHeader}>
+                            <Fuel size={16} className={styles.iconBlue} />
+                            <span className={styles.cardBoatName}>{t('appPage.mockup.common.boatName')}</span>
+                        </div>
+                        <div className={styles.cardContent}>
+                            <div className={styles.cardLabel}>{t('appPage.mockup.dashboard.tankLevels')}</div>
+                            <div className={styles.cardValue}>45%</div>
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
+        if (variant === 'checklist') {
+            return (
+                <>
+                    <div className={`${styles.floatingCard} ${styles.floatingCardLeft}`}>
+                        <div className={styles.cardHeader}>
+                            <span className={styles.cardBoatName}>{t('appPage.mockup.common.boatName')}</span>
+                        </div>
+                        <div className={styles.checklistTitle}>
+                            <ClipboardCheck size={16} className={styles.iconGreen} /> {t('appPage.mockup.checklist.title')}
+                        </div>
+                        <div className={styles.checklistSection}>
+                            <div className={styles.checklistSectionTitle}>{t('appPage.mockup.checklist.exterior')}</div>
+                            <div className={styles.checklistItems}>
+                                <div className={styles.checklistItem}>
+                                    <Check size={14} className={styles.checkmark} /> {t('appPage.mockup.checklist.washdown')}
+                                </div>
+                                <div className={styles.checklistItem}>
+                                    <Check size={14} className={styles.checkmark} /> {t('appPage.mockup.checklist.windshield')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`${styles.floatingCard} ${styles.floatingCardRight}`}>
+                        <div className={styles.cardHeader}>
+                            <span className={styles.cardBoatName}>{t('appPage.mockup.common.boatName')}</span>
+                        </div>
+                        <div className={styles.checklistSection}>
+                            <div className={styles.checklistSectionTitle}>{t('appPage.mockup.checklist.interior')}</div>
+                            <div className={styles.checklistItems}>
+                                <div className={styles.checklistItem}>
+                                    <Check size={14} className={styles.checkmark} /> {t('appPage.mockup.checklist.sinks')}
+                                </div>
+                                <div className={styles.checklistItem}>
+                                    <Check size={14} className={styles.checkmark} /> {t('appPage.mockup.checklist.floors')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
+        if (variant === 'services') {
+            return (
+                <>
+                    <div className={`${styles.floatingCard} ${styles.floatingCardLeft}`}>
+                        <div className={styles.cardHeader}>
+                            <Wrench size={16} className={styles.iconRed} />
+                            <span className={styles.cardBoatName}>{t('appPage.mockup.common.boatName')}</span>
+                        </div>
+                        <div className={styles.serviceCard}>
+                            <div className={styles.serviceCardLabel}>{t('appPage.mockup.services.serviceType')}</div>
+                            <div className={styles.serviceCardName}>{t('appPage.mockup.services.bottomPaint')}</div>
+                            <div className={`${styles.serviceCardDue} ${styles.dueRed}`}>Sep 19 2024</div>
+                        </div>
+                    </div>
+                    <div className={`${styles.floatingCard} ${styles.floatingCardRight}`}>
+                        <div className={styles.cardHeader}>
+                            <Wrench size={16} className={styles.iconRed} />
+                            <span className={styles.cardBoatName}>{t('appPage.mockup.common.boatName')}</span>
+                        </div>
+                        <div className={styles.serviceCard}>
+                            <div className={styles.serviceCardLabel}>{t('appPage.mockup.services.serviceType')}</div>
+                            <div className={styles.serviceCardName}>{t('appPage.mockup.services.engineService')}</div>
+                            <div className={`${styles.serviceCardDue} ${styles.dueOrange}`}>Aug 14 2024</div>
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
+        return null;
+    };
 
     const renderPhoneContent = () => {
         const PhoneNav = ({ activeIndex }: { activeIndex: number }) => (
@@ -262,7 +399,11 @@ export default function FeatureSection({
             <MobileFloatingCard section={variant} position="left" />
             <MobileFloatingCard section={variant} position="right" />
 
-            <div className={styles.mockupWrapper}>
+            <div 
+                ref={mockupWrapperRef}
+                className={`${styles.mockupWrapper} ${isInteracting ? styles.interacting : ''}`}
+            >
+                {renderFloatingCards()}
                 <div className={styles.phoneMockup}>
                     {renderPhoneContent()}
                 </div>

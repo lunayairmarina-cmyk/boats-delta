@@ -356,15 +356,16 @@
 
 /* App Benefits Section */
 .benefitsSection {
-    background: #f8fafc;
+    background: transparent;
     padding: 6rem 2rem;
     text-align: center;
+    position: relative;
 }
 
 .benefitsTitle {
     font-family: var(--font-heading);
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 800;
-    color: #0a1628;
+    color: #fff;
     margin-bottom: 1rem;
 }

@@ -1,8 +1,43 @@
 .container {
+    position: relative;
     max-width: 900px;
     margin: 0 auto;
     padding: 5rem 2rem;
-    background: #fff;
+    background: transparent;
+    overflow: hidden;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/new/faqs.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(40px);
+    opacity: 0.3;
+    z-index: 0;
+    transform: scale(1.1);
+}
+
+.container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(10, 22, 40, 0.85) 0%, rgba(15, 30, 55, 0.9) 100%);
+    z-index: 1;
+}
+
+.contentWrapper {
+    position: relative;
+    z-index: 2;
 }
 
 .title {
@@ -11,7 +46,7 @@
     font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 800;
     margin-bottom: 3rem;
-    color: #0a1628;
+    color: #fff;
 }
 
 .list {
@@ -20,7 +55,7 @@
 }
 
 .item {
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .question {
@@ -29,7 +64,7 @@
     background: none;
     border: none;
     padding: 1.75rem 0;
-    color: #0a1628;
+    color: #fff;
     font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
@@ -42,14 +77,14 @@
 }
 
 .question:hover {
-    color: #0c4fad;
+    color: #BF953F;
 }
 
 .answer {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s ease-out, padding-bottom 0.4s ease-out;
-    color: #475569;
+    color: #94A3B8;
     line-height: 1.7;
     font-size: 1rem;
 }
@@ -72,12 +107,21 @@
 
 .open .icon {
     transform: rotate(180deg);
-    color: #0c4fad;
+    color: #BF953F;
 }
 
 @media (max-width: 640px) {
     .container {
         padding: 3rem 1rem;
+    }
+
+    .container::before {
+        filter: blur(30px);
+        opacity: 0.25;
+    }
+
+    .container::after {
+        background: linear-gradient(180deg, rgba(10, 22, 40, 0.9) 0%, rgba(15, 30, 55, 0.95) 100%);
     }
 
     .question {

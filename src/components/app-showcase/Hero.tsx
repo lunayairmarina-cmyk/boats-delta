@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './Hero.module.css';
 import appStyles from '../../app/app/app.module.css';
 import ContourPattern from '../ContourPattern';
@@ -23,6 +23,41 @@ import {
 
 export default function Hero() {
     const { t } = useLanguage();
+    const mockupContainerRef = useRef<HTMLDivElement>(null);
+    const [isInteracting, setIsInteracting] = useState(false);
+
+    useEffect(() => {
+        const container = mockupContainerRef.current;
+        if (!container) return;
+
+        const handleTouchStart = () => {
+            setIsInteracting(true);
+        };
+
+        const handleTouchEnd = () => {
+            setTimeout(() => setIsInteracting(false), 2000);
+        };
+
+        const handleMouseEnter = () => {
+            setIsInteracting(true);
+        };
+
+        const handleMouseLeave = () => {
+            setIsInteracting(false);
+        };
+
+        container.addEventListener('touchstart', handleTouchStart, { passive: true });
+        container.addEventListener('touchend', handleTouchEnd, { passive: true });
+        container.addEventListener('mouseenter', handleMouseEnter);
+        container.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            container.removeEventListener('touchstart', handleTouchStart);
+            container.removeEventListener('touchend', handleTouchEnd);
+            container.removeEventListener('mouseenter', handleMouseEnter);
+            container.removeEventListener('mouseleave', handleMouseLeave);
+        };
+    }, []);
 
     return (
         <section className={styles.hero} id="hero-section">
@@ -77,7 +112,10 @@ export default function Hero() {
                     </div>
                 </div>
 
-                <div className={styles.mockupContainer}>
+                <div 
+                    ref={mockupContainerRef}
+                    className={`${styles.mockupContainer} ${isInteracting ? styles.interacting : ''}`}
+                >
                     {/* Left Floating Card - Mini Checklist */}
                     <div className={`${styles.floatingCard} ${styles.floatingCardLeft}`}>
                         <div className={styles.cardHeader}>

@@ -34,22 +34,24 @@ export default function FAQ() {
             <MobileFloatingCard section="faq" position="left" />
             <MobileFloatingCard section="faq" position="right" />
 
-            <h2 className={styles.title}>{t('appPage.faq.title')}</h2>
-            <div className={styles.list}>
-                {faqs.map((faq, index) => (
-                    <div key={index} className={styles.item}>
-                        <button
-                            className={`${styles.question} ${openIndex === index ? styles.open : ''}`}
-                            onClick={() => toggle(index)}
-                        >
-                            {faq.q}
-                            <span className={styles.icon}>▼</span>
-                        </button>
-                        <div className={`${styles.answer} ${openIndex === index ? styles.open : ''}`}>
-                            <p>{faq.a}</p>
+            <div className={styles.contentWrapper}>
+                <h2 className={styles.title}>{t('appPage.faq.title')}</h2>
+                <div className={styles.list}>
+                    {faqs.map((faq, index) => (
+                        <div key={index} className={styles.item}>
+                            <button
+                                className={`${styles.question} ${openIndex === index ? styles.open : ''}`}
+                                onClick={() => toggle(index)}
+                            >
+                                {faq.q}
+                                <span className={styles.icon}>▼</span>
+                            </button>
+                            <div className={`${styles.answer} ${openIndex === index ? styles.open : ''}`}>
+                                <p>{faq.a}</p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
     );

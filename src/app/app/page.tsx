@@ -7,6 +7,7 @@ import Hero from '../../components/app-showcase/Hero';
 import FeatureSection from '../../components/app-showcase/FeatureSection';
 import FAQ from '../../components/app-showcase/FAQ';
 import ContactForm from '../../components/app-showcase/ContactForm';
+import SectionSeparator from '../../components/app-showcase/SectionSeparator';
 import { useLanguage } from '@/context/LanguageContext';
 
 const montserrat = Montserrat({
@@ -96,10 +97,14 @@ export default function AppShowcasePage() {
             <main>
                 <Hero />
 
+                <SectionSeparator />
+
                 {/* Main App Benefits Title Section */}
                 <div className={styles.benefitsSection}>
                     <h2 className={styles.benefitsTitle}>{t('appPage.benefits.title')}</h2>
                 </div>
+
+                <SectionSeparator />
 
                 <div id="features" style={{ position: 'relative', zIndex: 2 }}>
                     <FeatureSection
@@ -110,6 +115,8 @@ export default function AppShowcasePage() {
                         lightBg={true}
                     />
 
+                    <SectionSeparator />
+
                     <FeatureSection
                         number="02"
                         title={t('appPage.features.checklist.title')}
@@ -117,6 +124,8 @@ export default function AppShowcasePage() {
                         variant="checklist"
                         reversed={true}
                     />
+
+                    <SectionSeparator />
 
                     <FeatureSection
                         number="03"
@@ -127,7 +136,11 @@ export default function AppShowcasePage() {
                     />
                 </div>
 
+                <SectionSeparator />
+
                 <FAQ />
+
+                <SectionSeparator />
 
                 <ContactForm />
             </main>
