@@ -373,7 +373,7 @@
 @media (min-width: 1024px) {
     .contentCardsWrapper {
         margin-top: 0;
-        gap:130rem;
+        gap: 50rem;
     }
 }
 
