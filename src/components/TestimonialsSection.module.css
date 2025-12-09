@@ -1,23 +1,10 @@
 .testimonialsSection {
   position: relative;
   padding: clamp(72px, 10vw, 140px) clamp(24px, 8vw, 120px);
-  background: radial-gradient(circle at 20% 20%, #ffe0f4, transparent 55%),
-    radial-gradient(circle at 80% 0%, #ffeef9, transparent 60%), #fff6fa;
+  background: #ffffff;
   overflow: hidden;
 }
 
-.glow {
-  position: absolute;
-  inset: 40px;
-  border-radius: 48px;
-  background: radial-gradient(
-    circle at 50% 30%,
-    rgba(255, 144, 188, 0.4),
-    transparent 55%
-  );
-  filter: blur(30px);
-  pointer-events: none;
-}
 
 .testimonialsInner {
   position: relative;

@@ -4,6 +4,7 @@ import React from 'react';
 import styles from './Hero.module.css';
 import appStyles from '../../app/app/app.module.css';
 import ContourPattern from '../ContourPattern';
+import MobileFloatingCard from './MobileFloatingCard';
 import { useLanguage } from '@/context/LanguageContext';
 import {
     Fuel,
@@ -24,7 +25,11 @@ export default function Hero() {
     const { t } = useLanguage();
 
     return (
-        <section className={styles.hero}>
+        <section className={styles.hero} id="hero-section">
+            {/* Mobile Floating Cards */}
+            <MobileFloatingCard section="hero" position="left" />
+            <MobileFloatingCard section="hero" position="right" />
+
             {/* Yacht Background */}
             <div className={styles.yachtBg}></div>
 

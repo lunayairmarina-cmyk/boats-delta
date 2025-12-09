@@ -1,10 +1,32 @@
 .faqSection {
+  position: relative;
   padding: clamp(64px, 12vw, 160px) clamp(24px, 8vw, 120px);
   background: radial-gradient(circle at 20% 20%, #fef8ff, transparent 55%),
     radial-gradient(circle at 80% 0%, #edf3ff, transparent 60%), #fbf7ff;
+  overflow: hidden;
+}
+
+.faqSection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(135deg, rgba(4, 7, 49, 0.75) 0%, rgba(8, 28, 201, 0.65) 50%, rgba(4, 7, 49, 0.8) 100%),
+    url('/new/faqs.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .faqInner {
+  position: relative;
+  z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
   display: flex;

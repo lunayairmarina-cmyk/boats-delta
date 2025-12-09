@@ -1,9 +1,16 @@
+'use client';
+
 import React from 'react';
 import styles from './ContactForm.module.css';
+import MobileFloatingCard from './MobileFloatingCard';
 
 export default function ContactForm() {
     return (
-        <section id="contact" className={styles.section}>
+        <section id="contact-section" className={styles.section}>
+            {/* Mobile Floating Cards */}
+            <MobileFloatingCard section="contact" position="left" />
+            <MobileFloatingCard section="contact" position="right" />
+
             <div className={styles.container}>
                 <h2 className={styles.title}>How can we help?</h2>
                 <form className={styles.form}>

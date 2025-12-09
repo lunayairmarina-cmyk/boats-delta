@@ -2,6 +2,7 @@
 
 import React from 'react';
 import styles from './FeatureSection.module.css';
+import MobileFloatingCard from './MobileFloatingCard';
 import { useLanguage } from '@/context/LanguageContext';
 import {
     Fuel,
@@ -256,7 +257,11 @@ export default function FeatureSection({
     };
 
     return (
-        <div className={`${styles.section} ${reversed ? styles.reversed : ''} ${lightBg ? styles.lightBg : styles.darkBg}`}>
+        <div className={`${styles.section} ${reversed ? styles.reversed : ''} ${lightBg ? styles.lightBg : styles.darkBg}`} id={`${variant}-section`}>
+            {/* Mobile Floating Cards */}
+            <MobileFloatingCard section={variant} position="left" />
+            <MobileFloatingCard section={variant} position="right" />
+
             <div className={styles.mockupWrapper}>
                 <div className={styles.phoneMockup}>
                     {renderPhoneContent()}

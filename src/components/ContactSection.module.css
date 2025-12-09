@@ -15,7 +15,7 @@
   right: 0;
   bottom: 0;
   background-image: 
-    linear-gradient(135deg, rgba(247, 249, 255, 0.45) 0%, rgba(255, 255, 255, 0.5) 100%),
+    linear-gradient(135deg, rgba(4, 7, 49, 0.75) 0%, rgba(8, 28, 201, 0.65) 50%, rgba(4, 7, 49, 0.8) 100%),
     url('/new/contactimage.webp');
   background-repeat: no-repeat;
   background-position: center;
@@ -459,7 +459,7 @@
 
   .contactSection::before {
     background-image: 
-      linear-gradient(135deg, rgba(247, 249, 255, 0.45) 0%, rgba(255, 255, 255, 0.5) 100%),
+      linear-gradient(135deg, rgba(4, 7, 49, 0.75) 0%, rgba(8, 28, 201, 0.65) 50%, rgba(4, 7, 49, 0.8) 100%),
       url('/new/contactimage.webp');
     opacity: 1;
   }

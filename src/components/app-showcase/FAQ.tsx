@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from './FAQ.module.css';
+import MobileFloatingCard from './MobileFloatingCard';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function FAQ() {
@@ -28,7 +29,11 @@ export default function FAQ() {
     };
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} id="faq-section">
+            {/* Mobile Floating Cards */}
+            <MobileFloatingCard section="faq" position="left" />
+            <MobileFloatingCard section="faq" position="right" />
+
             <h2 className={styles.title}>{t('appPage.faq.title')}</h2>
             <div className={styles.list}>
                 {faqs.map((faq, index) => (
