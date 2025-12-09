@@ -17,6 +17,7 @@ interface Service {
     priceAr?: string;
     slug?: string;
     category?: string;
+    order?: number;
 }
 
 interface ServicesListProps {
@@ -84,9 +85,11 @@ export default function ServicesList({
             );
 
             // Find all sub-services with this category (but different slug)
-            const subServices = services.filter(
-                (s) => s.category === category && s.slug && s.slug !== category
-            );
+            const subServices = services
+                .filter(
+                    (s) => s.category === category && s.slug && s.slug !== category
+                )
+                .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
             if (mainService) {
                 groups.push({
@@ -135,29 +138,10 @@ export default function ServicesList({
                     </div>
                 )}
 
-                <div className={styles.servicesLayout}>
-                    <div className={styles.contentSection}>
-                        <div className={styles.contentBadge}>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="2" y="12" width="3" height="6" fill="#0c4fad" rx="1" />
-                                <rect x="7" y="8" width="3" height="10" fill="#0c4fad" rx="1" />
-                                <rect x="12" y="4" width="3" height="14" fill="#0c4fad" rx="1" />
-                                <rect x="17" y="6" width="2" height="12" fill="#0c4fad" rx="1" />
-                            </svg>
-                            <span>WITH US</span>
-                        </div>
-                        <h3 className={styles.contentTitle}>{title}</h3>
-                        <p className={styles.contentDescription}>
-                            {subtitle || "Integrate your favorite apps effortlessly, ensuring a smooth flow of information and reducing friction across your tech stack."}
-                        </p>
-                        <Link href="/contact" className={styles.knowMoreButton}>
-                            <span className={styles.buttonText}>KNOW MORE</span>
-                            <span className={styles.buttonArrow}>➝</span>
-                        </Link>
-                    </div>
-
-                    <div className={styles.servicesGrouped}>
-                        {groupedServices.map((group) => {
+                <div className={styles.servicesMainLayout}>
+                    <div className={styles.servicesContentArea}>
+                        {/* Render each group completely before moving to the next */}
+                        {groupedServices.map((group, groupIndex) => {
                             const mainTitle = (isArabic
                                 ? group.mainService.titleAr || group.mainService.title
                                 : group.mainService.title || group.mainService.titleAr) || '';
@@ -167,28 +151,32 @@ export default function ServicesList({
 
                             return (
                                 <div key={group.mainService._id} className={styles.serviceGroup}>
-                                    <Link
-                                        href={`/services/${group.mainService.slug || group.mainService._id}`}
-                                        className={styles.mainServiceCard}
-                                        style={{ direction: isArabic ? 'rtl' : 'ltr' }}
-                                    >
-                                        <div className={styles.imageWrapper}>
-                                            <Image
-                                                src={`/api/images/${group.mainService.image}`}
-                                                alt={mainTitle}
-                                                fill
-                                                className={styles.image}
-                                                sizes="(max-width: 768px) 400px, 500px"
-                                            />
-                                        </div>
-                                        <div className={styles.content}>
-                                            <h3 className={styles.cardTitle}>{mainTitle}</h3>
-                                            <p className={styles.cardDesc}>{mainDescription}</p>
-                                        </div>
-                                    </Link>
+                                    {/* Main Service Card */}
+                                    <div className={styles.mainServicesRow}>
+                                        <Link
+                                            href={`/services/${group.mainService.slug || group.mainService._id}`}
+                                            className={styles.mainServiceCard}
+                                            style={{ direction: isArabic ? 'rtl' : 'ltr' }}
+                                        >
+                                            <div className={styles.imageWrapper}>
+                                                <Image
+                                                    src={`/api/images/${group.mainService.image}`}
+                                                    alt={mainTitle}
+                                                    fill
+                                                    className={styles.image}
+                                                    sizes="(max-width: 768px) 400px, 500px"
+                                                />
+                                            </div>
+                                            <div className={styles.content}>
+                                                <h3 className={styles.cardTitle}>{mainTitle}</h3>
+                                                <p className={styles.cardDesc}>{mainDescription}</p>
+                                            </div>
+                                        </Link>
+                                    </div>
 
+                                    {/* Sub Services Grid for this group */}
                                     {group.subServices.length > 0 && (
-                                        <div className={styles.subServices}>
+                                        <div className={styles.subServicesGrid}>
                                             {group.subServices.map((subService) => {
                                                 const subTitle = (isArabic
                                                     ? subService.titleAr || subService.title
@@ -225,6 +213,62 @@ export default function ServicesList({
                                 </div>
                             );
                         })}
+                    </div>
+
+                    {/* Side Cards */}
+                    <div className={styles.contentCardsWrapper}>
+                        <div className={styles.contentSection}>
+                            <div className={styles.contentBadge}>
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M10 1.5 12.4 7l5.6.4-4.3 3.7 1.3 5.4L10 13.8 5 16.5l1.3-5.4L2 7.4 7.6 7 10 1.5Z"
+                                        fill="#0c4fad"
+                                    />
+                                </svg>
+                                <span>{badge}</span>
+                            </div>
+                            <h3 className={styles.contentTitle}>{title}</h3>
+                            <p className={styles.contentDescription}>
+                                {subtitle || "Integrate your favorite apps effortlessly, ensuring a smooth flow of information and reducing friction across your tech stack."}
+                            </p>
+                            <Link href="/contact" className={styles.knowMoreButton}>
+                                <span className={styles.buttonText}>KNOW MORE</span>
+                                <span className={styles.buttonArrow}>➝</span>
+                            </Link>
+                        </div>
+                        <div className={styles.contentSection}>
+                            <div className={styles.contentBadge}>
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M10 2c1.9 0 3.7.7 5 2a7 7 0 0 1-5 11.5A7 7 0 0 1 5 4c1.3-1.3 3.1-2 5-2Zm0 1.8a5.2 5.2 0 0 0-3.7 1.5A5.2 5.2 0 0 0 10 14.4 5.2 5.2 0 0 0 13.7 5.3 5.2 5.2 0 0 0 10 3.8Zm0 2.2a1 1 0 0 1 1 1v1.2l.9.5a1 1 0 0 1-.9 1.8l-1.6-.8A1 1 0 0 1 9 9.7V7a1 1 0 0 1 1-1Z"
+                                        fill="#0c4fad"
+                                    />
+                                </svg>
+                                <span>WITH US</span>
+                            </div>
+                            <h3 className={styles.contentTitle}>BOAT PRO</h3>
+                            <p className={styles.contentDescription}>
+                                {isArabic ? "نحن نقدم حلاً متكاملاً لإدارة يختك أو قاربك، يغطي جميع الجوانب التشغيلية والفنية والمالية. من الإشراف على الطاقم والصيانة الدورية إلى إدارة الميزانية والامتثال للقوانين البحرية، نحن نتولى كل شيء. يمكنك أيضًا اختيار نهج وحدوي (Modular approach) يتيح لك اختيار الخدمات التي تحتاجها فقط." : subtitle || "Integrate your favorite apps effortlessly, ensuring a smooth flow of information and reducing friction across your tech stack."}
+                            </p>
+                            <Link href="/contact" className={styles.knowMoreButton}>
+                                <span className={styles.buttonText}>KNOW MORE</span>
+                                <span className={styles.buttonArrow}>➝</span>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

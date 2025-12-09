@@ -51,25 +51,7 @@ export const useDesktopNavbarAnimations = ({
         }
       );
 
-      // Logo animation
-      if (logo) {
-        gsap.fromTo(
-          logo,
-          {
-            scale: 0.8,
-            opacity: 0,
-            rotation: isRTL ? -10 : 10,
-          },
-          {
-            scale: 1,
-            opacity: 1,
-            rotation: 0,
-            duration: 0.6,
-            delay: 0.2,
-            ease: "back.out(1.4)",
-          }
-        );
-      }
+      // Logo animation removed - no animations for logo
 
       // Menu container animation
       if (menuContainer) {
@@ -229,40 +211,40 @@ export const useDesktopNavbarAnimations = ({
     };
   }, []);
 
-  // Logo hover micro-interaction
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.innerWidth <= 1100) return;
+  // Logo hover micro-interaction - disabled to prevent size changes
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return;
+  //   if (window.innerWidth <= 1100) return;
 
-    const logo = logoRef.current;
-    if (!logo) return;
+  //   const logo = logoRef.current;
+  //   if (!logo) return;
 
-    const handleMouseEnter = () => {
-      gsap.to(logo, {
-        y: -3,
-        scale: 1.05,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    };
+  //   const handleMouseEnter = () => {
+  //     gsap.to(logo, {
+  //       y: -3,
+  //       scale: 1.05,
+  //       duration: 0.3,
+  //       ease: "power2.out",
+  //     });
+  //   };
 
-    const handleMouseLeave = () => {
-      gsap.to(logo, {
-        y: 0,
-        scale: 1,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    };
+  //   const handleMouseLeave = () => {
+  //     gsap.to(logo, {
+  //       y: 0,
+  //       scale: 1,
+  //       duration: 0.3,
+  //       ease: "power2.out",
+  //     });
+  //   };
 
-    logo.addEventListener("mouseenter", handleMouseEnter);
-    logo.addEventListener("mouseleave", handleMouseLeave);
+  //   logo.addEventListener("mouseenter", handleMouseEnter);
+  //   logo.addEventListener("mouseleave", handleMouseLeave);
 
-    return () => {
-      logo.removeEventListener("mouseenter", handleMouseEnter);
-      logo.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
+  //   return () => {
+  //     logo.removeEventListener("mouseenter", handleMouseEnter);
+  //     logo.removeEventListener("mouseleave", handleMouseLeave);
+  //   };
+  // }, []);
 
   // Language button hover micro-interaction
   useEffect(() => {

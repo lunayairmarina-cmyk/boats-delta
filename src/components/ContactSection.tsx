@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import Image from "next/image";
 import styles from "./ContactSection.module.css";
 import { useLanguage } from "@/context/LanguageContext";
 import {
@@ -67,6 +68,14 @@ export default function ContactSection() {
           {/* Visual + Contact Form */}
           <div className={styles.visualColumn}>
             <div className={styles.contactImage}>
+              <Image
+                src="/api/images/slug/contact-hero"
+                alt={language === "ar" ? "اليخت في البحر مع طاقم الضيافة" : "Luxury yacht concierge preparing for guests"}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 540px"
+                className={styles.contactImageMedia}
+              />
             </div>
 
             <div className={styles.formWrapper}>

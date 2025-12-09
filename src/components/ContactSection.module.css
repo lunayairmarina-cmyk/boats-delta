@@ -96,6 +96,10 @@
   min-height: 260px;
 }
 
+.contactImageMedia {
+  object-fit: cover;
+}
+
 
 /* Form Wrapper */
 .formWrapper {

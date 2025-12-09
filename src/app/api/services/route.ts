@@ -17,6 +17,7 @@ type ServiceRecord = {
     priceAr?: string;
     slug?: string;
     category?: string;
+    order?: number;
     createdAt?: string;
 };
 
@@ -25,6 +26,7 @@ type LeanServiceLike = Omit<ServiceRecord, '_id' | 'createdAt'> & {
     createdAt?: string | Date;
     priceAr?: string;
     category?: string;
+    order?: number;
 };
 
 const toServiceId = (value: LeanServiceLike['_id']): string =>
@@ -51,6 +53,7 @@ function normalizeServices(data: Array<IService | LeanServiceLike>): ServiceReco
             priceAr: source.priceAr,
             slug: source.slug,
             category: source.category,
+            order: (source as any).order ?? 0,
             createdAt: toServiceDate(source.createdAt),
         };
     });
@@ -82,7 +85,7 @@ export async function GET(request: NextRequest) {
         }
 
         await connectDB();
-        const services = await Service.find({}).sort({ createdAt: -1 }).lean();
+        const services = await Service.find({}).sort({ category: 1, order: 1, createdAt: -1 }).lean();
 
         console.log('Fetched services from DB:', services.length);
         console.log('First service:', services[0]);

@@ -30,6 +30,7 @@ export interface IService extends Document {
     relatedServices?: Types.ObjectId[];
     slug?: string;
     category?: string;
+    order?: number;
     price?: string;
     priceAr?: string;
     metaTitle?: string;
@@ -76,6 +77,7 @@ const ServiceSchema: Schema = new Schema(
         relatedServices: [{ type: Schema.Types.ObjectId, ref: 'Service' }],
         slug: { type: String, trim: true, index: true, sparse: true },
         category: { type: String },
+        order: { type: Number, default: 0 },
         price: { type: String },
         priceAr: { type: String },
         metaTitle: { type: String },

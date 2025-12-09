@@ -72,27 +72,18 @@
   justify-content: center;
   align-items: center;
   margin: clamp(24px, 4vw, 32px) 0;
-  will-change: transform, opacity;
 }
 
 .logoContainer:active {
-  transform: scale(1);
+  transform: scale(3);
 }
 
 .logoImage {
   width: auto;
   height: clamp(80px, 10vw, 140px);
   object-fit: contain;
-  scale: 3.5;
+  scale:3.5;
   filter: drop-shadow(0 4px 12px rgba(46, 29, 69, 0.15));
-  transition: filter 0.3s ease;
-  transform: scale(1);
-}
-
-.logoContainer:active .logoImage,
-.logoImage:active {
-  scale: 3.5;
-  transform: scale(1);
 }
 
 .scriptTitle {

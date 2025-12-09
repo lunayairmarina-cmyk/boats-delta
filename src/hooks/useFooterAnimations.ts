@@ -101,24 +101,7 @@ export const useFooterAnimations = ({ isRTL }: UseFooterAnimationsProps) => {
         });
       }
 
-      // Logo scale and fade
-      if (logoRef.current && !isFooterVisible) {
-        gsap.set(logoRef.current, { opacity: 0, scale: 0.8 });
-        ScrollTrigger.create({
-          trigger: logoRef.current,
-          start: "top 95%",
-          once: true,
-          onEnter: () => {
-            gsap.to(logoRef.current, {
-              opacity: 1,
-              scale: 1,
-              duration: 0.6,
-              delay: 0.3,
-              ease: "back.out(1.2)",
-            });
-          },
-        });
-      }
+      // Logo animation removed - no animations for logo
 
       // Subtitle fade-up
       if (subtitleRef.current && !isFooterVisible) {
