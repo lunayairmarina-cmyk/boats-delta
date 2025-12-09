@@ -150,7 +150,7 @@ export default function ServicesList({
                                 : group.mainService.description || group.mainService.descriptionAr) || '';
 
                             return (
-                                <div key={group.mainService._id} className={styles.serviceGroup}>
+                                <div key={group.mainService._id} className={`${styles.serviceGroup} ${groupIndex === 0 ? styles.firstServiceGroup : ''}`}>
                                     {/* Main Service Card */}
                                     <div className={styles.mainServicesRow}>
                                         <Link
@@ -208,6 +208,29 @@ export default function ServicesList({
                                                     </Link>
                                                 );
                                             })}
+                                            {/* Decorative placeholders to fill empty grid spaces on desktop */}
+                                            {(() => {
+                                                const totalItems = group.subServices.length;
+                                                const columns = 3; // Desktop grid columns
+                                                const remainder = totalItems % columns;
+                                                // Only add placeholders if there's a remainder (incomplete row)
+                                                const placeholdersNeeded = remainder > 0 ? columns - remainder : 0;
+                                                
+                                                // Only show placeholders on desktop (handled by CSS)
+                                                return placeholdersNeeded > 0 ? Array.from({ length: placeholdersNeeded }).map((_, idx) => (
+                                                    <div key={`placeholder-${groupIndex}-${idx}`} className={styles.decorativePlaceholder}>
+                                                        <div className={styles.decorativePattern}>
+                                                            <div className={styles.decorativeIcon}>
+                                                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="rgba(12, 79, 173, 0.2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                                                    <path d="M2 17L12 22L22 17" stroke="rgba(12, 79, 173, 0.2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                                                    <path d="M2 12L12 17L22 12" stroke="rgba(12, 79, 173, 0.2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )) : null;
+                                            })()}
                                         </div>
                                     )}
                                 </div>

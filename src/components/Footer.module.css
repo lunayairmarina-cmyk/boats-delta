@@ -74,9 +74,7 @@
   margin: clamp(24px, 4vw, 32px) 0;
 }
 
-.logoContainer:active {
-  transform: scale(3);
-}
+
 
 .logoImage {
   width: auto;
