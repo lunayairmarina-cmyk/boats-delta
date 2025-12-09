@@ -74,6 +74,14 @@
     /* GSAP handles transitions */
 }
 
+.brandMark:active {
+    transform: scale(1);
+}
+
+.brandMark:active .logoImage {
+    transform: scale(4.5);
+}
+
 .brandMark::before {
     content: "";
     position: absolute;
