@@ -19,6 +19,7 @@
   --accent-glow: rgba(12, 79, 173, 0.65);
   --cta-secondary: rgba(255, 255, 255, 0.2);
   --border-soft: rgba(255, 255, 255, 0.3);
+  --color-yellow-90: #fff4cc;
   
   /* Responsive breakpoints */
   --breakpoint-mobile: 480px;

@@ -115,7 +115,6 @@ export default function TestimonialsSection() {
       className={styles.testimonialsSection}
       aria-labelledby="testimonials-heading"
     >
-      <div className={styles.glow} aria-hidden="true" />
       <div className={styles.testimonialsInner}>
         <h2 id="testimonials-heading">{t("testimonials.title")}</h2>
 

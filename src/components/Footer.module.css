@@ -77,9 +77,9 @@
 
 .logoImage {
   width: auto;
-  height: clamp(60px, 8vw, 100px);
+  height: clamp(100px, 12vw, 180px);
   object-fit: contain;
-  scale: 3;
+  scale: 4.5;
   filter: drop-shadow(0 4px 12px rgba(46, 29, 69, 0.15));
   transition: filter 0.3s ease;
 }

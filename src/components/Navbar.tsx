@@ -205,8 +205,8 @@ export default function Navbar() {
                 <Image
                     src="/LM Mark.svg"
                     alt="Lunier Marina Monogram"
-                    width={1000}
-                    height={1000}
+                    width={1500}
+                    height={1500}
                     className={styles.logoImage}
                     priority
                 />

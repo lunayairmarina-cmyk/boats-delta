@@ -1,14 +1,28 @@
 .servicesSection {
+    position: relative;
     padding: 6rem 2rem;
-    background-color: var(--bg-deep);
+    background-image: 
+        linear-gradient(135deg, rgba(247, 249, 255, 0.45) 0%, rgba(255, 255, 255, 0.5) 100%),
+        url('/new/download.jpgX.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
 }
 
 .compactSection {
     padding: 0;
-    background-color: transparent;
+    background-image: 
+        linear-gradient(135deg, rgba(247, 249, 255, 0.45) 0%, rgba(255, 255, 255, 0.5) 100%),
+        url('/new/download.jpgX.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .container {
+    position: relative;
+    z-index: 1;
     max-width: 100%;
     margin: 0 auto;
     padding: 0 clamp(24px, 6vw, 96px);
@@ -300,7 +314,7 @@
 
 
 .contentSection {
-    background: linear-gradient(135deg, #f7e8ff 0%, #faf5ff 100%);
+    background: linear-gradient(145deg, #0a0f25 0%, #060918 60%, #000119 100%);
     padding: 2.5rem;
     border-radius: 1.5rem;
     display: flex;
@@ -308,13 +322,15 @@
     gap: 1.5rem;
     position: sticky;
     top: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
 }
 
 .contentBadge {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: #0c4fad;
+    color: var(--color-yellow-90);
     font-size: 0.875rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -329,7 +345,7 @@
     font-family: "Playfair Display", serif;
     font-size: 2.5rem;
     line-height: 1.2;
-    color: #34215d;
+    color: var(--text-light);
     margin: 0;
     font-weight: 400;
 }
@@ -337,7 +353,7 @@
 .contentDescription {
     font-size: 1rem;
     line-height: 1.7;
-    color: #575c7a;
+    color: rgba(245, 247, 251, 0.88);
     margin: 0;
 }
 

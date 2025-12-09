@@ -64,142 +64,147 @@ export default function ContactSection() {
         </div>
 
         <div className={styles.contactContent}>
-          {/* Contact Form */}
-          <div className={styles.formWrapper}>
-            <form className={styles.contactForm} onSubmit={handleSubmit}>
-              <div className={styles.formFields}>
-                <div className={styles.field}>
-                  <label htmlFor="name">
-                    <span className={styles.fieldLabel}>
-                      {t('contact.first_name')}
-                    </span>
-                    <input
-                      id="name"
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder={t('contact.placeholders.firstName')}
-                      required
-                      disabled={status === "submitting"}
-                      aria-required="true"
-                    />
-                  </label>
+          {/* Visual + Contact Form */}
+          <div className={styles.visualColumn}>
+            <div className={styles.contactImage}>
+            </div>
+
+            <div className={styles.formWrapper}>
+              <form className={styles.contactForm} onSubmit={handleSubmit}>
+                <div className={styles.formFields}>
+                  <div className={styles.field}>
+                    <label htmlFor="name">
+                      <span className={styles.fieldLabel}>
+                        {t('contact.first_name')}
+                      </span>
+                      <input
+                        id="name"
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder={t('contact.placeholders.firstName')}
+                        required
+                        disabled={status === "submitting"}
+                        aria-required="true"
+                      />
+                    </label>
+                  </div>
+
+                  <div className={styles.field}>
+                    <label htmlFor="email">
+                      <span className={styles.fieldLabel}>
+                        {t('contact.email')}
+                      </span>
+                      <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder={t('contact.placeholders.email')}
+                        required
+                        disabled={status === "submitting"}
+                        aria-required="true"
+                      />
+                    </label>
+                  </div>
+
+                  <div className={styles.field}>
+                    <label htmlFor="message">
+                      <span className={styles.fieldLabel}>
+                        {t('contact.interest')}
+                      </span>
+                      <textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        placeholder={t('contact.placeholders.interest')}
+                        rows={6}
+                        required
+                        disabled={status === "submitting"}
+                        aria-required="true"
+                      />
+                    </label>
+                  </div>
                 </div>
 
-                <div className={styles.field}>
-                  <label htmlFor="email">
-                    <span className={styles.fieldLabel}>
-                      {t('contact.email')}
-                    </span>
-                    <input
-                      id="email"
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder={t('contact.placeholders.email')}
-                      required
-                      disabled={status === "submitting"}
-                      aria-required="true"
-                    />
-                  </label>
-                </div>
-
-                <div className={styles.field}>
-                  <label htmlFor="message">
-                    <span className={styles.fieldLabel}>
-                      {t('contact.interest')}
-                    </span>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder={t('contact.placeholders.interest')}
-                      rows={6}
-                      required
-                      disabled={status === "submitting"}
-                      aria-required="true"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Status Messages */}
-              {status === "success" && (
-                <div className={styles.statusMessage} role="alert" aria-live="polite">
-                  <svg
-                    className={styles.statusIcon}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                  <span>
-                    {language === "ar"
-                      ? "تم إرسال رسالتك بنجاح. سنتواصل معك قريباً."
-                      : "Message sent successfully! We'll get back to you soon."}
-                  </span>
-                </div>
-              )}
-
-              {status === "error" && (
-                <div
-                  className={`${styles.statusMessage} ${styles.statusError}`}
-                  role="alert"
-                  aria-live="assertive"
-                >
-                  <svg
-                    className={styles.statusIcon}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 8v4M12 16h.01" />
-                  </svg>
-                  <span>
-                    {language === "ar"
-                      ? "حدث خطأ. يرجى المحاولة مرة أخرى."
-                      : "Something went wrong. Please try again."}
-                  </span>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className={styles.contactSubmit}
-                disabled={status === "submitting" || status === "success"}
-                aria-busy={status === "submitting"}
-              >
-                {status === "submitting" ? (
-                  <>
-                    <span className={styles.spinner} aria-hidden="true" />
+                {/* Status Messages */}
+                {status === "success" && (
+                  <div className={styles.statusMessage} role="alert" aria-live="polite">
+                    <svg
+                      className={styles.statusIcon}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
                     <span>
-                      {language === "ar" ? "جاري الإرسال..." : "Sending..."}
+                      {language === "ar"
+                        ? "تم إرسال رسالتك بنجاح. سنتواصل معك قريباً."
+                        : "Message sent successfully! We'll get back to you soon."}
                     </span>
-                  </>
-                ) : (
-                  <>
-                    <span>{t('contact.send')}</span>
-                    <span className={styles.submitArrow} aria-hidden="true">
-                      ➝
-                    </span>
-                  </>
+                  </div>
                 )}
-              </button>
 
-              <p className={styles.contactNote}>
-                <span className={styles.noteIcon} aria-hidden="true">
-                  ⏱
-                </span>
-                {t('contact.note')}
-              </p>
-            </form>
+                {status === "error" && (
+                  <div
+                    className={`${styles.statusMessage} ${styles.statusError}`}
+                    role="alert"
+                    aria-live="assertive"
+                  >
+                    <svg
+                      className={styles.statusIcon}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 8v4M12 16h.01" />
+                    </svg>
+                    <span>
+                      {language === "ar"
+                        ? "حدث خطأ. يرجى المحاولة مرة أخرى."
+                        : "Something went wrong. Please try again."}
+                    </span>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className={styles.contactSubmit}
+                  disabled={status === "submitting" || status === "success"}
+                  aria-busy={status === "submitting"}
+                >
+                  {status === "submitting" ? (
+                    <>
+                      <span className={styles.spinner} aria-hidden="true" />
+                      <span>
+                        {language === "ar" ? "جاري الإرسال..." : "Sending..."}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span>{t('contact.send')}</span>
+                      <span className={styles.submitArrow} aria-hidden="true">
+                        ➝
+                      </span>
+                    </>
+                  )}
+                </button>
+
+                <p className={styles.contactNote}>
+                  <span className={styles.noteIcon} aria-hidden="true">
+                    ⏱
+                  </span>
+                  {t('contact.note')}
+                </p>
+              </form>
+            </div>
           </div>
 
           {/* Contact Info Card */}

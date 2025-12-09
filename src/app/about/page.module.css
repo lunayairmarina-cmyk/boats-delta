@@ -8,7 +8,12 @@
   position: relative;
   overflow: hidden;
   padding: clamp(72px, 12vw, 140px) clamp(24px, 8vw, 160px) clamp(80px, 10vw, 140px);
-  background-image: linear-gradient(135deg, #050b18, #0b2b5a 58%, #103d7d);
+  background-image: 
+    linear-gradient(135deg, rgba(5, 11, 24, 0.85) 0%, rgba(11, 43, 90, 0.8) 58%, rgba(16, 61, 125, 0.75) 100%),
+    url('/new/aboutus.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: var(--text-light);
   display: flex;
   flex-direction: column;
@@ -49,6 +54,7 @@
   line-height: 1.9;
   color: rgba(255, 255, 255, 0.82);
 }
+
 
 .heroStats {
   display: grid;
@@ -208,13 +214,24 @@
 }
 
 .valuesSection {
+  position: relative;
   margin: clamp(48px, 10vw, 140px) auto;
-  padding: 0 clamp(24px, 8vw, 140px);
+  padding: clamp(48px, 8vw, 120px) clamp(24px, 8vw, 140px);
   display: grid;
   gap: 32px;
+  background-image: 
+    linear-gradient(135deg, rgba(247, 249, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+    url('/new/كل تسليم كل مصافحة.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 32px;
+  overflow: hidden;
 }
 
 .valuesIntro {
+  position: relative;
+  z-index: 1;
   max-width: 640px;
 }
 
@@ -232,6 +249,8 @@
 }
 
 .valuesGrid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
@@ -249,10 +268,20 @@
 }
 
 .clientSection {
+  position: relative;
   padding: clamp(48px, 9vw, 120px) clamp(24px, 8vw, 140px);
+  background-image: 
+    linear-gradient(135deg, rgba(247, 249, 255, 0.45) 0%, rgba(255, 255, 255, 0.5) 100%),
+    url('/new/faqs.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
 }
 
 .clientGrid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
@@ -464,11 +493,24 @@
 }
 
 .careersSection {
+  position: relative;
   padding: clamp(48px, 9vw, 120px) clamp(24px, 8vw, 140px);
   display: grid;
   grid-template-columns: minmax(260px, 2fr) minmax(240px, 1fr);
   gap: 24px;
   align-items: center;
+  background-image: 
+    linear-gradient(135deg, rgba(247, 249, 255, 0.45) 0%, rgba(255, 255, 255, 0.5) 100%),
+    url('/new/WhatsApp Image 2025-12-08 at 8.26.32 PM.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.careersCopy {
+  position: relative;
+  z-index: 1;
 }
 
 .careersCopy h2 {
@@ -542,6 +584,8 @@
 }
 
 .careersPanel {
+  position: relative;
+  z-index: 1;
   background: #072d5b;
   color: var(--text-light);
   border-radius: 32px;
@@ -603,9 +647,21 @@
 }
 
 .timelineSection {
+  position: relative;
   padding: clamp(48px, 10vw, 140px) clamp(24px, 8vw, 140px);
-  background: linear-gradient(135deg, #050b18, #0c2148 65%);
+  background-image: 
+    linear-gradient(135deg, rgba(5, 11, 24, 0.45) 0%, rgba(12, 33, 72, 0.4) 65%),
+    url('/new/رحلتنا.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: var(--text-light);
+  overflow: hidden;
+}
+
+.timelineIntro {
+  position: relative;
+  z-index: 1;
 }
 
 .timelineIntro h2 {
@@ -617,6 +673,7 @@
   margin-top: 36px;
   position: relative;
   padding-left: 32px;
+  z-index: 1;
 }
 
 .timelineTrack::before {

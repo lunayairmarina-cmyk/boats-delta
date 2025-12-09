@@ -183,8 +183,8 @@ export default function Footer() {
             <Image
               src="/LM Logo.svg"
               alt="Lunier Marina Logo"
-              width={200}
-              height={80}
+              width={300}
+              height={120}
               className={styles.logoImage}
             />
           </div>

@@ -489,19 +489,17 @@
 
 .experienceCard {
   position: relative;
-  background: #fff;
-  color: #152642;
+  color: #f5f7fb;
   border-radius: 32px;
   padding: clamp(32px, 5vw, 56px);
-  box-shadow: 0 35px 70px rgba(5, 17, 35, 0.25);
+  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.35);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: clamp(24px, 4vw, 48px);
   align-items: center;
   border: 1px solid rgba(255, 255, 255, 0.6);
-  background-image: linear-gradient(125deg,
-      rgba(255, 255, 255, 0.92),
-      rgba(244, 248, 255, 0.98));
+  background: linear-gradient(180deg, #0a0934 0%, #000119 68%, #09005c 88%, #000c22 100%);
+  overflow: hidden;
 }
 
 .experienceCard::before {
@@ -510,7 +508,7 @@
   inset: -12px;
   border-radius: 40px;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
   z-index: -1;
   filter: blur(6px);
 }
@@ -543,8 +541,16 @@
 .arabicTitle {
   font-size: 28px;
   font-weight: 600;
+  line-height: 1.8;
+  color: var(--color-yellow-90);
 }
 
+.arabicCopy p {
+  font-family: "Playfair Display", "Poppins", serif;
+  font-weight: 400;
+  line-height: 1.85;
+  color: var(--color-yellow-90);
+}
 .cardMedia {
   display: flex;
   justify-content: center;
@@ -561,7 +567,7 @@
 
 .logoStack {
   text-align: center;
-  color: #113555;
+  color: rgba(238, 241, 248, 0.85);
   display: flex;
   flex-direction: column;
   align-items: center;
