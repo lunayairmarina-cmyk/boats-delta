@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
     try {
@@ -11,18 +10,19 @@ export async function POST(request: Request) {
         const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
         
         if (username === adminUsername && password === adminPassword) {
-            const cookieStore = await cookies();
-            const isProduction = process.env.NODE_ENV === 'production';
-            
-            cookieStore.set('admin_session', 'true', {
+            const isSecure = new URL(request.url).protocol === 'https:';
+            const response = NextResponse.json({ success: true });
+
+            // Set the session cookie on the response so it is persisted for the middleware
+            response.cookies.set('admin_session', 'true', {
                 httpOnly: true,
-                secure: isProduction,
+                secure: isSecure,
                 sameSite: 'lax',
                 maxAge: 60 * 60 * 24, // 1 day
                 path: '/',
             });
 
-            return NextResponse.json({ success: true });
+            return response;
         }
 
         return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
