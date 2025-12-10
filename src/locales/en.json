@@ -54,6 +54,15 @@
         "title": "Upcoming service monitoring",
         "description": "This section of our management app allows you to view when services are due. The colors change automatically according to due dates for annual service for your yacht. You will also receive a notification 2 months prior so arrangements can be made by our service team and when the service is due!"
     },
+    "video": {
+        "badge": "Featured Video",
+        "title": "Experience the Journey",
+        "description": "Step on board and preview the level of service, craftsmanship, and attention to detail you can expect with our team.",
+        "cta": "Discover More",
+        "secondaryCta": "Talk to Us",
+        "label": "Preview",
+        "unavailable": "Video unavailable right now."
+    },
     "about": {
         "title": "Exceptional Marine Luxury",
         "description": "In a fast-paced world, luxury yachts remain a sanctuary for tranquility and distinction. Owning a yacht is no longer just a pleasure; it has become a complex asset requiring precise management. This is where Lunier Marina comes in, offering you an unparalleled experience that combines absolute luxury with professionalism, ensuring you enjoy every moment aboard your yacht while leaving all the details to us."
