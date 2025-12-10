@@ -3,6 +3,10 @@ import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
 import { GridFSBucket } from 'mongodb';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
+
 export async function GET(request: NextRequest) {
     try {
         await connectDB();
@@ -39,6 +43,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Failed to fetch videos' }, { status: 500 });
     }
 }
+
 
 
 

@@ -3,6 +3,10 @@ import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
 import { GridFSBucket, GridFSFile } from 'mongodb';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
+
 type StoredGridFile = GridFSFile & { contentType?: string };
 
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {

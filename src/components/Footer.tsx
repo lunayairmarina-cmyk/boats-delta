@@ -27,7 +27,7 @@ const SOCIAL_LINKS = [
   },
   {
     name: "Instagram",
-    href: "https://instagram.com",
+    href: "https://www.instagram.com/lunayairmarina?utm_source=qr&igsh=azZ1dHVpMXhsaTQ5",
     brand: "instagram",
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true">

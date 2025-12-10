@@ -10,7 +10,7 @@ import CommitmentShowcase from "@/components/CommitmentShowcase";
 import RelationshipSection from "@/components/RelationshipSection";
 import ServicesList from "@/components/ServicesList";
 
-// import VideoSection from "@/components/VideoSection";
+import VideoSection from "@/components/VideoSection";
 import styles from "./page.module.css";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -319,7 +319,7 @@ export default function Home() {
         </p>
       </section>
 
-      {/* <VideoSection /> */}
+      <VideoSection />
 
       <RelationshipSection />
 

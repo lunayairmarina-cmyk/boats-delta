@@ -3,6 +3,10 @@ import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
 import { GridFSBucket } from 'mongodb';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
+
 type VideoFileDoc = {
     _id: mongoose.Types.ObjectId;
     filename: string;
@@ -60,10 +64,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
             return NextResponse.json({ error: 'No file provided' }, { status: 400 });
         }
 
-        // Delete the old file
-        await bucket.delete(new mongoose.Types.ObjectId(params.id));
-
-        // Upload the new file with the same metadata
+        // Upload the new file first, then delete old to avoid losing video on failure
         const buffer = Buffer.from(await file.arrayBuffer());
         const filename = existingFile.filename || file.name;
         const uploadStream = bucket.openUploadStream(filename, {
@@ -80,9 +81,12 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
             uploadStream.on('error', reject);
         });
 
+        // Delete the old file after successful upload
+        await bucket.delete(new mongoose.Types.ObjectId(params.id));
+
         return NextResponse.json({
             fileId: uploadStream.id.toString(),
-            message: 'Video updated successfully'
+            message: 'Video updated successfully',
         });
     } catch (error) {
         console.error('Update video error:', error);
@@ -126,6 +130,7 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
         return NextResponse.json({ error: 'Failed to update video metadata' }, { status: 500 });
     }
 }
+
 
 
 

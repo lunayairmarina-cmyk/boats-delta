@@ -3,6 +3,10 @@ import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
 import { GridFSBucket } from 'mongodb';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
+
 function normalizeSlug(value: string | null): string | undefined {
     if (!value) return undefined;
     const cleaned = value
@@ -113,6 +117,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Failed to upload video' }, { status: 500 });
     }
 }
+
 
 
 

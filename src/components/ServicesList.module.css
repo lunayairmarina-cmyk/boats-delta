@@ -110,7 +110,7 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--spacing-md);
-    align-items: start;
+        align-items: start;
 }
 
 /* Main Service Card */
@@ -327,7 +327,7 @@
     50% {
         transform: scale(1.05);
         opacity: 0.6;
-    }
+}
 }
 
 /* Side Content Cards */
@@ -343,7 +343,7 @@
 @media (min-width: 1024px) {
     .contentCardsWrapper {
         margin-top: var(--spacing-xl);
-    }
+}
 
     .contentSection {
         position: static;
