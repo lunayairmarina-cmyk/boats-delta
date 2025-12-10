@@ -72,6 +72,8 @@
   justify-content: center;
   align-items: center;
   margin: clamp(24px, 4vw, 32px) 0;
+  min-width: 0;
+  width: 100%;
 }
 
 
@@ -79,9 +81,11 @@
 .logoImage {
   width: auto;
   height: clamp(80px, 10vw, 140px);
+  max-width: 100%;
   object-fit: contain;
-  scale:3.5;
+  object-position: center;
   filter: drop-shadow(0 4px 12px rgba(46, 29, 69, 0.15));
+  flex-shrink: 0;
 }
 
 .scriptTitle {
