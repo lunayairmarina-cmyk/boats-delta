@@ -269,7 +269,7 @@ export default function Home() {
           </div>
         )}
         <section className={styles.heroContent}>
-          <span className={styles.heroBrand}>{t('hero.brand')}</span>
+          <span className={`${styles.heroBrand} ${language === 'ar' ? styles.heroBrandArabic : ''}`}>{t('hero.brand')}</span>
           <h1 className={styles.heroTitle}>{t('hero.subtitle')}</h1>
           <p
             className={`${styles.heroCopy} ${language === 'en' ? styles.heroCopyEnglish : ''

@@ -149,6 +149,35 @@
   border: 1px solid rgba(255, 255, 255, 0.35);
   background: rgba(2, 8, 22, 0.35);
   backdrop-filter: blur(6px);
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.heroBrandArabic {
+  letter-spacing: 0;
+  text-transform: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Arabic", "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: "liga" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  direction: rtl;
+  white-space: normal;
+  word-spacing: normal;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .heroBrand {
+    font-size: clamp(12px, 3vw, 15px);
+    padding: 6px 16px;
+  }
+  
+  .heroBrandArabic {
+    font-size: clamp(14px, 3.5vw, 16px);
+    padding: 8px 18px;
+    line-height: 1.8;
+  }
 }
 
 .eyeBrow {
