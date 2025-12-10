@@ -1,40 +1,41 @@
 .container {
+    width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: clamp(1rem, 3vw, 2rem);
 }
 
 .card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
-    padding: 2rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .title {
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
     font-weight: 600;
     color: #1a1a1a;
     margin-bottom: 0.75rem;
 }
 
 .description {
-    font-size: 1rem;
+    font-size: clamp(0.875rem, 2vw, 1rem);
     color: #6b7280;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .info {
     background: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
+    padding: clamp(1rem, 2vw, 1.25rem);
+    margin-bottom: 1.25rem;
 }
 
 .info h4 {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 2vw, 1rem);
     font-weight: 600;
     color: #374151;
     margin-bottom: 0.75rem;
@@ -48,9 +49,10 @@
 
 .info li {
     padding: 0.5rem 0;
-    font-size: 0.875rem;
+    font-size: clamp(0.8rem, 1.5vw, 0.875rem);
     color: #6b7280;
     border-bottom: 1px solid #e5e7eb;
+    word-break: break-all;
 }
 
 .info li:last-child {
@@ -65,11 +67,12 @@
 .button {
     width: 100%;
     padding: 0.875rem 1.5rem;
+    min-height: 48px;
     background: linear-gradient(135deg, #0c4fad 0%, #084a9d 100%);
     color: #ffffff;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 2vw, 1rem);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -82,6 +85,10 @@
     transform: translateY(-1px);
 }
 
+.button:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
 .button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -90,8 +97,8 @@
 
 .success,
 .error {
-    margin-top: 1.5rem;
-    padding: 1.25rem;
+    margin-top: 1.25rem;
+    padding: clamp(1rem, 2vw, 1.25rem);
     border-radius: 8px;
 }
 
@@ -110,14 +117,14 @@
 .success h4,
 .error h4 {
     margin: 0 0 0.5rem 0;
-    font-size: 1.125rem;
+    font-size: clamp(1rem, 2vw, 1.125rem);
     font-weight: 600;
 }
 
 .success p,
 .error p {
     margin: 0.5rem 0;
-    font-size: 0.875rem;
+    font-size: clamp(0.8rem, 1.5vw, 0.875rem);
 }
 
 .updates {
@@ -128,7 +135,7 @@
 
 .updates h5 {
     margin: 0 0 0.5rem 0;
-    font-size: 0.875rem;
+    font-size: clamp(0.8rem, 1.5vw, 0.875rem);
     font-weight: 600;
 }
 
@@ -140,6 +147,65 @@
 
 .updates li {
     padding: 0.375rem 0;
-    font-size: 0.8125rem;
+    font-size: clamp(0.75rem, 1.5vw, 0.8125rem);
     font-family: monospace;
+    word-break: break-all;
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .card {
+        border-radius: 10px;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    .container {
+        padding: 0.75rem;
+    }
+
+    .card {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .info {
+        padding: 0.75rem;
+    }
+
+    .button {
+        padding: 0.75rem 1rem;
+    }
+
+    .success,
+    .error {
+        padding: 0.75rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+    .container {
+        padding: 0.5rem;
+    }
+
+    .card {
+        padding: 0.75rem;
+    }
+
+    .title {
+        font-size: 1.125rem;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .button {
+        min-height: 48px;
+    }
 }

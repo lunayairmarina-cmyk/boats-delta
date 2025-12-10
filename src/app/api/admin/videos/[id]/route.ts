@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
 import { GridFSBucket } from 'mongodb';
+import { invalidateCache } from '@/lib/cache';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -30,6 +31,9 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
         const bucket = new GridFSBucket(db, { bucketName: 'videos' });
 
         await bucket.delete(new mongoose.Types.ObjectId(params.id));
+
+        // Invalidate video cache to reflect deletion immediately
+        invalidateCache(['videos', 'videos-list', `video-${params.id}`]);
 
         return NextResponse.json({ message: 'Video deleted successfully' });
     } catch (error) {
@@ -84,8 +88,13 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         // Delete the old file after successful upload
         await bucket.delete(new mongoose.Types.ObjectId(params.id));
 
+        const newFileId = uploadStream.id.toString();
+
+        // Invalidate video cache to reflect update immediately
+        invalidateCache(['videos', 'videos-list', `video-${params.id}`, `video-${newFileId}`]);
+
         return NextResponse.json({
-            fileId: uploadStream.id.toString(),
+            fileId: newFileId,
             message: 'Video updated successfully',
         });
     } catch (error) {
@@ -123,6 +132,9 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
             { _id: new mongoose.Types.ObjectId(params.id) },
             { $set: updateFields }
         );
+
+        // Invalidate video cache to reflect metadata update immediately
+        invalidateCache(['videos', 'videos-list', `video-${params.id}`]);
 
         return NextResponse.json({ success: true });
     } catch (error) {

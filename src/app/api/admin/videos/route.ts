@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import mongoose from 'mongoose';
 import { GridFSBucket } from 'mongodb';
+import { invalidateCache } from '@/lib/cache';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -110,6 +111,9 @@ export async function POST(request: Request) {
         });
 
         const fileId = uploadStream.id.toString();
+
+        // Invalidate video cache to ensure new video is visible immediately
+        invalidateCache(['videos', 'videos-list', `video-${fileId}`]);
 
         return NextResponse.json({ fileId, message: 'Video uploaded successfully' });
     } catch (error) {

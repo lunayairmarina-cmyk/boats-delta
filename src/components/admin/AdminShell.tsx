@@ -68,8 +68,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const copy = COPY[language];
 
-    const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [isDesktop, setIsDesktop] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(false);
 
     useEffect(() => {
         const mediaQuery = window.matchMedia('(min-width: 1024px)');

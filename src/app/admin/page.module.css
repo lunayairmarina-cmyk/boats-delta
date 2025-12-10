@@ -1,9 +1,11 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 2vw, 2rem);
-  width: min(1400px, 100%);
+  gap: clamp(0.75rem, 2vw, 2rem);
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 0;
 }
 
 .tabs {
@@ -17,6 +19,7 @@
   box-shadow: 0 15px 50px rgba(15, 23, 42, 0.05);
   overflow-x: auto;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tabs::-webkit-scrollbar {
@@ -37,11 +40,17 @@
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   text-align: center;
+  white-space: nowrap;
 }
 
 .tabButton:hover {
   background: #f4f6fb;
   color: #24293a;
+}
+
+.tabButton:focus-visible {
+  outline: 2px solid #0c4fad;
+  outline-offset: 2px;
 }
 
 .tabButtonActive {
@@ -57,31 +66,94 @@
   background: #fff;
   box-shadow: 0 25px 80px rgba(15, 23, 42, 0.06);
   padding: clamp(1rem, 2vw, 1.75rem);
+  overflow-x: hidden;
 }
 
+/* Large tablets and small desktops */
 @media (max-width: 1024px) {
   .panel {
     border-radius: 16px;
+    min-height: 380px;
+  }
+
+  .tabButton {
+    min-width: 140px;
   }
 }
 
+/* Tablets */
 @media (max-width: 768px) {
+  .tabs {
+    gap: 0.35rem;
+    padding: 0.3rem;
+    border-radius: 12px;
+  }
+
   .tabButton {
     flex: 0 0 auto;
+    min-width: 120px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 8px;
   }
 
   .panel {
-    padding: 1rem;
+    padding: 0.875rem;
+    min-height: 350px;
+    border-radius: 14px;
   }
 }
 
+/* Mobile phones */
 @media (max-width: 480px) {
+  .wrapper {
+    gap: 0.5rem;
+  }
+
+  .tabs {
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 10px;
+  }
+
   .tabButton {
-    min-width: 130px;
-    font-size: 0.85rem;
+    min-width: 100px;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
   }
 
   .panel {
-    padding: 0.75rem;
+    padding: 0.625rem;
+    min-height: 300px;
+    border-radius: 12px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .tabButton {
+    min-width: 85px;
+    padding: 0.6rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .panel {
+    padding: 0.5rem;
+    border-radius: 10px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .tabButton {
+    min-height: 44px;
+  }
+}
+
+/* Landscape mode on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .panel {
+    min-height: 250px;
   }
 }
