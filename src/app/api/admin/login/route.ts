@@ -5,9 +5,9 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { username, password } = body;
 
-        // Admin credentials from environment variables
-        const adminUsername = process.env.ADMIN_USERNAME || 'admin';
-        const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+        // Hardcoded admin credentials (requested)
+        const adminUsername = 'admin';
+        const adminPassword = 'admin123';
         
         if (username === adminUsername && password === adminPassword) {
             const isSecure = new URL(request.url).protocol === 'https:';
