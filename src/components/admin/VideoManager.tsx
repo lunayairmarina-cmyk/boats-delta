@@ -18,7 +18,7 @@ interface GridFSFile {
 }
 
 type VideoVariant = {
-    key: 'en' | 'ar';
+    key: 'en' | 'ar' | 'extra';
     slug: string;
     language: string;
     label: string;
@@ -39,6 +39,12 @@ const VIDEO_VARIANTS: VideoVariant[] = [
         language: 'ar',
         label: 'فيديو الصفحة الرئيسية (عربي)',
     },
+    {
+        key: 'extra',
+        slug: 'homepage-video-extra',
+        language: 'en',
+        label: 'Secondary Homepage Video',
+    },
 ];
 
 export default function VideoManager() {
@@ -57,6 +63,7 @@ export default function VideoManager() {
             description: 'إدارة فيديو الصفحة الرئيسية لكل لغة (إنجليزي / عربي)',
             homepageVideoEn: 'فيديو الصفحة الرئيسية (إنجليزي)',
             homepageVideoAr: 'فيديو الصفحة الرئيسية (عربي)',
+            homepageVideoExtra: 'فيديو إضافي للصفحة الرئيسية',
             selectVideo: 'اختر فيديو للاستبدال',
             replaceVideo: 'استبدال الفيديو',
             replacing: 'جاري الاستبدال…',
@@ -71,6 +78,7 @@ export default function VideoManager() {
             description: 'Manage homepage videos per language (English / Arabic)',
             homepageVideoEn: 'Homepage Video (English)',
             homepageVideoAr: 'Homepage Video (Arabic)',
+            homepageVideoExtra: 'Secondary Homepage Video',
             selectVideo: 'Select Video to Replace',
             replaceVideo: 'Replace Video',
             replacing: 'Replacing…',
@@ -288,7 +296,11 @@ export default function VideoManager() {
                 {VIDEO_VARIANTS.map((variant) =>
                     renderVariantCard(
                         variant,
-                        variant.key === 'en' ? copy.homepageVideoEn : copy.homepageVideoAr,
+                        variant.key === 'en'
+                            ? copy.homepageVideoEn
+                            : variant.key === 'ar'
+                                ? copy.homepageVideoAr
+                                : copy.homepageVideoExtra,
                     ),
                 )}
             </div>
