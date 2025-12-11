@@ -290,24 +290,34 @@
 }
 
 /* Development Banner */
+.developmentBannerWrapper {
+    position: relative;
+    padding: clamp(1rem, 3vw, 1.75rem) clamp(1rem, 4vw, 2.5rem) 0;
+    display: flex;
+    justify-content: center;
+    z-index: 2;
+}
+
 .developmentBanner {
     position: relative;
-    width: 100%;
-    background: linear-gradient(135deg, rgba(15, 30, 55, 0.95) 0%, rgba(10, 22, 40, 0.98) 100%);
-    border-bottom: 2px solid rgba(191, 149, 63, 0.3);
-    padding: clamp(1.5rem, 3vw, 2rem) clamp(1rem, 4vw, 2rem);
-    z-index: 100;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: min(1100px, 100%);
+    margin-top: clamp(3.5rem, 10vw, 5rem);
+    background: linear-gradient(135deg, rgba(15, 30, 55, 0.9) 0%, rgba(9, 19, 34, 0.95) 100%);
+    border: 1px solid rgba(191, 149, 63, 0.35);
+    padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 4vw, 2rem);
+    z-index: 2;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+    border-radius: 18px;
+    overflow: hidden;
 }
 
 .developmentBannerContent {
-    max-width: 1400px;
-    margin: 0 auto;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: clamp(0.75rem, 1.5vw, 1rem);
-    text-align: center;
+    align-items: flex-start;
+    gap: clamp(0.5rem, 1vw, 0.75rem);
+    text-align: start;
 }
 
 .developmentBadge {
@@ -346,11 +356,14 @@
 
 @media (max-width: 768px) {
     .developmentBanner {
-        padding: clamp(1rem, 2vw, 1.5rem) clamp(0.75rem, 3vw, 1rem);
+        padding: clamp(1rem, 3vw, 1.25rem) clamp(0.9rem, 3vw, 1.25rem);
+        margin-top: clamp(2.5rem, 12vw, 3.5rem);
     }
 
     .developmentBannerContent {
-        gap: clamp(0.5rem, 1vw, 0.75rem);
+        gap: clamp(0.5rem, 1.5vw, 0.8rem);
+        align-items: flex-start;
+        text-align: start;
     }
 }
 

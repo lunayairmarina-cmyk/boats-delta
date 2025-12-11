@@ -42,14 +42,16 @@ export default function AppShowcasePage() {
     return (
         <div className={`${styles.container} ${montserrat.variable} ${openSans.variable}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
             {/* Static Development Banner */}
-            <div className={styles.developmentBanner}>
-                <div className={styles.developmentBannerContent}>
-                    <span className={styles.developmentBadge}>{t('appPage.overlay.comingSoon')}</span>
-                    <div className={styles.developmentText}>
-                        <strong>{t('appPage.overlay.titlePrefix')}</strong>
-                        <span className={styles.textGold}> {t('appPage.overlay.titleSuffix')}</span>
+            <div className={styles.developmentBannerWrapper}>
+                <div className={styles.developmentBanner} role="status" aria-live="polite">
+                    <div className={styles.developmentBannerContent}>
+                        <span className={styles.developmentBadge}>{t('appPage.overlay.comingSoon')}</span>
+                        <div className={styles.developmentText}>
+                            <strong>{t('appPage.overlay.titlePrefix')}</strong>
+                            <span className={styles.textGold}> {t('appPage.overlay.titleSuffix')}</span>
+                        </div>
+                        <p className={styles.developmentSubtext}>{t('appPage.overlay.subtitle')}</p>
                     </div>
-                    <p className={styles.developmentSubtext}>{t('appPage.overlay.subtitle')}</p>
                 </div>
             </div>
 

@@ -7,7 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 
 const testimonialSlugs = [
   "portrait-vip-1", "portrait-vip-2", "portrait-vip-3", "portrait-vip-4",
-  "portrait-vip-5", "portrait-vip-6", "portrait-vip-7", "portrait-vip-8",
+  "portrait-vip-", "portrait-vip-6", "portrait-vip-7", "portrait-vip-8",
   "portrait-vip-9", "portrait-vip-10", "portrait-vip-11", "portrait-vip-12",
 ];
 
