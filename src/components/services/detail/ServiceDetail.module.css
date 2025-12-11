@@ -28,6 +28,7 @@
     radial-gradient(circle at 20% 20%, rgba(12, 79, 173, 0.35), transparent 55%),
     radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.08), transparent 45%);
   pointer-events: none;
+  z-index: 0;
 }
 
 .heroPattern {
@@ -63,6 +64,80 @@
   -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 75%);
   pointer-events: none;
   z-index: 0;
+}
+
+.heroBeams {
+  position: absolute;
+  inset: -12%;
+  background-image:
+    linear-gradient(115deg, rgba(12, 79, 173, 0.35) 0%, rgba(12, 79, 173, 0) 35%),
+    linear-gradient(245deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 28%);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  filter: blur(2px);
+  animation: beamShift 16s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heroOrbs {
+  position: absolute;
+  inset: -8%;
+  background:
+    radial-gradient(24% 28% at 18% 32%, rgba(0, 255, 214, 0.15), transparent 70%),
+    radial-gradient(22% 26% at 82% 68%, rgba(255, 186, 120, 0.18), transparent 75%),
+    radial-gradient(30% 30% at 56% 18%, rgba(148, 114, 255, 0.22), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  animation: orbFloat 12s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heroNoise {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.02) 0,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02) 0,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes beamShift {
+  0% {
+    transform: translateX(-2%) translateY(0) rotate(0.5deg);
+  }
+  50% {
+    transform: translateX(3%) translateY(-2%) rotate(-0.5deg);
+  }
+  100% {
+    transform: translateX(1%) translateY(-4%) rotate(0.25deg);
+  }
+}
+
+@keyframes orbFloat {
+  0% {
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+  100% {
+    transform: translateY(-14px);
+    filter: blur(1px);
+  }
 }
 
 .heroContent {

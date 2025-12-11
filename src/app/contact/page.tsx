@@ -241,6 +241,12 @@ export default function ContactPage() {
   return (
     <main className={styles.page} style={{ direction: dir }}>
       <section className={styles.hero}>
+        <div className={styles.heroBackdrop} aria-hidden="true" />
+        <div className={styles.heroPattern} aria-hidden="true" />
+        <div className={styles.heroGrid} aria-hidden="true" />
+        <div className={styles.heroBeams} aria-hidden="true" />
+        <div className={styles.heroOrbs} aria-hidden="true" />
+        <div className={styles.heroNoise} aria-hidden="true" />
         <div className={styles.heroCopy}>
           <p className={styles.heroBadge}>{content.hero.badge}</p>
           <h1>{content.hero.title}</h1>
