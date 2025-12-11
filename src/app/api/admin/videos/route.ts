@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const section = searchParams.get('section');
         const slug = searchParams.get('slug');
+        const language = searchParams.get('language');
 
         let query: Record<string, unknown>;
 
@@ -39,6 +40,10 @@ export async function GET(request: NextRequest) {
             query = { 'metadata.section': section };
         } else {
             query = {};
+        }
+
+        if (language) {
+            query['metadata.language'] = language;
         }
 
         const sortOrder: Record<string, 1 | -1> = { 'metadata.order': 1, uploadDate: -1 };
@@ -63,6 +68,7 @@ export async function POST(request: Request) {
         const categoryInput = (formData.get('category') as string) || 'uncategorized';
         const sectionInput = (formData.get('section') as string) || undefined;
         const slugInput = normalizeSlug(formData.get('slug') as string | null);
+        const languageInput = (formData.get('language') as string) || undefined;
         const orderInput = formData.get('order') ? parseInt(formData.get('order') as string, 10) : undefined;
 
         if (!file) {
@@ -98,6 +104,7 @@ export async function POST(request: Request) {
                 section: sectionInput,
                 contentType: file.type,
                 slug: slugInput,
+                language: languageInput,
                 order: orderInput,
                 source: 'admin-upload',
             },

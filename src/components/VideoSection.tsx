@@ -14,7 +14,7 @@ interface AdminVideo {
 }
 
 export default function VideoSection() {
-    const { t, dir } = useLanguage();
+    const { t, dir, language } = useLanguage();
     const [video, setVideo] = useState<AdminVideo | null>(null);
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
@@ -32,26 +32,44 @@ export default function VideoSection() {
         const fetchVideo = async () => {
             setLoading(true);
             try {
-                const response = await fetch("/api/videos?section=homepage-video", {
-                    cache: "no-store",
-                });
-                if (response.ok) {
-                    const videos: AdminVideo[] = await response.json();
-                    if (Array.isArray(videos) && videos.length > 0) {
-                        const v = videos[0];
-                        setVideo(v);
-                        setVideoUrl(`/api/videos/${v._id}`);
+                const slugPreferences =
+                    language === "ar"
+                        ? ["homepage-video-ar", "homepage-video-en", "homepage-video"]
+                        : ["homepage-video-en", "homepage-video"];
+
+                let found = false;
+
+                for (const slug of slugPreferences) {
+                    const response = await fetch(`/api/videos?slug=${slug}`, {
+                        cache: "no-store",
+                    });
+                    if (response.ok) {
+                        const videos: AdminVideo[] = await response.json();
+                        if (Array.isArray(videos) && videos.length > 0) {
+                            const v = videos[0];
+                            setVideo(v);
+                            setVideoUrl(`/api/videos/${v._id}`);
+                            found = true;
+                            break;
+                        }
                     }
+                }
+
+                if (!found) {
+                    setVideo(null);
+                    setVideoUrl(null);
                 }
             } catch (error) {
                 console.error("Failed to fetch video:", error);
+                setVideo(null);
+                setVideoUrl(null);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchVideo();
-    }, []);
+    }, [language]);
 
     const heading = resolve("video.title", video?.title || "Experience the Journey");
     const description = resolve(
