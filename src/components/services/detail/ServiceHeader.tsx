@@ -35,6 +35,8 @@ const ServiceHeader = forwardRef<HTMLElement, ServiceHeaderProps>(
         return (
             <section className={`${styles.section} ${styles.heroSection}`} ref={ref} dir={dir}>
                 <div className={styles.heroBackdrop} aria-hidden="true" />
+                <div className={styles.heroPattern} aria-hidden="true" />
+                <div className={styles.heroGrid} aria-hidden="true" />
                 <div className={styles.heroContent}>
                     <div className={styles.backRow} data-animate="heading">
                         <Link href="/services" className={styles.backLink} aria-label={backLabel}>

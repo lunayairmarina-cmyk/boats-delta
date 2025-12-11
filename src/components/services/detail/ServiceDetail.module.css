@@ -24,8 +24,45 @@
 .heroBackdrop {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(12, 79, 173, 0.35), transparent 55%);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(12, 79, 173, 0.35), transparent 55%),
+    radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.08), transparent 45%);
   pointer-events: none;
+}
+
+.heroPattern {
+  position: absolute;
+  inset: -18%;
+  background:
+    conic-gradient(
+      from 120deg at 50% 50%,
+      rgba(255, 255, 255, 0.08),
+      rgba(12, 79, 173, 0.12),
+      rgba(255, 255, 255, 0.08),
+      rgba(12, 79, 173, 0.05),
+      rgba(255, 255, 255, 0.08)
+    ),
+    radial-gradient(40% 40% at 72% 24%, rgba(0, 255, 214, 0.08), transparent 60%),
+    radial-gradient(32% 32% at 32% 70%, rgba(148, 114, 255, 0.12), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0.65;
+  filter: saturate(1.05);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heroGrid {
+  position: absolute;
+  inset: -8%;
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 140px 140px;
+  opacity: 0.18;
+  mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .heroContent {
