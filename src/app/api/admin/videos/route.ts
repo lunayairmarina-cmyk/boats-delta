@@ -68,7 +68,7 @@ export async function POST(request: Request) {
         const categoryInput = (formData.get('category') as string) || 'uncategorized';
         const sectionInput = (formData.get('section') as string) || undefined;
         const slugInput = normalizeSlug(formData.get('slug') as string | null);
-        const languageInput = (formData.get('language') as string) || undefined;
+        const languageInput = ((formData.get('language') as string) || 'en').toLowerCase();
         const orderInput = formData.get('order') ? parseInt(formData.get('order') as string, 10) : undefined;
 
         if (!file) {
