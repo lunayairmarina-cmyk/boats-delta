@@ -178,32 +178,79 @@ export async function getServiceDetail(identifier: string): Promise<ServiceDetai
 
     const normalizedService = normalizeService(service);
 
-    let relatedDocs: IService[] = [];
+    const dedupeById = <T extends { _id: Types.ObjectId }>(items: T[]) => {
+        const seen = new Set<string>();
+        return items.filter((item) => {
+            const id = item._id.toString();
+            if (seen.has(id)) return false;
+            seen.add(id);
+            return true;
+        });
+    };
 
+    // Seeded shuffle for deterministic but varied results per service
+    const seededShuffle = <T>(arr: T[], seed: string): T[] => {
+        const copy = [...arr];
+        // Simple hash function to create a numeric seed from the service ID
+        let hash = 0;
+        for (let i = 0; i < seed.length; i++) {
+            const char = seed.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32-bit integer
+        }
+        // Seeded random number generator
+        const seededRandom = () => {
+            hash = (hash * 1103515245 + 12345) & 0x7fffffff;
+            return hash / 0x7fffffff;
+        };
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(seededRandom() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+    };
+
+    const serviceIdStr = service._id.toString();
+    const collected: IService[] = [];
+    const MAX_RELATED = 4;
+
+    // 1) Respect explicit related list (if provided) - highest priority
     if (service.relatedServices && service.relatedServices.length > 0) {
-        relatedDocs = await Service.find({
+        const explicit = await Service.find({
             _id: { $in: service.relatedServices, $ne: service._id },
-        })
-            .limit(4)
-            .exec();
+        }).exec();
+        collected.push(...explicit);
     }
 
-    if (relatedDocs.length === 0 && service.category) {
-        relatedDocs = await Service.find({
+    // 2) Fill from same category if we need more
+    if (collected.length < MAX_RELATED && service.category) {
+        const existingIds = new Set(collected.map(s => s._id.toString()));
+        const sameCategory = await Service.find({
             _id: { $ne: service._id },
             category: service.category,
-        })
-            .limit(4)
-            .exec();
+        }).sort({ order: 1, createdAt: -1 }).exec();
+
+        // Filter out already collected and use seeded shuffle for variety
+        const filtered = sameCategory.filter(s => !existingIds.has(s._id.toString()));
+        const shuffled = seededShuffle(filtered, serviceIdStr);
+        collected.push(...shuffled.slice(0, MAX_RELATED - collected.length));
     }
 
-    if (relatedDocs.length === 0) {
-        relatedDocs = await Service.find({ _id: { $ne: service._id } })
-            .limit(4)
-            .exec();
+    // 3) Fallback: any other services if still need more
+    if (collected.length < MAX_RELATED) {
+        const existingIds = new Set(collected.map(s => s._id.toString()));
+        const fallback = await Service.find({
+            _id: { $ne: service._id },
+        }).sort({ order: 1, createdAt: -1 }).exec();
+
+        // Filter out already collected and use seeded shuffle for variety
+        const filtered = fallback.filter(s => !existingIds.has(s._id.toString()));
+        const shuffled = seededShuffle(filtered, serviceIdStr);
+        collected.push(...shuffled.slice(0, MAX_RELATED - collected.length));
     }
 
-    const relatedServices = relatedDocs.map(normalizeSummary);
+    const unique = dedupeById(collected).filter((doc) => doc._id.toString() !== service._id.toString());
+    const relatedServices = unique.slice(0, MAX_RELATED).map(normalizeSummary);
 
     return {
         service: normalizedService,

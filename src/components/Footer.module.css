@@ -1,9 +1,7 @@
 .footer {
-  background: radial-gradient(
-      circle at 20% 20%,
+  background: radial-gradient(circle at 20% 20%,
       rgba(255, 255, 255, 0.85),
-      transparent 55%
-    ),
+      transparent 55%),
     linear-gradient(180deg, #f5eefe 0%, #efe6fa 55%, #faf7ff 100%);
   color: #2e1d45;
   padding: clamp(80px, 12vw, 140px) clamp(24px, 8vw, 140px);
@@ -85,6 +83,16 @@
   transform: scale(3.5);
   transform-origin: center;
   filter: drop-shadow(0 4px 12px rgba(46, 29, 69, 0.15));
+  transition: none;
+}
+
+.logoContainer:hover {
+  transform: none !important;
+}
+
+.logoContainer:hover .logoImage,
+.logoImage:hover {
+  transform: scale(3.5) !important;
 }
 
 .scriptTitle {
@@ -703,6 +711,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .footer,
   .stars span,
   .logoContainer,
@@ -743,5 +752,3 @@
     display: none;
   }
 }
-
-

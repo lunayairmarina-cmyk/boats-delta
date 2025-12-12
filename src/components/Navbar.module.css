@@ -90,12 +90,20 @@
     opacity: 1;
 }
 
+.brandMark:hover {
+    transform: none !important;
+}
+
+.brandMark:hover .logoImage {
+    transform: scale(3) !important;
+}
+
 .logoImage {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    
+
     object-position: center;
     transform: scale(3);
     position: relative;
