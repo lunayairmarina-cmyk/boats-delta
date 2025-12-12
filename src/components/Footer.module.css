@@ -72,15 +72,18 @@
   justify-content: center;
   align-items: center;
   margin: clamp(24px, 4vw, 32px) 0;
+  flex-shrink: 0;
 }
 
 
 
 .logoImage {
+  display: block;
   width: auto;
   height: clamp(120px, 14vw, 220px);
   object-fit: contain;
-  scale:3.5;
+  transform: scale(3.5);
+  transform-origin: center;
   filter: drop-shadow(0 4px 12px rgba(46, 29, 69, 0.15));
 }
 
