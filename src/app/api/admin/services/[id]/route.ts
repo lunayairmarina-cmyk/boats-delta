@@ -19,6 +19,7 @@ type ServiceUpdatePayload = Partial<
         | 'benefits'
         | 'price'
         | 'priceAr'
+        | 'relatedServices'
     >
 >;
 
@@ -40,6 +41,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
                 features: body.features ?? [],
                 featuresAr: body.featuresAr ?? [],
                 benefits: body.benefits ?? [],
+                relatedServices: body.relatedServices ?? [],
                 price: body.price,
                 priceAr: body.priceAr,
                 updatedAt: new Date(),

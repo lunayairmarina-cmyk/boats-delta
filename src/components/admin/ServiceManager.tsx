@@ -80,6 +80,13 @@ type CopyShape = {
         descAr: string;
         remove: string;
     };
+    relatedServices: {
+        title: string;
+        description: string;
+        empty: string;
+        placeholder: string;
+        selected: (count: number) => string;
+    };
     actions: {
         remove: string;
         cancel: string;
@@ -153,6 +160,13 @@ const TEXT: Record<string, CopyShape> = {
             descAr: 'الوصف (AR)',
             remove: 'Remove Benefit',
         },
+        relatedServices: {
+            title: 'Related Services',
+            description: 'Select up to 4 services to display as related on this service page.',
+            empty: 'No related services selected. Click the dropdown to add related services.',
+            placeholder: 'Select related services...',
+            selected: (count: number) => `${count} service${count === 1 ? '' : 's'} selected`,
+        },
         actions: {
             remove: 'Remove',
             cancel: 'Cancel',
@@ -223,6 +237,13 @@ const TEXT: Record<string, CopyShape> = {
             descAr: 'الوصف (بالعربية)',
             remove: 'حذف الفائدة',
         },
+        relatedServices: {
+            title: 'الخدمات ذات الصلة',
+            description: 'اختر ما يصل إلى 4 خدمات لعرضها كخدمات ذات صلة في هذه الصفحة.',
+            empty: 'لم يتم اختيار خدمات ذات صلة. انقر على القائمة المنسدلة لإضافة خدمات.',
+            placeholder: 'اختر الخدمات ذات الصلة...',
+            selected: (count: number) => `${count} خدمة مختارة`,
+        },
         actions: {
             remove: 'حذف',
             cancel: 'إلغاء',
@@ -249,6 +270,7 @@ interface Service {
     features?: string[];
     featuresAr?: string[];
     benefits?: BenefitItem[];
+    relatedServices?: string[];
 }
 
 type EditableService = Partial<Service>;
@@ -435,6 +457,7 @@ export default function ServiceManager() {
                 features,
                 featuresAr,
                 benefits,
+                relatedServices: currentService.relatedServices ?? [],
             };
 
             console.log('Submitting service payload:', JSON.stringify(payload, null, 2));
@@ -524,330 +547,407 @@ export default function ServiceManager() {
                         <form className={styles.form} onSubmit={handleSubmit}>
                             <div className={styles.formScrollArea}>
                                 {formError && <div className={styles.formError}>{formError}</div>}
-                            <div className={styles.formGroup}>
-                                <label className={styles.label}>{copy.fields.titleEn}</label>
-                                <input
-                                    className={styles.input}
-                                    onChange={(event) =>
-                                        setCurrentService({ ...currentService, title: event.target.value })
-                                    }
-                                    required
-                                    type="text"
-                                    value={currentService.title || ''}
-                                />
-                            </div>
-                            <div className={styles.formGroup}>
-                                <label className={styles.label}>{copy.fields.descEn}</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    onChange={(event) =>
-                                        setCurrentService({ ...currentService, description: event.target.value })
-                                    }
-                                    required
-                                    value={currentService.description || ''}
-                                />
-                            </div>
-                            <div className={styles.formGroup}>
-                                <label className={styles.label}>{copy.fields.titleAr}</label>
-                                <input
-                                    className={styles.input}
-                                    onChange={(event) =>
-                                        setCurrentService({ ...currentService, titleAr: event.target.value })
-                                    }
-                                    required
-                                    style={{ direction: 'rtl', textAlign: 'right' }}
-                                    type="text"
-                                    value={currentService.titleAr || ''}
-                                />
-                            </div>
-                            <div className={styles.formGroup}>
-                                <label className={styles.label}>{copy.fields.descAr}</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    onChange={(event) =>
-                                        setCurrentService({ ...currentService, descriptionAr: event.target.value })
-                                    }
-                                    required
-                                    style={{ direction: 'rtl', textAlign: 'right' }}
-                                    value={currentService.descriptionAr || ''}
-                                />
-                            </div>
-
-                            <div className={styles.formRow}>
                                 <div className={styles.formGroup}>
-                                    <label className={styles.label}>{copy.fields.price}</label>
+                                    <label className={styles.label}>{copy.fields.titleEn}</label>
                                     <input
                                         className={styles.input}
                                         onChange={(event) =>
-                                            setCurrentService({ ...currentService, price: event.target.value })
+                                            setCurrentService({ ...currentService, title: event.target.value })
                                         }
+                                        required
                                         type="text"
-                                        value={currentService.price || ''}
+                                        value={currentService.title || ''}
                                     />
                                 </div>
                                 <div className={styles.formGroup}>
-                                    <label className={styles.label}>{copy.fields.priceAr}</label>
+                                    <label className={styles.label}>{copy.fields.descEn}</label>
+                                    <textarea
+                                        className={styles.textarea}
+                                        onChange={(event) =>
+                                            setCurrentService({ ...currentService, description: event.target.value })
+                                        }
+                                        required
+                                        value={currentService.description || ''}
+                                    />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label className={styles.label}>{copy.fields.titleAr}</label>
                                     <input
                                         className={styles.input}
                                         onChange={(event) =>
-                                            setCurrentService({ ...currentService, priceAr: event.target.value })
+                                            setCurrentService({ ...currentService, titleAr: event.target.value })
                                         }
+                                        required
                                         style={{ direction: 'rtl', textAlign: 'right' }}
                                         type="text"
-                                        value={currentService.priceAr || ''}
+                                        value={currentService.titleAr || ''}
                                     />
                                 </div>
-                            </div>
-
-                            <div className={styles.formGroup}>
-                                <label className={styles.label}>{copy.fields.primaryImage}</label>
-                                <input
-                                    accept="image/*"
-                                    className={styles.input}
-                                    onChange={(event) => {
-                                        setFormError(null);
-                                        setImageFile(event.target.files?.[0] ?? null);
-                                    }}
-                                    type="file"
-                                />
-                                {imageFile && <span className={styles.fileName}>{imageFile.name}</span>}
-                                {!currentService._id && !imageFile && (
-                                    <span className={styles.helperText}>{copy.helpers.imageRequired}</span>
-                                )}
-                            </div>
-
-                            <section className={styles.sectionCard}>
-                                <SectionHeader
-                                    actionLabel={copy.gallery.add}
-                                    description={copy.gallery.description}
-                                    disabled={galleryItems.length >= MAX_GALLERY_ITEMS}
-                                    onAction={() => {
-                                        if (galleryItems.length >= MAX_GALLERY_ITEMS) return;
-                                        const nextGallery = [...galleryItems, { fileId: '', caption: '', captionAr: '' }];
-                                        setCurrentService({ ...currentService, gallery: nextGallery });
-                                        setGalleryFiles([...galleryFiles, null]);
-                                    }}
-                                    title={copy.gallery.title}
-                                />
-                                {galleryItems.length === 0 && (
-                                    <p className={styles.helperText}>{copy.gallery.empty(MAX_GALLERY_ITEMS)}</p>
-                                )}
-                                <div className={styles.galleryGrid}>
-                                    {galleryItems.map((item, index) => (
-                                        <div className={styles.gallerySlot} key={`gallery-${index}`}>
-                                            <div className={styles.galleryPreview}>
-                                                {galleryFiles[index] ? (
-                                                    <span className={styles.fileName}>
-                                                        {galleryFiles[index]?.name || copy.gallery.fileSelected}
-                                                    </span>
-                                                ) : item.fileId ? (
-                                                    <Image
-                                                        alt={copy.gallery.previewAlt}
-                                                        className={styles.galleryImage}
-                                                        fill
-                                                        sizes="200px"
-                                                        src={`/api/images/${item.fileId}`}
-                                                    />
-                                                ) : (
-                                                    <span className={styles.helperText}>{copy.gallery.noImage}</span>
-                                                )}
-                                            </div>
-                                            <input
-                                                accept="image/*"
-                                                className={styles.input}
-                                                onChange={(event) => {
-                                                    setFormError(null);
-                                                    const next = [...galleryFiles];
-                                                    next[index] = event.target.files?.[0] ?? null;
-                                                    setGalleryFiles(next);
-                                                }}
-                                                type="file"
-                                            />
-                                            <input
-                                                className={styles.input}
-                                                onChange={(event) => {
-                                                    const next = [...galleryItems];
-                                                    next[index] = { ...next[index], caption: event.target.value };
-                                                    setCurrentService({ ...currentService, gallery: next });
-                                                }}
-                                                placeholder={copy.gallery.captionEn}
-                                                type="text"
-                                                value={item.caption ?? ''}
-                                            />
-                                            <input
-                                                className={styles.input}
-                                                onChange={(event) => {
-                                                    const next = [...galleryItems];
-                                                    next[index] = { ...next[index], captionAr: event.target.value };
-                                                    setCurrentService({ ...currentService, gallery: next });
-                                                }}
-                                                placeholder={copy.gallery.captionAr}
-                                                style={{ direction: 'rtl', textAlign: 'right' }}
-                                                type="text"
-                                                value={item.captionAr ?? ''}
-                                            />
-                                            <button
-                                                className={styles.inlineDanger}
-                                                onClick={() => {
-                                                    const nextGallery = galleryItems.filter((_, idx) => idx !== index);
-                                                    const nextFiles = galleryFiles.filter((_, idx) => idx !== index);
-                                                    setCurrentService({ ...currentService, gallery: nextGallery });
-                                                    setGalleryFiles(nextFiles);
-                                                }}
-                                                type="button"
-                                            >
-                                                {copy.actions.remove}
-                                            </button>
-                                        </div>
-                                    ))}
+                                <div className={styles.formGroup}>
+                                    <label className={styles.label}>{copy.fields.descAr}</label>
+                                    <textarea
+                                        className={styles.textarea}
+                                        onChange={(event) =>
+                                            setCurrentService({ ...currentService, descriptionAr: event.target.value })
+                                        }
+                                        required
+                                        style={{ direction: 'rtl', textAlign: 'right' }}
+                                        value={currentService.descriptionAr || ''}
+                                    />
                                 </div>
-                            </section>
-                            <section className={styles.sectionCard}>
-                                <SectionHeader
-                                    actionLabel={copy.features.add}
-                                    description={copy.features.description}
-                                    onAction={() => {
-                                        const en = [...(currentService.features ?? []), ''];
-                                        const ar = [...(currentService.featuresAr ?? []), ''];
-                                        setCurrentService({ ...currentService, features: en, featuresAr: ar });
-                                    }}
-                                    title={copy.features.title}
-                                />
 
-                                {featurePairs.length === 0 && (
-                                    <p className={styles.helperText}>{copy.features.empty}</p>
-                                )}
-                                <div className={styles.featureList}>
-                                    {featurePairs.map((feature, index) => (
-                                        <div className={styles.featureRow} key={`feature-${index}`}>
-                                            <input
-                                                className={styles.input}
-                                                onChange={(event) => {
-                                                    const next = [...(currentService.features ?? [])];
-                                                    next[index] = event.target.value;
-                                                    setCurrentService({ ...currentService, features: next });
-                                                }}
-                                                placeholder={copy.features.placeholderEn}
-                                                type="text"
-                                                value={feature.en}
-                                            />
-                                            <input
-                                                className={styles.input}
-                                                onChange={(event) => {
-                                                    const next = [...(currentService.featuresAr ?? [])];
-                                                    next[index] = event.target.value;
-                                                    setCurrentService({ ...currentService, featuresAr: next });
-                                                }}
-                                                placeholder={copy.features.placeholderAr}
-                                                style={{ direction: 'rtl', textAlign: 'right' }}
-                                                type="text"
-                                                value={feature.ar}
-                                            />
-                                            <button
-                                                className={styles.inlineDanger}
-                                                onClick={() => {
-                                                    const nextEn = (currentService.features ?? []).filter(
-                                                        (_, idx) => idx !== index
-                                                    );
-                                                    const nextAr = (currentService.featuresAr ?? []).filter(
-                                                        (_, idx) => idx !== index
-                                                    );
+                                <div className={styles.formRow}>
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.label}>{copy.fields.price}</label>
+                                        <input
+                                            className={styles.input}
+                                            onChange={(event) =>
+                                                setCurrentService({ ...currentService, price: event.target.value })
+                                            }
+                                            type="text"
+                                            value={currentService.price || ''}
+                                        />
+                                    </div>
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.label}>{copy.fields.priceAr}</label>
+                                        <input
+                                            className={styles.input}
+                                            onChange={(event) =>
+                                                setCurrentService({ ...currentService, priceAr: event.target.value })
+                                            }
+                                            style={{ direction: 'rtl', textAlign: 'right' }}
+                                            type="text"
+                                            value={currentService.priceAr || ''}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <label className={styles.label}>{copy.fields.primaryImage}</label>
+                                    <input
+                                        accept="image/*"
+                                        className={styles.input}
+                                        onChange={(event) => {
+                                            setFormError(null);
+                                            setImageFile(event.target.files?.[0] ?? null);
+                                        }}
+                                        type="file"
+                                    />
+                                    {imageFile && <span className={styles.fileName}>{imageFile.name}</span>}
+                                    {!currentService._id && !imageFile && (
+                                        <span className={styles.helperText}>{copy.helpers.imageRequired}</span>
+                                    )}
+                                </div>
+
+                                <section className={styles.sectionCard}>
+                                    <SectionHeader
+                                        actionLabel={copy.gallery.add}
+                                        description={copy.gallery.description}
+                                        disabled={galleryItems.length >= MAX_GALLERY_ITEMS}
+                                        onAction={() => {
+                                            if (galleryItems.length >= MAX_GALLERY_ITEMS) return;
+                                            const nextGallery = [...galleryItems, { fileId: '', caption: '', captionAr: '' }];
+                                            setCurrentService({ ...currentService, gallery: nextGallery });
+                                            setGalleryFiles([...galleryFiles, null]);
+                                        }}
+                                        title={copy.gallery.title}
+                                    />
+                                    {galleryItems.length === 0 && (
+                                        <p className={styles.helperText}>{copy.gallery.empty(MAX_GALLERY_ITEMS)}</p>
+                                    )}
+                                    <div className={styles.galleryGrid}>
+                                        {galleryItems.map((item, index) => (
+                                            <div className={styles.gallerySlot} key={`gallery-${index}`}>
+                                                <div className={styles.galleryPreview}>
+                                                    {galleryFiles[index] ? (
+                                                        <span className={styles.fileName}>
+                                                            {galleryFiles[index]?.name || copy.gallery.fileSelected}
+                                                        </span>
+                                                    ) : item.fileId ? (
+                                                        <Image
+                                                            alt={copy.gallery.previewAlt}
+                                                            className={styles.galleryImage}
+                                                            fill
+                                                            sizes="200px"
+                                                            src={`/api/images/${item.fileId}`}
+                                                        />
+                                                    ) : (
+                                                        <span className={styles.helperText}>{copy.gallery.noImage}</span>
+                                                    )}
+                                                </div>
+                                                <input
+                                                    accept="image/*"
+                                                    className={styles.input}
+                                                    onChange={(event) => {
+                                                        setFormError(null);
+                                                        const next = [...galleryFiles];
+                                                        next[index] = event.target.files?.[0] ?? null;
+                                                        setGalleryFiles(next);
+                                                    }}
+                                                    type="file"
+                                                />
+                                                <input
+                                                    className={styles.input}
+                                                    onChange={(event) => {
+                                                        const next = [...galleryItems];
+                                                        next[index] = { ...next[index], caption: event.target.value };
+                                                        setCurrentService({ ...currentService, gallery: next });
+                                                    }}
+                                                    placeholder={copy.gallery.captionEn}
+                                                    type="text"
+                                                    value={item.caption ?? ''}
+                                                />
+                                                <input
+                                                    className={styles.input}
+                                                    onChange={(event) => {
+                                                        const next = [...galleryItems];
+                                                        next[index] = { ...next[index], captionAr: event.target.value };
+                                                        setCurrentService({ ...currentService, gallery: next });
+                                                    }}
+                                                    placeholder={copy.gallery.captionAr}
+                                                    style={{ direction: 'rtl', textAlign: 'right' }}
+                                                    type="text"
+                                                    value={item.captionAr ?? ''}
+                                                />
+                                                <button
+                                                    className={styles.inlineDanger}
+                                                    onClick={() => {
+                                                        const nextGallery = galleryItems.filter((_, idx) => idx !== index);
+                                                        const nextFiles = galleryFiles.filter((_, idx) => idx !== index);
+                                                        setCurrentService({ ...currentService, gallery: nextGallery });
+                                                        setGalleryFiles(nextFiles);
+                                                    }}
+                                                    type="button"
+                                                >
+                                                    {copy.actions.remove}
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                                <section className={styles.sectionCard}>
+                                    <SectionHeader
+                                        actionLabel={copy.features.add}
+                                        description={copy.features.description}
+                                        onAction={() => {
+                                            const en = [...(currentService.features ?? []), ''];
+                                            const ar = [...(currentService.featuresAr ?? []), ''];
+                                            setCurrentService({ ...currentService, features: en, featuresAr: ar });
+                                        }}
+                                        title={copy.features.title}
+                                    />
+
+                                    {featurePairs.length === 0 && (
+                                        <p className={styles.helperText}>{copy.features.empty}</p>
+                                    )}
+                                    <div className={styles.featureList}>
+                                        {featurePairs.map((feature, index) => (
+                                            <div className={styles.featureRow} key={`feature-${index}`}>
+                                                <input
+                                                    className={styles.input}
+                                                    onChange={(event) => {
+                                                        const next = [...(currentService.features ?? [])];
+                                                        next[index] = event.target.value;
+                                                        setCurrentService({ ...currentService, features: next });
+                                                    }}
+                                                    placeholder={copy.features.placeholderEn}
+                                                    type="text"
+                                                    value={feature.en}
+                                                />
+                                                <input
+                                                    className={styles.input}
+                                                    onChange={(event) => {
+                                                        const next = [...(currentService.featuresAr ?? [])];
+                                                        next[index] = event.target.value;
+                                                        setCurrentService({ ...currentService, featuresAr: next });
+                                                    }}
+                                                    placeholder={copy.features.placeholderAr}
+                                                    style={{ direction: 'rtl', textAlign: 'right' }}
+                                                    type="text"
+                                                    value={feature.ar}
+                                                />
+                                                <button
+                                                    className={styles.inlineDanger}
+                                                    onClick={() => {
+                                                        const nextEn = (currentService.features ?? []).filter(
+                                                            (_, idx) => idx !== index
+                                                        );
+                                                        const nextAr = (currentService.featuresAr ?? []).filter(
+                                                            (_, idx) => idx !== index
+                                                        );
+                                                        setCurrentService({
+                                                            ...currentService,
+                                                            features: nextEn,
+                                                            featuresAr: nextAr,
+                                                        });
+                                                    }}
+                                                    type="button"
+                                                >
+                                                    {copy.actions.remove}
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+
+                                <section className={styles.sectionCard}>
+                                    <SectionHeader
+                                        actionLabel={copy.benefits.add}
+                                        description={copy.benefits.description}
+                                        onAction={() => {
+                                            const next = [
+                                                ...(currentService.benefits ?? []),
+                                                { title: '', titleAr: '', description: '', descriptionAr: '' },
+                                            ];
+                                            setCurrentService({ ...currentService, benefits: next });
+                                        }}
+                                        title={copy.benefits.title}
+                                    />
+
+                                    {benefitItems.length === 0 && (
+                                        <p className={styles.helperText}>{copy.benefits.empty}</p>
+                                    )}
+
+                                    <div className={styles.benefitList}>
+                                        {benefitItems.map((benefit, index) => (
+                                            <div className={styles.benefitEditorCard} key={`benefit-${index}`}>
+                                                <div className={styles.formRow}>
+                                                    <div className={styles.formGroup}>
+                                                        <label className={styles.label}>{copy.benefits.titleEn}</label>
+                                                        <input
+                                                            className={styles.input}
+                                                            onChange={(event) => updateBenefit(index, 'title', event.target.value)}
+                                                            type="text"
+                                                            value={benefit.title ?? ''}
+                                                        />
+                                                    </div>
+                                                    <div className={styles.formGroup}>
+                                                        <label className={styles.label}>{copy.benefits.titleAr}</label>
+                                                        <input
+                                                            className={styles.input}
+                                                            onChange={(event) =>
+                                                                updateBenefit(index, 'titleAr', event.target.value)
+                                                            }
+                                                            style={{ direction: 'rtl', textAlign: 'right' }}
+                                                            type="text"
+                                                            value={benefit.titleAr ?? ''}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className={styles.formRow}>
+                                                    <div className={styles.formGroup}>
+                                                        <label className={styles.label}>{copy.benefits.descEn}</label>
+                                                        <textarea
+                                                            className={styles.textarea}
+                                                            onChange={(event) =>
+                                                                updateBenefit(index, 'description', event.target.value)
+                                                            }
+                                                            value={benefit.description ?? ''}
+                                                        />
+                                                    </div>
+                                                    <div className={styles.formGroup}>
+                                                        <label className={styles.label}>{copy.benefits.descAr}</label>
+                                                        <textarea
+                                                            className={styles.textarea}
+                                                            onChange={(event) =>
+                                                                updateBenefit(index, 'descriptionAr', event.target.value)
+                                                            }
+                                                            style={{ direction: 'rtl', textAlign: 'right' }}
+                                                            value={benefit.descriptionAr ?? ''}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    className={styles.inlineDanger}
+                                                    onClick={() => {
+                                                        const next = benefitItems.filter((_, idx) => idx !== index);
+                                                        setCurrentService({ ...currentService, benefits: next });
+                                                    }}
+                                                    type="button"
+                                                >
+                                                    {copy.benefits.remove}
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+
+                                {/* Related Services Section */}
+                                <section className={styles.sectionCard}>
+                                    <div className={styles.sectionHeaderRow}>
+                                        <div>
+                                            <h5 className={styles.sectionTitleSm}>{copy.relatedServices.title}</h5>
+                                            <p className={styles.helperText}>{copy.relatedServices.description}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.relatedServicesSelector}>
+                                        <select
+                                            className={styles.select}
+                                            onChange={(event) => {
+                                                const selectedId = event.target.value;
+                                                if (!selectedId) return;
+                                                const current = currentService.relatedServices ?? [];
+                                                if (current.length >= 4) return;
+                                                if (!current.includes(selectedId)) {
                                                     setCurrentService({
                                                         ...currentService,
-                                                        features: nextEn,
-                                                        featuresAr: nextAr,
+                                                        relatedServices: [...current, selectedId],
                                                     });
-                                                }}
-                                                type="button"
-                                            >
-                                                {copy.actions.remove}
-                                            </button>
+                                                }
+                                                event.target.value = '';
+                                            }}
+                                            disabled={(currentService.relatedServices?.length ?? 0) >= 4}
+                                        >
+                                            <option value="">{copy.relatedServices.placeholder}</option>
+                                            {services
+                                                .filter((s) => s._id !== currentService._id)
+                                                .filter((s) => !(currentService.relatedServices ?? []).includes(s._id))
+                                                .map((s) => (
+                                                    <option key={s._id} value={s._id}>
+                                                        {s.title} / {s.titleAr}
+                                                    </option>
+                                                ))}
+                                        </select>
+
+                                        {(currentService.relatedServices?.length ?? 0) > 0 && (
+                                            <p className={styles.helperText}>
+                                                {copy.relatedServices.selected(currentService.relatedServices?.length ?? 0)}
+                                            </p>
+                                        )}
+
+                                        {(currentService.relatedServices?.length ?? 0) === 0 && (
+                                            <p className={styles.helperText}>{copy.relatedServices.empty}</p>
+                                        )}
+
+                                        <div className={styles.relatedServicesList}>
+                                            {(currentService.relatedServices ?? []).map((relatedId) => {
+                                                const relatedService = services.find((s) => s._id === relatedId);
+                                                if (!relatedService) return null;
+                                                return (
+                                                    <div key={relatedId} className={styles.relatedServiceTag}>
+                                                        <span>{relatedService.title}</span>
+                                                        <button
+                                                            type="button"
+                                                            className={styles.removeTag}
+                                                            onClick={() => {
+                                                                const updated = (currentService.relatedServices ?? []).filter(
+                                                                    (id) => id !== relatedId
+                                                                );
+                                                                setCurrentService({
+                                                                    ...currentService,
+                                                                    relatedServices: updated,
+                                                                });
+                                                            }}
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
-                                    ))}
-                                </div>
-                            </section>
-
-                            <section className={styles.sectionCard}>
-                                <SectionHeader
-                                    actionLabel={copy.benefits.add}
-                                    description={copy.benefits.description}
-                                    onAction={() => {
-                                        const next = [
-                                            ...(currentService.benefits ?? []),
-                                            { title: '', titleAr: '', description: '', descriptionAr: '' },
-                                        ];
-                                        setCurrentService({ ...currentService, benefits: next });
-                                    }}
-                                    title={copy.benefits.title}
-                                />
-
-                                {benefitItems.length === 0 && (
-                                    <p className={styles.helperText}>{copy.benefits.empty}</p>
-                                )}
-
-                                <div className={styles.benefitList}>
-                                    {benefitItems.map((benefit, index) => (
-                                        <div className={styles.benefitEditorCard} key={`benefit-${index}`}>
-                                            <div className={styles.formRow}>
-                                                <div className={styles.formGroup}>
-                                                    <label className={styles.label}>{copy.benefits.titleEn}</label>
-                                                    <input
-                                                        className={styles.input}
-                                                        onChange={(event) => updateBenefit(index, 'title', event.target.value)}
-                                                        type="text"
-                                                        value={benefit.title ?? ''}
-                                                    />
-                                                </div>
-                                                <div className={styles.formGroup}>
-                                                    <label className={styles.label}>{copy.benefits.titleAr}</label>
-                                                    <input
-                                                        className={styles.input}
-                                                        onChange={(event) =>
-                                                            updateBenefit(index, 'titleAr', event.target.value)
-                                                        }
-                                                        style={{ direction: 'rtl', textAlign: 'right' }}
-                                                        type="text"
-                                                        value={benefit.titleAr ?? ''}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className={styles.formRow}>
-                                                <div className={styles.formGroup}>
-                                                    <label className={styles.label}>{copy.benefits.descEn}</label>
-                                                    <textarea
-                                                        className={styles.textarea}
-                                                        onChange={(event) =>
-                                                            updateBenefit(index, 'description', event.target.value)
-                                                        }
-                                                        value={benefit.description ?? ''}
-                                                    />
-                                                </div>
-                                                <div className={styles.formGroup}>
-                                                    <label className={styles.label}>{copy.benefits.descAr}</label>
-                                                    <textarea
-                                                        className={styles.textarea}
-                                                        onChange={(event) =>
-                                                            updateBenefit(index, 'descriptionAr', event.target.value)
-                                                        }
-                                                        style={{ direction: 'rtl', textAlign: 'right' }}
-                                                        value={benefit.descriptionAr ?? ''}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <button
-                                                className={styles.inlineDanger}
-                                                onClick={() => {
-                                                    const next = benefitItems.filter((_, idx) => idx !== index);
-                                                    setCurrentService({ ...currentService, benefits: next });
-                                                }}
-                                                type="button"
-                                            >
-                                                {copy.benefits.remove}
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
+                                    </div>
+                                </section>
                             </div>
 
                             <div className={styles.formActions}>
@@ -926,6 +1026,7 @@ function createEmptyService(service?: Service): EditableService {
         features: service?.features ?? [],
         featuresAr: service?.featuresAr ?? [],
         benefits: service?.benefits ?? [],
+        relatedServices: service?.relatedServices ?? [],
     };
 }
 
