@@ -141,10 +141,7 @@ const ServiceDetailClient = ({ initialData, serviceId }: ServiceDetailClientProp
         window.scrollTo({ top: 0, behavior: 'instant' });
     }, [serviceId]);
 
-    // Debug: Log related services data
-    useEffect(() => {
-        console.log('[ServiceDetailClient] Related services received:', data.relatedServices?.length ?? 0, data.relatedServices);
-    }, [data.relatedServices]);
+
 
     const service = data.service;
 
