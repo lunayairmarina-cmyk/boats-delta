@@ -114,23 +114,41 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
         const filesCollection = db.collection<VideoFileDoc>('videos.files');
 
         const body = await request.json();
-        const { order, section } = body;
+        const { order, section, poster } = body;
 
         const updateFields: Record<string, unknown> = {};
+        const unsetFields: Record<string, unknown> = {};
+
         if (typeof order === 'number') {
             updateFields['metadata.order'] = order;
         }
         if (section) {
             updateFields['metadata.section'] = section;
         }
+        // Handle poster - can be set or removed (null)
+        if (poster !== undefined) {
+            if (poster === null) {
+                unsetFields['metadata.poster'] = '';
+            } else {
+                updateFields['metadata.poster'] = poster;
+            }
+        }
 
-        if (Object.keys(updateFields).length === 0) {
+        const updateQuery: Record<string, unknown> = {};
+        if (Object.keys(updateFields).length > 0) {
+            updateQuery.$set = updateFields;
+        }
+        if (Object.keys(unsetFields).length > 0) {
+            updateQuery.$unset = unsetFields;
+        }
+
+        if (Object.keys(updateQuery).length === 0) {
             return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
         }
 
         await filesCollection.updateOne(
             { _id: new mongoose.Types.ObjectId(params.id) },
-            { $set: updateFields }
+            updateQuery
         );
 
         // Invalidate video cache to reflect metadata update immediately

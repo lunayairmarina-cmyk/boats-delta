@@ -271,6 +271,70 @@
     color: #ffffff;
 }
 
+/* Thumbnail Section */
+.thumbnailSection {
+    padding: 0.875rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.thumbnailLabel {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.thumbnailDesc {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 0.75rem;
+}
+
+.thumbnailPreview {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.thumbnailImage {
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+}
+
+.removeThumbnailBtn {
+    padding: 0.375rem 0.75rem;
+    min-height: 36px;
+    background: #ffffff;
+    border: 1px solid #dc2626;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #dc2626;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.removeThumbnailBtn:hover:not(:disabled) {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.removeThumbnailBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.thumbnailUpload {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 /* Large tablets and small desktops */
 @media (max-width: 1024px) {
     .header {
@@ -448,12 +512,3 @@
         gap: 1rem;
     }
 }
-
-
-
-
-
-
-
-
-

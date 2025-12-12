@@ -19,6 +19,7 @@ interface HeroMediaItem {
   url: string;
   type: 'image' | 'video';
   order: number;
+  poster?: string;
 }
 
 export default function Home() {
@@ -75,7 +76,7 @@ export default function Home() {
         if (videoResponse.ok) {
           const heroVideos = await videoResponse.json();
           if (Array.isArray(heroVideos)) {
-            heroVideos.forEach((vid: { _id?: string; metadata?: { order?: number; slug?: string } }) => {
+            heroVideos.forEach((vid: { _id?: string; metadata?: { order?: number; slug?: string; poster?: string } }) => {
               if (vid._id) {
                 const slug = vid.metadata?.slug;
                 mediaItems.push({
@@ -83,6 +84,7 @@ export default function Home() {
                   url: `/api/videos/${vid._id}`,
                   type: 'video',
                   order: slug === 'hero-lonier-video' ? -1000 : (vid.metadata?.order || 0),
+                  poster: vid.metadata?.poster ? `/api/images/${vid.metadata.poster}` : undefined,
                 });
               }
             });
@@ -241,6 +243,7 @@ export default function Home() {
                   playsInline
                   loop={false}
                   preload="auto"
+                  poster={media.poster}
                 />
               ) : (
                 <div

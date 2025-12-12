@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import styles from './VideoManager.module.css';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -14,6 +15,7 @@ interface GridFSFile {
         slug?: string;
         order?: number;
         language?: string;
+        poster?: string; // Image ID for thumbnail
     };
 }
 
@@ -50,6 +52,8 @@ export default function VideoManager() {
     const [replacingVideoId, setReplacingVideoId] = useState<string | null>(null);
     const [selectedVariantSlug, setSelectedVariantSlug] = useState<string | null>(null);
     const [uploading, setUploading] = useState(false);
+    const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+    const [uploadingThumbnail, setUploadingThumbnail] = useState<string | null>(null);
 
     const copy = language === 'ar'
         ? {
@@ -65,6 +69,11 @@ export default function VideoManager() {
             videosInSection: 'الفيديو في هذا القسم',
             noVideo: 'لا يوجد فيديو في هذا القسم بعد',
             updateNote: 'يمكنك رفع فيديو مخصص لكل لغة. في حال لم تقم برفع فيديو عربي سيستخدم الفيديو الإنجليزي كبديل.',
+            thumbnail: 'صورة مصغرة (اختياري)',
+            thumbnailDesc: 'صورة تظهر أثناء تحميل الفيديو',
+            uploadThumbnail: 'رفع صورة مصغرة',
+            removeThumbnail: 'إزالة الصورة',
+            savingThumbnail: 'جاري الحفظ…',
         }
         : {
             title: 'Video Management',
@@ -79,6 +88,11 @@ export default function VideoManager() {
             videosInSection: 'Video in this section',
             noVideo: 'No video in this section yet',
             updateNote: 'You can upload a dedicated video for each language. If Arabic is missing, the English video will be used as fallback.',
+            thumbnail: 'Thumbnail (Optional)',
+            thumbnailDesc: 'Image shown while video is loading',
+            uploadThumbnail: 'Upload Thumbnail',
+            removeThumbnail: 'Remove Thumbnail',
+            savingThumbnail: 'Saving…',
         };
 
     const fetchVideos = useCallback(async () => {
@@ -179,6 +193,71 @@ export default function VideoManager() {
         }
     };
 
+    const handleThumbnailUpload = async (videoId: string) => {
+        if (!thumbnailFile) return;
+        setUploadingThumbnail(videoId);
+
+        try {
+            // First upload the image
+            const imageFormData = new FormData();
+            imageFormData.append('file', thumbnailFile);
+            imageFormData.append('section', 'video-thumbnails');
+            imageFormData.append('category', 'videos');
+
+            const uploadRes = await fetch('/api/admin/upload-image', {
+                method: 'POST',
+                body: imageFormData,
+            });
+
+            if (!uploadRes.ok) {
+                throw new Error('Failed to upload thumbnail image');
+            }
+
+            const { fileId } = await uploadRes.json();
+
+            // Now update the video metadata with the poster
+            const updateRes = await fetch(`/api/admin/videos/${videoId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ poster: fileId }),
+            });
+
+            if (updateRes.ok) {
+                setThumbnailFile(null);
+                await fetchVideos();
+            } else {
+                throw new Error('Failed to update video with thumbnail');
+            }
+        } catch (error) {
+            console.error('Thumbnail upload failed', error);
+            alert('Failed to upload thumbnail');
+        } finally {
+            setUploadingThumbnail(null);
+        }
+    };
+
+    const handleRemoveThumbnail = async (videoId: string) => {
+        setUploadingThumbnail(videoId);
+        try {
+            const updateRes = await fetch(`/api/admin/videos/${videoId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ poster: null }),
+            });
+
+            if (updateRes.ok) {
+                await fetchVideos();
+            } else {
+                throw new Error('Failed to remove thumbnail');
+            }
+        } catch (error) {
+            console.error('Remove thumbnail failed', error);
+            alert('Failed to remove thumbnail');
+        } finally {
+            setUploadingThumbnail(null);
+        }
+    };
+
     const formatDate = (dateString: string) => {
         try {
             return new Date(dateString).toLocaleString();
@@ -238,13 +317,64 @@ export default function VideoManager() {
                                 src={`/api/videos/${currentVideo._id}`}
                                 controls
                                 className={styles.videoThumbnail}
-                                preload="metadata"
+                                preload="auto"
+                                poster={currentVideo.metadata?.poster ? `/api/images/${currentVideo.metadata.poster}` : undefined}
                             />
                         </div>
                         <div className={styles.videoInfo}>
                             <p className={styles.videoName}>{currentVideo.filename}</p>
                             <p className={styles.videoDate}>{formatDate(currentVideo.uploadDate)}</p>
                         </div>
+
+                        {/* Thumbnail Section */}
+                        <div className={styles.thumbnailSection}>
+                            <label className={styles.thumbnailLabel}>{copy.thumbnail}</label>
+                            <p className={styles.thumbnailDesc}>{copy.thumbnailDesc}</p>
+
+                            {currentVideo.metadata?.poster ? (
+                                <div className={styles.thumbnailPreview}>
+                                    <Image
+                                        src={`/api/images/${currentVideo.metadata.poster}`}
+                                        alt="Video thumbnail"
+                                        width={120}
+                                        height={68}
+                                        className={styles.thumbnailImage}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveThumbnail(currentVideo._id)}
+                                        className={styles.removeThumbnailBtn}
+                                        disabled={uploadingThumbnail === currentVideo._id}
+                                    >
+                                        {uploadingThumbnail === currentVideo._id ? copy.savingThumbnail : copy.removeThumbnail}
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className={styles.thumbnailUpload}>
+                                    <input
+                                        type="file"
+                                        id={`thumbnail-${variant.slug}`}
+                                        className={styles.hiddenInput}
+                                        onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)}
+                                        accept="image/*"
+                                    />
+                                    <label htmlFor={`thumbnail-${variant.slug}`} className={styles.uploadLabel}>
+                                        {copy.uploadThumbnail}
+                                    </label>
+                                    {thumbnailFile && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleThumbnailUpload(currentVideo._id)}
+                                            className={styles.uploadButton}
+                                            disabled={uploadingThumbnail === currentVideo._id}
+                                        >
+                                            {uploadingThumbnail === currentVideo._id ? copy.savingThumbnail : copy.uploadThumbnail}
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
                         <div className={styles.videoActions}>
                             <div className={styles.replaceGroup}>
                                 <input
