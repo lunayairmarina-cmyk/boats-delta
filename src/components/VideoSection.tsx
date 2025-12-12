@@ -19,11 +19,22 @@ interface AdminVideo {
 
 export default function VideoSection() {
     const { t, dir, language } = useLanguage();
-    const [video, setVideo] = useState<AdminVideo | null>(null);
-    const [videoUrl, setVideoUrl] = useState<string | null>(null);
-    const [videoReady, setVideoReady] = useState(false);
+
+    // Separate state for AR and EN videos
+    const [arVideo, setArVideo] = useState<{ video: AdminVideo, url: string } | null>(null);
+    const [enVideo, setEnVideo] = useState<{ video: AdminVideo, url: string } | null>(null);
+
+    // We treat the "active" video as the one matching current language, 
+    // or fallback to EN if AR is missing, or whatever is available.
+    // However, to solve the "reload" issue, we try to keep specific videos loaded.
+
+    const [arReady, setArReady] = useState(false);
+    const [enReady, setEnReady] = useState(false);
     const [hasError, setHasError] = useState(false);
-    const videoRef = useRef<HTMLVideoElement>(null);
+
+    // Refs to access video elements for control
+    const arVideoRef = useRef<HTMLVideoElement>(null);
+    const enVideoRef = useRef<HTMLVideoElement>(null);
 
     const resolve = (key: string, fallback: string) => {
         const val = t(key);
@@ -33,70 +44,68 @@ export default function VideoSection() {
         return val;
     };
 
-    // Handle video ready state
-    const handleCanPlay = useCallback(() => {
-        setVideoReady(true);
-    }, []);
-
-    const handleError = useCallback(() => {
-        setHasError(true);
-        setVideoReady(false);
-    }, []);
-
-    useEffect(() => {
-        const fetchVideo = async () => {
+    const fetchVideoBySlug = async (slugs: string[]) => {
+        for (const slug of slugs) {
             try {
-                const slugPreferences =
-                    language === "ar"
-                        ? ["homepage-video-ar", "homepage-video-en", "homepage-video"]
-                        : ["homepage-video-en", "homepage-video"];
-
-                let found = false;
-
-                for (const slug of slugPreferences) {
-                    const response = await fetch(`/api/videos?slug=${slug}`, {
-                        cache: "no-store",
-                    });
-                    if (response.ok) {
-                        const videos: AdminVideo[] = await response.json();
-                        if (Array.isArray(videos) && videos.length > 0) {
-                            const v = videos[0];
-                            setVideo(v);
-
-                            // Use Cloudinary URL if available, otherwise fallback to local stream
-                            if (v.metadata?.cloudinaryUrl) {
-                                setVideoUrl(v.metadata.cloudinaryUrl);
-                            } else {
-                                setVideoUrl(`/api/videos/${v._id}`);
-                            }
-
-                            setHasError(false);
-                            found = true;
-                            break;
-                        }
+                const response = await fetch(`/api/videos?slug=${slug}`, { cache: "no-store" });
+                if (response.ok) {
+                    const videos: AdminVideo[] = await response.json();
+                    if (Array.isArray(videos) && videos.length > 0) {
+                        const v = videos[0];
+                        const url = v.metadata?.cloudinaryUrl || `/api/videos/${v._id}`;
+                        return { video: v, url };
                     }
                 }
+            } catch (e) {
+                console.error(`Failed to fetch video slug ${slug}`, e);
+            }
+        }
+        return null;
+    };
 
-                if (!found) {
-                    setVideo(null);
-                    setVideoUrl(null);
-                    setHasError(true);
-                }
-            } catch (error) {
-                console.error("Failed to fetch video:", error);
-                setVideo(null);
-                setVideoUrl(null);
+    useEffect(() => {
+        const initVideos = async () => {
+            // Fetch AR preferred
+            const arData = await fetchVideoBySlug(["homepage-video-ar"]);
+            // Fetch EN preferred (fallback to generic 'homepage-video')
+            const enData = await fetchVideoBySlug(["homepage-video-en", "homepage-video"]);
+
+            setArVideo(arData);
+            setEnVideo(enData);
+
+            // If neither exists, error
+            if (!arData && !enData) {
                 setHasError(true);
             }
         };
 
-        fetchVideo();
-    }, [language]);
+        initVideos();
+    }, []);
 
-    const heading = resolve("video.title", video?.metadata?.title || "Experience the Journey");
+    // Pause the video that is being hidden
+    useEffect(() => {
+        if (language === 'ar' && arVideo) {
+            // We are showing AR, so pause EN
+            if (enVideoRef.current && !enVideoRef.current.paused) {
+                enVideoRef.current.pause();
+            }
+        } else {
+            // We are showing EN (or AR fallback not available), so pause AR
+            if (arVideoRef.current && !arVideoRef.current.paused) {
+                arVideoRef.current.pause();
+            }
+        }
+    }, [language, arVideo, enVideo]);
+
+    // Determine current active video data for TEXT/METADATA purposes
+    // If language is AR and we have AR video, use AR. Else use EN.
+    const activeVideoData = (language === 'ar' && arVideo) ? arVideo : (enVideo || arVideo);
+    const activeVideo = activeVideoData?.video;
+
+    const heading = resolve("video.title", activeVideo?.metadata?.title || "Experience the Journey");
     const description = resolve(
         "video.description",
-        video?.metadata?.description ||
+        activeVideo?.metadata?.description ||
         "Step on board and preview the level of service, craftsmanship, and attention to detail you can expect with our team."
     );
     const badgeText = resolve("video.badge", "Featured Video");
@@ -104,6 +113,42 @@ export default function VideoSection() {
     const ctaSecondary = resolve("video.secondaryCta", "Talk to Us");
     const labelText = resolve("video.label", "Preview");
     const unavailableText = resolve("video.unavailable", "Video unavailable right now.");
+
+    // Helper to render a video player
+    const renderVideo = (
+        data: { video: AdminVideo, url: string } | null,
+        isReady: boolean,
+        setReady: (b: boolean) => void,
+        isHidden: boolean,
+        ref: React.RefObject<HTMLVideoElement | null>
+    ) => {
+        if (!data) return null;
+
+        return (
+            <video
+                ref={ref}
+                className={`${styles.video} ${(!isReady || isHidden) ? styles.videoHidden : ''}`}
+                controls
+                playsInline
+                preload="auto"
+                poster={data.video?.metadata?.poster ? `/api/images/${data.video.metadata.poster}` : undefined}
+                aria-label={heading}
+                onCanPlay={() => setReady(true)}
+                onError={() => setHasError(true)}
+                // We use style display to truly hide it from layout but keep it in DOM
+                style={{ display: isHidden ? 'none' : 'block' }}
+            >
+                <source src={data.url} type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+        );
+    };
+
+    // Derived state for overall readiness (for skeleton)
+    // If we are waiting for the *active* video to be ready.
+    const isCurrentReady = (language === 'ar' && arVideo) ? arReady : enReady;
+    // If we don't have the preferred video, we might be showing the other one, check that readiness
+    const effectivelyReady = (language === 'ar' && arVideo) ? arReady : (enVideo ? enReady : arReady);
 
     return (
         <section className={styles.videoSection} dir={dir}>
@@ -131,31 +176,31 @@ export default function VideoSection() {
                     </div>
 
                     <div className={styles.videoFrame}>
-                        {/* Show skeleton while loading */}
-                        {!videoReady && !hasError && (
+                        {/* Show skeleton if the ACTIVE video isn't ready and we don't have an error */}
+                        {!effectivelyReady && !hasError && (
                             <div className={styles.skeleton} aria-hidden="true" />
                         )}
 
-                        {/* Always render video element if we have a URL - let browser buffer it */}
-                        {videoUrl && !hasError && (
-                            <video
-                                ref={videoRef}
-                                className={`${styles.video} ${!videoReady ? styles.videoHidden : ''}`}
-                                controls
-                                playsInline
-                                preload="auto"
-                                poster={video?.metadata?.poster ? `/api/images/${video.metadata.poster}` : undefined}
-                                aria-label={heading}
-                                onCanPlay={handleCanPlay}
-                                onError={handleError}
-                            >
-                                <source src={videoUrl} type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
+                        {/* AR Video Player */}
+                        {renderVideo(
+                            arVideo,
+                            arReady,
+                            setArReady,
+                            language !== 'ar', // Hidden if not AR
+                            arVideoRef
+                        )}
+
+                        {/* EN Video Player */}
+                        {renderVideo(
+                            enVideo,
+                            enReady,
+                            setEnReady,
+                            language === 'ar' && !!arVideo, // Hidden if AR and we have AR video
+                            enVideoRef
                         )}
 
                         {/* Show fallback on error */}
-                        {hasError && (
+                        {hasError && !arVideo && !enVideo && (
                             <div className={styles.fallback}>
                                 <p>{unavailableText}</p>
                             </div>

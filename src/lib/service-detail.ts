@@ -218,54 +218,57 @@ export async function getServiceDetail(identifier: string): Promise<ServiceDetai
     // These are manually selected by admin, so use them first and preserve order
     const explicitRelatedIds = service.relatedServices ?? [];
     if (explicitRelatedIds.length > 0) {
-        console.log(`[service-detail] Service ${serviceIdStr} has ${explicitRelatedIds.length} explicit related services:`, explicitRelatedIds.map(id => id.toString()));
+        console.log(`[service-detail] Service ${serviceIdStr} has ${explicitRelatedIds.length} explicit related services`);
 
+        const idsToFind = explicitRelatedIds.map(id => new Types.ObjectId(id.toString()));
         const explicit = await Service.find({
-            _id: { $in: explicitRelatedIds },
+            _id: { $in: idsToFind },
         }).exec();
 
-        // Sort to match the order specified in relatedServices array
+        // Sort to match the order specified in relatedServices array (admin selection order)
         const orderedExplicit: IService[] = [];
         for (const id of explicitRelatedIds) {
-            const found = explicit.find(s => s._id.toString() === id.toString());
+            const idStr = id.toString();
+            const found = explicit.find(s => s._id.toString() === idStr);
             if (found && found._id.toString() !== serviceIdStr) {
                 orderedExplicit.push(found);
             }
         }
 
-        console.log(`[service-detail] Found ${orderedExplicit.length} explicit related services`);
+        console.log(`[service-detail] Found ${orderedExplicit.length} explicit related services from admin selection`);
         collected.push(...orderedExplicit);
-    }
+    } else {
+        // 2) Auto-fill mode: use category and fallback if no explicit services selected
 
-    // 2) Fill from same category if we need more
-    if (collected.length < MAX_RELATED && service.category) {
-        const existingIds = new Set(collected.map(s => s._id.toString()));
-        existingIds.add(serviceIdStr); // Don't include current service
+        // Fill from same category if we need more
+        if (collected.length < MAX_RELATED && service.category) {
+            const existingIds = new Set(collected.map(s => s._id.toString()));
+            existingIds.add(serviceIdStr); // Don't include current service
 
-        const sameCategory = await Service.find({
-            _id: { $nin: Array.from(existingIds).map(id => new Types.ObjectId(id)) },
-            category: service.category,
-        }).sort({ order: 1, createdAt: -1 }).exec();
+            const sameCategory = await Service.find({
+                _id: { $nin: Array.from(existingIds).map(id => new Types.ObjectId(id)) },
+                category: service.category,
+            }).sort({ order: 1, createdAt: -1 }).limit(MAX_RELATED).exec(); // Limit query for efficiency
 
-        // Filter out already collected and use seeded shuffle for variety
-        const filtered = sameCategory.filter(s => !existingIds.has(s._id.toString()));
-        const shuffled = seededShuffle(filtered, serviceIdStr);
-        collected.push(...shuffled.slice(0, MAX_RELATED - collected.length));
-    }
+            // Filter out already collected (double check) and shuffle remaining
+            const filtered = sameCategory.filter(s => !existingIds.has(s._id.toString()));
+            const shuffled = seededShuffle(filtered, serviceIdStr);
+            collected.push(...shuffled.slice(0, MAX_RELATED - collected.length));
+        }
 
-    // 3) Fallback: any other services if still need more
-    if (collected.length < MAX_RELATED) {
-        const existingIds = new Set(collected.map(s => s._id.toString()));
-        existingIds.add(serviceIdStr); // Don't include current service
+        // 3) Fallback: any other services if still need more
+        if (collected.length < MAX_RELATED) {
+            const existingIds = new Set(collected.map(s => s._id.toString()));
+            existingIds.add(serviceIdStr);
 
-        const fallback = await Service.find({
-            _id: { $nin: Array.from(existingIds).map(id => new Types.ObjectId(id)) },
-        }).sort({ order: 1, createdAt: -1 }).exec();
+            const fallback = await Service.find({
+                _id: { $nin: Array.from(existingIds).map(id => new Types.ObjectId(id)) },
+            }).sort({ order: 1, createdAt: -1 }).limit(MAX_RELATED).exec();
 
-        // Filter out already collected and use seeded shuffle for variety
-        const filtered = fallback.filter(s => !existingIds.has(s._id.toString()));
-        const shuffled = seededShuffle(filtered, serviceIdStr);
-        collected.push(...shuffled.slice(0, MAX_RELATED - collected.length));
+            const filtered = fallback.filter(s => !existingIds.has(s._id.toString()));
+            const shuffled = seededShuffle(filtered, serviceIdStr);
+            collected.push(...shuffled.slice(0, MAX_RELATED - collected.length));
+        }
     }
 
     const unique = dedupeById(collected).filter((doc) => doc._id.toString() !== serviceIdStr);

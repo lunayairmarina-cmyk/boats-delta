@@ -78,9 +78,10 @@
     height: 100%;
     object-fit: contain;
     object-position: center;
-    transform: scale(3);
+    transform: scale(3) !important;
     position: relative;
     z-index: 1;
+    transition: none !important;
 }
 
 .navbarBlogPage .brandMark {
