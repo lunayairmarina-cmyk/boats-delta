@@ -215,18 +215,35 @@ export async function getServiceDetail(identifier: string): Promise<ServiceDetai
     const MAX_RELATED = 4;
 
     // 1) Respect explicit related list (if provided) - highest priority
-    if (service.relatedServices && service.relatedServices.length > 0) {
+    // These are manually selected by admin, so use them first and preserve order
+    const explicitRelatedIds = service.relatedServices ?? [];
+    if (explicitRelatedIds.length > 0) {
+        console.log(`[service-detail] Service ${serviceIdStr} has ${explicitRelatedIds.length} explicit related services:`, explicitRelatedIds.map(id => id.toString()));
+
         const explicit = await Service.find({
-            _id: { $in: service.relatedServices, $ne: service._id },
+            _id: { $in: explicitRelatedIds },
         }).exec();
-        collected.push(...explicit);
+
+        // Sort to match the order specified in relatedServices array
+        const orderedExplicit: IService[] = [];
+        for (const id of explicitRelatedIds) {
+            const found = explicit.find(s => s._id.toString() === id.toString());
+            if (found && found._id.toString() !== serviceIdStr) {
+                orderedExplicit.push(found);
+            }
+        }
+
+        console.log(`[service-detail] Found ${orderedExplicit.length} explicit related services`);
+        collected.push(...orderedExplicit);
     }
 
     // 2) Fill from same category if we need more
     if (collected.length < MAX_RELATED && service.category) {
         const existingIds = new Set(collected.map(s => s._id.toString()));
+        existingIds.add(serviceIdStr); // Don't include current service
+
         const sameCategory = await Service.find({
-            _id: { $ne: service._id },
+            _id: { $nin: Array.from(existingIds).map(id => new Types.ObjectId(id)) },
             category: service.category,
         }).sort({ order: 1, createdAt: -1 }).exec();
 
@@ -239,8 +256,10 @@ export async function getServiceDetail(identifier: string): Promise<ServiceDetai
     // 3) Fallback: any other services if still need more
     if (collected.length < MAX_RELATED) {
         const existingIds = new Set(collected.map(s => s._id.toString()));
+        existingIds.add(serviceIdStr); // Don't include current service
+
         const fallback = await Service.find({
-            _id: { $ne: service._id },
+            _id: { $nin: Array.from(existingIds).map(id => new Types.ObjectId(id)) },
         }).sort({ order: 1, createdAt: -1 }).exec();
 
         // Filter out already collected and use seeded shuffle for variety
@@ -249,7 +268,7 @@ export async function getServiceDetail(identifier: string): Promise<ServiceDetai
         collected.push(...shuffled.slice(0, MAX_RELATED - collected.length));
     }
 
-    const unique = dedupeById(collected).filter((doc) => doc._id.toString() !== service._id.toString());
+    const unique = dedupeById(collected).filter((doc) => doc._id.toString() !== serviceIdStr);
     const relatedServices = unique.slice(0, MAX_RELATED).map(normalizeSummary);
 
     return {
