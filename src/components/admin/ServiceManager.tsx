@@ -1020,13 +1020,18 @@ export default function ServiceManager() {
 }
 
 function createEmptyService(service?: Service): EditableService {
+    // Ensure relatedServices are strings (handles ObjectId serialization from MongoDB)
+    const relatedServiceIds = (service?.relatedServices ?? []).map((id) =>
+        typeof id === 'object' && id !== null ? String(id) : id
+    );
+
     return {
         ...(service ?? {}),
         gallery: service?.gallery?.slice(0, MAX_GALLERY_ITEMS) ?? [],
         features: service?.features ?? [],
         featuresAr: service?.featuresAr ?? [],
         benefits: service?.benefits ?? [],
-        relatedServices: service?.relatedServices ?? [],
+        relatedServices: relatedServiceIds,
     };
 }
 
