@@ -75,7 +75,7 @@ export default function VideoSection() {
     const description = resolve(
         "video.description",
         video?.description ||
-            "Step on board and preview the level of service, craftsmanship, and attention to detail you can expect with our team."
+        "Step on board and preview the level of service, craftsmanship, and attention to detail you can expect with our team."
     );
     const badgeText = resolve("video.badge", "Featured Video");
     const ctaPrimary = resolve("video.cta", "Discover More");
@@ -116,7 +116,7 @@ export default function VideoSection() {
                                 className={styles.video}
                                 controls
                                 playsInline
-                                preload="metadata"
+                                preload="auto"
                                 poster={video?.poster ? `/api/images/${video.poster}` : undefined}
                                 aria-label={heading}
                             >

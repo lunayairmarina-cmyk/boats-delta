@@ -240,7 +240,7 @@ export default function Home() {
                   muted
                   playsInline
                   loop={false}
-                  preload="metadata"
+                  preload="auto"
                 />
               ) : (
                 <div

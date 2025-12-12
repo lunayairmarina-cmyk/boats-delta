@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import Service, { IService } from '@/models/Service';
 import { invalidateCache } from '@/lib/cache';
+import mongoose from 'mongoose';
 
 const SERVICE_CACHE_KEY = 'services_all';
 
@@ -19,15 +20,23 @@ type ServiceUpdatePayload = Partial<
         | 'benefits'
         | 'price'
         | 'priceAr'
-        | 'relatedServices'
     >
->;
+> & {
+    relatedServices?: string[];
+};
 
 export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
     try {
         await connectDB();
         const body = (await request.json()) as ServiceUpdatePayload;
+
+        // Convert string IDs to ObjectIds for relatedServices
+        const relatedServiceIds = (body.relatedServices ?? [])
+            .filter(id => mongoose.Types.ObjectId.isValid(id))
+            .map(id => new mongoose.Types.ObjectId(id));
+
+        console.log(`[admin/services/${params.id}] Updating with ${relatedServiceIds.length} related services:`, relatedServiceIds.map(id => id.toString()));
 
         const updatedService = await Service.findByIdAndUpdate(
             params.id,
@@ -41,7 +50,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
                 features: body.features ?? [],
                 featuresAr: body.featuresAr ?? [],
                 benefits: body.benefits ?? [],
-                relatedServices: body.relatedServices ?? [],
+                relatedServices: relatedServiceIds,
                 price: body.price,
                 priceAr: body.priceAr,
                 updatedAt: new Date(),
