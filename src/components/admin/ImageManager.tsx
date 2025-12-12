@@ -5,6 +5,9 @@ import Image from 'next/image';
 import styles from './ImageManager.module.css';
 import { useLanguage, Locale } from '@/context/LanguageContext';
 
+// ... imports
+// (Keep imports)
+
 type ImageSection =
     | 'hero-home'
     | 'experience-section'
@@ -27,8 +30,11 @@ interface GridFSFile {
         order?: number;
         contentType?: string;
         mediaType?: MediaType;
+        cloudinaryUrl?: string; // Cloudinary Support
     };
 }
+
+// ... types ...
 
 type SectionCopy = Record<ImageSection, { label: string; group: string }>;
 
@@ -63,14 +69,22 @@ export default function ImageManager() {
     const [replacingImageId, setReplacingImageId] = useState<string | null>(null);
     const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
     const [uploading, setUploading] = useState(false);
+
+    // New Image Upload State
     const [newImageFile, setNewImageFile] = useState<File | null>(null);
+
+    // New Video Upload State
+    const [videoInputType, setVideoInputType] = useState<'file' | 'url'>('file');
     const [newVideoFile, setNewVideoFile] = useState<File | null>(null);
+    const [videoCloudinaryUrl, setVideoCloudinaryUrl] = useState<string>('');
+
     const [deleting, setDeleting] = useState<string | null>(null);
 
     const isHeroSection = activeSection === 'hero-home';
 
     const copy = language === 'ar'
         ? {
+            // ... (keep existing)
             title: 'إدارة الصور',
             description: 'تحديث صور الموقع حسب الأقسام',
             heroDescription: 'إدارة صور وفيديوهات البانر الرئيسي - يمكنك إضافة وحذف وإعادة ترتيب العناصر',
@@ -99,8 +113,12 @@ export default function ImageManager() {
             confirmDelete: 'هل أنت متأكد من حذف هذا العنصر؟',
             imageType: 'صورة',
             videoType: 'فيديو',
+            useFile: 'ملف',
+            useUrl: 'رابط Cloudinary',
+            urlPlaceholder: 'https://res.cloudinary.com/...',
         }
         : {
+            // ... (keep existing)
             title: 'Image Management',
             description: 'Update website images by section',
             heroDescription: 'Manage hero banner images and videos - add, delete, and reorder items',
@@ -129,8 +147,12 @@ export default function ImageManager() {
             confirmDelete: 'Are you sure you want to delete this item?',
             imageType: 'Image',
             videoType: 'Video',
+            useFile: 'File',
+            useUrl: 'Cloudinary URL',
+            urlPlaceholder: 'https://res.cloudinary.com/...',
         };
 
+    // ... (UseMemo Logic) ...
     const orderedImages = useMemo(() => {
         return [...images].sort((a, b) => {
             const orderA = typeof a.metadata?.order === 'number' ? a.metadata.order : new Date(a.uploadDate).getTime();
@@ -139,7 +161,6 @@ export default function ImageManager() {
         });
     }, [images]);
 
-    // Combine images and videos for hero section
     const heroMedia = useMemo(() => {
         if (!isHeroSection) return [];
         const allMedia: (GridFSFile & { isVideo: boolean })[] = [
@@ -153,6 +174,7 @@ export default function ImageManager() {
         });
     }, [orderedImages, heroVideos, isHeroSection]);
 
+    // ... (Fetch Logic) ...
     const fetchImages = useCallback(async () => {
         const res = await fetch(`/api/admin/images?section=${activeSection}`);
         if (res.ok) {
@@ -178,6 +200,7 @@ export default function ImageManager() {
         fetchHeroVideos();
     }, [fetchImages, fetchHeroVideos]);
 
+    // ... (Image handlers) ...
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, imageId: string) => {
         if (!e.target.files?.[0]) {
             setSelectedFile(null);
@@ -221,12 +244,11 @@ export default function ImageManager() {
     const handleAddImage = async () => {
         if (!newImageFile || !isHeroSection) return;
         setUploading(true);
-
+        // ... (Keep existing implementation)
         const formData = new FormData();
         formData.append('file', newImageFile);
         formData.append('section', 'hero-home');
         formData.append('category', 'hero');
-        // Set order to be after all existing items
         const maxOrder = Math.max(...heroMedia.map(m => m.metadata?.order || 0), 0);
         formData.append('order', String(maxOrder + 100));
 
@@ -253,13 +275,24 @@ export default function ImageManager() {
     };
 
     const handleAddVideo = async () => {
-        if (!newVideoFile || !isHeroSection) return;
+        if (videoInputType === 'file' && !newVideoFile) return;
+        if (videoInputType === 'url' && !videoCloudinaryUrl) return;
+        if (!isHeroSection) return;
+
         setUploading(true);
 
         const formData = new FormData();
-        formData.append('file', newVideoFile);
+        if (videoInputType === 'file' && newVideoFile) {
+            formData.append('file', newVideoFile);
+        } else if (videoInputType === 'url' && videoCloudinaryUrl) {
+            formData.append('cloudinaryUrl', videoCloudinaryUrl);
+        }
+
         formData.append('section', 'hero-home');
         formData.append('category', 'hero');
+        // Generate a standard slug for hero items if needed, or let API handle generic slug if missing
+        // For hero slider videos, we usually just want them in the collection
+
         const maxOrder = Math.max(...heroMedia.map(m => m.metadata?.order || 0), 0);
         formData.append('order', String(maxOrder + 100));
 
@@ -270,6 +303,7 @@ export default function ImageManager() {
             });
             if (res.ok) {
                 setNewVideoFile(null);
+                setVideoCloudinaryUrl('');
                 await fetchHeroVideos();
                 const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
                 fileInputs.forEach(input => input.value = '');
@@ -285,6 +319,7 @@ export default function ImageManager() {
         }
     };
 
+    // ... (Keep existing handleDelete and handleReorder) ...
     const handleDelete = async (id: string, isVideo: boolean) => {
         if (!confirm(copy.confirmDelete)) return;
         setDeleting(id);
@@ -346,6 +381,7 @@ export default function ImageManager() {
         }
     }, [isHeroSection, heroMedia, fetchImages, fetchHeroVideos]);
 
+    // ... (Keep existing groupedSections and formatDate) ...
     const groupedSections = useMemo(() => {
         const sectionData = IMAGE_SECTIONS[language];
         const groups: Record<string, Array<{ key: ImageSection; label: string }>> = {};
@@ -381,6 +417,7 @@ export default function ImageManager() {
 
             <div className={styles.content}>
                 <div className={styles.imagesList}>
+                    {/* ... (Keep existing Section Selector) ... */}
                     <div className={styles.sectionSelector}>
                         <label className={styles.label}>{copy.section}</label>
                         <select
@@ -431,34 +468,83 @@ export default function ImageManager() {
                                     </>
                                 )}
                             </div>
-                            <div className={styles.uploadGroup}>
-                                <input
-                                    type="file"
-                                    id="new-video-upload"
-                                    className={styles.hiddenInput}
-                                    accept="video/*"
-                                    onChange={(e) => setNewVideoFile(e.target.files?.[0] || null)}
-                                />
-                                <label htmlFor="new-video-upload" className={styles.fileLabel}>
-                                    🎬 {copy.addVideo}
-                                </label>
-                                {newVideoFile && (
-                                    <>
-                                        <span className={styles.fileName}>{newVideoFile.name}</span>
+
+                            {/* Video Upload Section with URL Support */}
+                            <div className={styles.uploadGroup} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }}>
+                                <div style={{ display: 'flex', gap: '12px', marginBottom: '4px' }}>
+                                    <label style={{ display: 'flex', gap: '4px', fontSize: '0.9rem', cursor: 'pointer' }}>
+                                        <input
+                                            type="radio"
+                                            checked={videoInputType === 'file'}
+                                            onChange={() => setVideoInputType('file')}
+                                        /> {copy.useFile}
+                                    </label>
+                                    <label style={{ display: 'flex', gap: '4px', fontSize: '0.9rem', cursor: 'pointer' }}>
+                                        <input
+                                            type="radio"
+                                            checked={videoInputType === 'url'}
+                                            onChange={() => setVideoInputType('url')}
+                                        /> {copy.useUrl}
+                                    </label>
+                                </div>
+
+                                {videoInputType === 'file' ? (
+                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                        <input
+                                            type="file"
+                                            id="new-video-upload"
+                                            className={styles.hiddenInput}
+                                            accept="video/*"
+                                            onChange={(e) => setNewVideoFile(e.target.files?.[0] || null)}
+                                        />
+                                        <label htmlFor="new-video-upload" className={styles.fileLabel}>
+                                            🎬 {copy.addVideo}
+                                        </label>
+                                        {newVideoFile && (
+                                            <>
+                                                <span className={styles.fileName}>{newVideoFile.name}</span>
+                                                <button
+                                                    type="button"
+                                                    className={styles.uploadButton}
+                                                    onClick={handleAddVideo}
+                                                    disabled={uploading}
+                                                >
+                                                    {uploading ? copy.uploading : copy.uploadVideo}
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', width: '100%' }}>
+                                        <input
+                                            type="text"
+                                            placeholder={copy.urlPlaceholder}
+                                            value={videoCloudinaryUrl}
+                                            onChange={(e) => setVideoCloudinaryUrl(e.target.value)}
+                                            style={{
+                                                padding: '8px 12px',
+                                                borderRadius: '6px',
+                                                border: '1px solid #ccc',
+                                                fontSize: '0.9rem',
+                                                width: '100%',
+                                                maxWidth: '300px'
+                                            }}
+                                        />
                                         <button
                                             type="button"
                                             className={styles.uploadButton}
                                             onClick={handleAddVideo}
-                                            disabled={uploading}
+                                            disabled={uploading || !videoCloudinaryUrl}
                                         >
-                                            {uploading ? copy.uploading : copy.uploadVideo}
+                                            {uploading ? copy.uploading : copy.addVideo}
                                         </button>
-                                    </>
+                                    </div>
                                 )}
                             </div>
                         </div>
                     )}
 
+                    {/* Media List */}
                     <div className={styles.listHeader}>
                         <h4 className={styles.panelTitle}>
                             {isHeroSection ? copy.heroMediaTitle : copy.imagesInSection}
@@ -468,7 +554,6 @@ export default function ImageManager() {
                         )}
                     </div>
 
-                    {/* Hero Section: Combined Media Grid */}
                     {isHeroSection ? (
                         <>
                             {heroMedia.length === 0 && (
@@ -482,7 +567,7 @@ export default function ImageManager() {
                                             <div className={styles.imagePreview}>
                                                 {item.isVideo ? (
                                                     <video
-                                                        src={`/api/videos/${item._id}`}
+                                                        src={item.metadata?.cloudinaryUrl || `/api/videos/${item._id}`}
                                                         className={styles.videoThumbnail}
                                                         muted
                                                         preload="metadata"
@@ -501,7 +586,14 @@ export default function ImageManager() {
                                                 </span>
                                             </div>
                                             <div className={styles.imageInfo}>
-                                                <p className={styles.imageName}>{item.filename}</p>
+                                                <p className={styles.imageName}>
+                                                    {item.metadata?.cloudinaryUrl ? 'Cloudinary Video' : item.filename}
+                                                </p>
+                                                {item.metadata?.cloudinaryUrl && (
+                                                    <p className={styles.imageSlug} style={{ color: '#888', wordBreak: 'break-all', fontSize: '0.8rem' }}>
+                                                        {item.metadata.cloudinaryUrl}
+                                                    </p>
+                                                )}
                                                 <p className={styles.imageDate}>{formatDate(item.uploadDate)}</p>
                                                 {slug && <p className={styles.imageSlug}>slug: {slug}</p>}
                                                 <p className={styles.imageOrder}>
@@ -511,6 +603,7 @@ export default function ImageManager() {
                                             <div className={styles.imageActions}>
                                                 {heroMedia.length > 1 && (
                                                     <div className={styles.orderButtons}>
+                                                        {/* ... (Keep existing Order Buttons) ... */}
                                                         <button
                                                             type="button"
                                                             className={styles.orderButton}
@@ -531,6 +624,7 @@ export default function ImageManager() {
                                                         </button>
                                                     </div>
                                                 )}
+                                                {/* ... (Keep replace for images) ... */}
                                                 {!item.isVideo && (
                                                     <div className={styles.replaceGroup}>
                                                         <input
@@ -570,6 +664,7 @@ export default function ImageManager() {
                             </div>
                         </>
                     ) : (
+                        // ... (Keep existing Non-Hero List) ...
                         <>
                             {orderedImages.length === 0 && (
                                 <p className={styles.emptyState}>{copy.noImages}</p>

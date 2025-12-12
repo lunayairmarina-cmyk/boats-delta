@@ -10,7 +10,18 @@ export async function GET() {
     try {
         await connectDB();
         const services = await Service.find({}).sort({ createdAt: -1 });
-        return NextResponse.json(services);
+
+        // Transform ObjectId arrays to string arrays for proper frontend handling
+        const serializedServices = services.map((service) => {
+            const plain = service.toObject();
+            return {
+                ...plain,
+                _id: plain._id.toString(),
+                relatedServices: (plain.relatedServices ?? []).map((id: mongoose.Types.ObjectId) => id.toString()),
+            };
+        });
+
+        return NextResponse.json(serializedServices);
     } catch (error) {
         console.error('Failed to fetch services:', error);
         return NextResponse.json({ error: 'Failed to fetch services' }, { status: 500 });

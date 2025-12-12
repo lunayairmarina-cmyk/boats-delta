@@ -7,10 +7,14 @@ import Link from "next/link";
 
 interface AdminVideo {
     _id: string;
-    title?: string;
-    description?: string;
-    poster?: string;
-    section?: string;
+    filename: string;
+    metadata?: {
+        title?: string;
+        description?: string;
+        poster?: string;
+        section?: string;
+        cloudinaryUrl?: string;
+    };
 }
 
 export default function VideoSection() {
@@ -58,7 +62,14 @@ export default function VideoSection() {
                         if (Array.isArray(videos) && videos.length > 0) {
                             const v = videos[0];
                             setVideo(v);
-                            setVideoUrl(`/api/videos/${v._id}`);
+
+                            // Use Cloudinary URL if available, otherwise fallback to local stream
+                            if (v.metadata?.cloudinaryUrl) {
+                                setVideoUrl(v.metadata.cloudinaryUrl);
+                            } else {
+                                setVideoUrl(`/api/videos/${v._id}`);
+                            }
+
                             setHasError(false);
                             found = true;
                             break;
@@ -82,10 +93,10 @@ export default function VideoSection() {
         fetchVideo();
     }, [language]);
 
-    const heading = resolve("video.title", video?.title || "Experience the Journey");
+    const heading = resolve("video.title", video?.metadata?.title || "Experience the Journey");
     const description = resolve(
         "video.description",
-        video?.description ||
+        video?.metadata?.description ||
         "Step on board and preview the level of service, craftsmanship, and attention to detail you can expect with our team."
     );
     const badgeText = resolve("video.badge", "Featured Video");
@@ -133,7 +144,7 @@ export default function VideoSection() {
                                 controls
                                 playsInline
                                 preload="auto"
-                                poster={video?.poster ? `/api/images/${video.poster}` : undefined}
+                                poster={video?.metadata?.poster ? `/api/images/${video.metadata.poster}` : undefined}
                                 aria-label={heading}
                                 onCanPlay={handleCanPlay}
                                 onError={handleError}

@@ -88,12 +88,12 @@ export default function Home() {
         if (videoResponse.ok) {
           const heroVideos = await videoResponse.json();
           if (Array.isArray(heroVideos)) {
-            heroVideos.forEach((vid: { _id?: string; metadata?: { order?: number; slug?: string; poster?: string } }) => {
+            heroVideos.forEach((vid: { _id?: string; metadata?: { order?: number; slug?: string; poster?: string; cloudinaryUrl?: string } }) => {
               if (vid._id) {
                 const slug = vid.metadata?.slug;
                 mediaItems.push({
                   id: vid._id,
-                  url: `/api/videos/${vid._id}`,
+                  url: vid.metadata?.cloudinaryUrl || `/api/videos/${vid._id}`,
                   type: 'video',
                   order: slug === 'hero-lonier-video' ? -1000 : (vid.metadata?.order || 0),
                   poster: vid.metadata?.poster ? `/api/images/${vid.metadata.poster}` : undefined,

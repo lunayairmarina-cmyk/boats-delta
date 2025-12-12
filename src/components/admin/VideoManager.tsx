@@ -5,6 +5,9 @@ import Image from 'next/image';
 import styles from './VideoManager.module.css';
 import { useLanguage } from '@/context/LanguageContext';
 
+// ... imports
+// (Make sure to keep imports)
+
 interface GridFSFile {
     _id: string;
     filename: string;
@@ -16,6 +19,7 @@ interface GridFSFile {
         order?: number;
         language?: string;
         poster?: string; // Image ID for thumbnail
+        cloudinaryUrl?: string; // Cloudinary URL
     };
 }
 
@@ -48,7 +52,12 @@ export default function VideoManager() {
     const [videos, setVideos] = useState<GridFSFile[]>([]);
     const [videosBySlug, setVideosBySlug] = useState<Record<string, GridFSFile | null>>({});
     const [replacing, setReplacing] = useState(false);
+
+    // Upload state
+    const [inputType, setInputType] = useState<'file' | 'url'>('file');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [cloudinaryInput, setCloudinaryInput] = useState<string>('');
+
     const [replacingVideoId, setReplacingVideoId] = useState<string | null>(null);
     const [selectedVariantSlug, setSelectedVariantSlug] = useState<string | null>(null);
     const [uploading, setUploading] = useState(false);
@@ -57,6 +66,7 @@ export default function VideoManager() {
 
     const copy = language === 'ar'
         ? {
+            // ... existing copy ...
             title: 'إدارة الفيديو',
             description: 'إدارة فيديو الصفحة الرئيسية لكل لغة (إنجليزي / عربي)',
             homepageVideoEn: 'فيديو الصفحة الرئيسية (إنجليزي)',
@@ -68,12 +78,16 @@ export default function VideoManager() {
             uploading: 'جاري الرفع…',
             videosInSection: 'الفيديو في هذا القسم',
             noVideo: 'لا يوجد فيديو في هذا القسم بعد',
-            updateNote: 'يمكنك رفع فيديو مخصص لكل لغة. في حال لم تقم برفع فيديو عربي سيستخدم الفيديو الإنجليزي كبديل.',
+            updateNote: 'يمكنك رفع فيديو مخصص لكل لغة. يمكنك استخدام ملف محلي أو رابط Cloudinary.',
             thumbnail: 'صورة مصغرة (اختياري)',
             thumbnailDesc: 'صورة تظهر أثناء تحميل الفيديو',
             uploadThumbnail: 'رفع صورة مصغرة',
             removeThumbnail: 'إزالة الصورة',
             savingThumbnail: 'جاري الحفظ…',
+            useFile: 'رفع ملف',
+            useUrl: 'رابط Cloudinary',
+            urlPlaceholder: 'https://res.cloudinary.com/...',
+            enterUrl: 'أدخل رابط الفيديو',
         }
         : {
             title: 'Video Management',
@@ -87,15 +101,20 @@ export default function VideoManager() {
             uploading: 'Uploading…',
             videosInSection: 'Video in this section',
             noVideo: 'No video in this section yet',
-            updateNote: 'You can upload a dedicated video for each language. If Arabic is missing, the English video will be used as fallback.',
+            updateNote: 'You can upload a dedicated video for each language. Use a local file or Cloudinary URL.',
             thumbnail: 'Thumbnail (Optional)',
             thumbnailDesc: 'Image shown while video is loading',
             uploadThumbnail: 'Upload Thumbnail',
             removeThumbnail: 'Remove Thumbnail',
             savingThumbnail: 'Saving…',
+            useFile: 'Upload File',
+            useUrl: 'Cloudinary URL',
+            urlPlaceholder: 'https://res.cloudinary.com/...',
+            enterUrl: 'Enter video URL',
         };
 
     const fetchVideos = useCallback(async () => {
+        // ... (Keep existing fetchVideos implementation)
         const res = await fetch(`/api/admin/videos?section=homepage-video`);
         if (res.ok) {
             const data = await res.json();
@@ -119,9 +138,7 @@ export default function VideoManager() {
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, variantSlug: string, videoId?: string) => {
         if (!e.target.files?.[0]) {
-            setSelectedFile(null);
-            setReplacingVideoId(null);
-            setSelectedVariantSlug(null);
+            if (inputType === 'file') setSelectedFile(null);
             return;
         }
         setSelectedFile(e.target.files[0]);
@@ -130,25 +147,54 @@ export default function VideoManager() {
     };
 
     const handleReplace = async (videoId: string, variant: VideoVariant) => {
-        if (!selectedFile || replacingVideoId !== videoId || selectedVariantSlug !== variant.slug) return;
+        if (inputType === 'file' && !selectedFile) return;
+        if (inputType === 'url' && !cloudinaryInput) return;
+
+        if (replacingVideoId !== videoId || selectedVariantSlug !== variant.slug) return;
+
         setReplacing(true);
 
         const formData = new FormData();
-        formData.append('file', selectedFile);
+        if (inputType === 'file' && selectedFile) {
+            formData.append('file', selectedFile);
+        } else if (inputType === 'url' && cloudinaryInput) {
+            formData.append('cloudinaryUrl', cloudinaryInput);
+        }
 
         try {
-            const res = await fetch(`/api/admin/videos/${videoId}`, {
-                method: 'PUT',
+            // Note: Current Replace API might not handle metadata updates properly if it expects a file replacement
+            // Ideally we delete and upload new, ensuring same slug.
+            // But let's try calling the upload endpoint with logic to replace based on slug?
+            // Actually, for replacing, the backend PUT is usually for content replacement.
+            // If we are switching from File to URL, simple PUT might fail if not updated. 
+            // Let's use the POST endpoint which handles slug conflict by deleting old one.
+
+            // So we treat replace as a new upload with same slug.
+            const res = await fetch('/api/admin/videos', {
+                method: 'POST',
                 body: formData,
             });
-            if (res.ok) {
+            // We need to re-append metadata since we are calling POST
+            formData.append('section', 'homepage-video');
+            formData.append('category', 'homepage');
+            formData.append('slug', variant.slug);
+            formData.append('language', variant.language);
+
+            // Re-send with full metadata
+            const createRes = await fetch('/api/admin/videos', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (createRes.ok) {
                 setSelectedFile(null);
+                setCloudinaryInput('');
                 setReplacingVideoId(null);
                 await fetchVideos();
                 const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
                 fileInputs.forEach(input => input.value = '');
             } else {
-                const error = await res.json();
+                const error = await createRes.json();
                 alert(error.error || 'Failed to replace video');
             }
         } catch (error) {
@@ -160,11 +206,19 @@ export default function VideoManager() {
     };
 
     const handleUpload = async (variant: VideoVariant) => {
-        if (!selectedFile || selectedVariantSlug !== variant.slug) return;
+        if (inputType === 'file' && !selectedFile) return;
+        if (inputType === 'url' && !cloudinaryInput) return;
+        if (selectedVariantSlug !== variant.slug) return;
+
         setUploading(true);
 
         const formData = new FormData();
-        formData.append('file', selectedFile);
+        if (inputType === 'file' && selectedFile) {
+            formData.append('file', selectedFile);
+        } else if (inputType === 'url' && cloudinaryInput) {
+            formData.append('cloudinaryUrl', cloudinaryInput);
+        }
+
         formData.append('section', 'homepage-video');
         formData.append('category', 'homepage');
         formData.append('slug', variant.slug);
@@ -177,6 +231,7 @@ export default function VideoManager() {
             });
             if (res.ok) {
                 setSelectedFile(null);
+                setCloudinaryInput('');
                 setReplacingVideoId(null);
                 await fetchVideos();
                 const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
@@ -193,12 +248,12 @@ export default function VideoManager() {
         }
     };
 
+    // ... thumbnail handlers (keep as is) ...
     const handleThumbnailUpload = async (videoId: string) => {
         if (!thumbnailFile) return;
         setUploadingThumbnail(videoId);
 
         try {
-            // First upload the image
             const imageFormData = new FormData();
             imageFormData.append('file', thumbnailFile);
             imageFormData.append('section', 'video-thumbnails');
@@ -215,7 +270,6 @@ export default function VideoManager() {
 
             const { fileId } = await uploadRes.json();
 
-            // Now update the video metadata with the poster
             const updateRes = await fetch(`/api/admin/videos/${videoId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
@@ -271,6 +325,9 @@ export default function VideoManager() {
         const isSelectedVariant = selectedVariantSlug === variant.slug;
         const hasPendingReplace = replacingVideoId && isSelectedVariant;
 
+        // Helper to check if we can submit
+        const canSubmit = inputType === 'file' ? !!selectedFile : !!cloudinaryInput;
+
         return (
             <div className={styles.videoList} key={variant.slug}>
                 <div className={styles.sectionSelector}>
@@ -282,21 +339,56 @@ export default function VideoManager() {
                     <h4 className={styles.panelTitle}>{copy.videosInSection}</h4>
                 </div>
 
+                {/* Input Type Selector */}
+                <div className={styles.inputTypeSelector} style={{ marginBottom: '1rem', display: 'flex', gap: '1rem' }}>
+                    <label>
+                        <input
+                            type="radio"
+                            checked={inputType === 'file'}
+                            onChange={() => setInputType('file')}
+                        /> {copy.useFile}
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            checked={inputType === 'url'}
+                            onChange={() => setInputType('url')}
+                        /> {copy.useUrl}
+                    </label>
+                </div>
+
                 {!currentVideo && (
                     <div className={styles.emptyState}>
                         <p>{copy.noVideo}</p>
                         <div className={styles.uploadGroup}>
-                            <input
-                                type="file"
-                                id={`video-upload-${variant.slug}`}
-                                className={styles.hiddenInput}
-                                onChange={(e) => handleFileSelect(e, variant.slug)}
-                                accept="video/*"
-                            />
-                            <label htmlFor={`video-upload-${variant.slug}`} className={styles.uploadLabel}>
-                                {copy.uploadVideo}
-                            </label>
-                            {selectedFile && isSelectedVariant && !replacingVideoId && (
+                            {inputType === 'file' ? (
+                                <>
+                                    <input
+                                        type="file"
+                                        id={`video-upload-${variant.slug}`}
+                                        className={styles.hiddenInput}
+                                        onChange={(e) => handleFileSelect(e, variant.slug)}
+                                        accept="video/*"
+                                    />
+                                    <label htmlFor={`video-upload-${variant.slug}`} className={styles.uploadLabel}>
+                                        {copy.uploadVideo}
+                                    </label>
+                                </>
+                            ) : (
+                                <input
+                                    type="text"
+                                    placeholder={copy.urlPlaceholder}
+                                    className={styles.urlInput}
+                                    value={selectedVariantSlug === variant.slug ? cloudinaryInput : ''}
+                                    onChange={(e) => {
+                                        setCloudinaryInput(e.target.value);
+                                        setSelectedVariantSlug(variant.slug);
+                                    }}
+                                    style={{ padding: '0.5rem', width: '100%', border: '1px solid #ccc', borderRadius: '4px' }}
+                                />
+                            )}
+
+                            {canSubmit && isSelectedVariant && !replacingVideoId && (
                                 <button
                                     type="button"
                                     onClick={() => handleUpload(variant)}
@@ -314,15 +406,22 @@ export default function VideoManager() {
                     <div className={styles.videoCard}>
                         <div className={styles.videoPreview}>
                             <video
-                                src={`/api/videos/${currentVideo._id}`}
+                                src={currentVideo.metadata?.cloudinaryUrl || `/api/videos/${currentVideo._id}`}
                                 controls
                                 className={styles.videoThumbnail}
-                                preload="auto"
+                                preload="metadata"
                                 poster={currentVideo.metadata?.poster ? `/api/images/${currentVideo.metadata.poster}` : undefined}
                             />
                         </div>
                         <div className={styles.videoInfo}>
-                            <p className={styles.videoName}>{currentVideo.filename}</p>
+                            <p className={styles.videoName}>
+                                {currentVideo.metadata?.cloudinaryUrl ? 'Cloudinary Hosted' : currentVideo.filename}
+                            </p>
+                            {currentVideo.metadata?.cloudinaryUrl && (
+                                <p className={styles.videoUrl} style={{ fontSize: '0.8rem', color: '#888', wordBreak: 'break-all' }}>
+                                    {currentVideo.metadata.cloudinaryUrl}
+                                </p>
+                            )}
                             <p className={styles.videoDate}>{formatDate(currentVideo.uploadDate)}</p>
                         </div>
 
@@ -376,18 +475,37 @@ export default function VideoManager() {
                         </div>
 
                         <div className={styles.videoActions}>
+                            <p style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>{copy.selectVideo}</p>
                             <div className={styles.replaceGroup}>
-                                <input
-                                    type="file"
-                                    id={`file-replace-${variant.slug}`}
-                                    className={styles.hiddenInput}
-                                    onChange={(e) => handleFileSelect(e, variant.slug, currentVideo._id)}
-                                    accept="video/*"
-                                />
-                                <label htmlFor={`file-replace-${variant.slug}`} className={styles.replaceLabel}>
-                                    {copy.selectVideo}
-                                </label>
-                                {hasPendingReplace && selectedFile && (
+                                {inputType === 'file' ? (
+                                    <>
+                                        <input
+                                            type="file"
+                                            id={`file-replace-${variant.slug}`}
+                                            className={styles.hiddenInput}
+                                            onChange={(e) => handleFileSelect(e, variant.slug, currentVideo._id)}
+                                            accept="video/*"
+                                        />
+                                        <label htmlFor={`file-replace-${variant.slug}`} className={styles.replaceLabel}>
+                                            {copy.replaceVideo} (File)
+                                        </label>
+                                    </>
+                                ) : (
+                                    <input
+                                        type="text"
+                                        placeholder={copy.urlPlaceholder}
+                                        className={styles.urlInput}
+                                        style={{ padding: '0.5rem', width: '100%', border: '1px solid #ccc', borderRadius: '4px' }}
+                                        value={(selectedVariantSlug === variant.slug && replacingVideoId === currentVideo._id) ? cloudinaryInput : ''}
+                                        onChange={(e) => {
+                                            setCloudinaryInput(e.target.value);
+                                            setReplacingVideoId(currentVideo._id);
+                                            setSelectedVariantSlug(variant.slug);
+                                        }}
+                                    />
+                                )}
+
+                                {canSubmit && hasPendingReplace && (
                                     <button
                                         type="button"
                                         onClick={() => handleReplace(currentVideo._id, variant)}

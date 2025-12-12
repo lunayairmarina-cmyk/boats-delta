@@ -141,6 +141,11 @@ const ServiceDetailClient = ({ initialData, serviceId }: ServiceDetailClientProp
         window.scrollTo({ top: 0, behavior: 'instant' });
     }, [serviceId]);
 
+    // Debug: Log related services data
+    useEffect(() => {
+        console.log('[ServiceDetailClient] Related services received:', data.relatedServices?.length ?? 0, data.relatedServices);
+    }, [data.relatedServices]);
+
     const service = data.service;
 
     const gallery = useMemo(
@@ -217,9 +222,8 @@ const ServiceDetailClient = ({ initialData, serviceId }: ServiceDetailClientProp
         <div className={styles.page} dir={dir}>
             {(fetchState === 'refreshing' || fetchState === 'error') && (
                 <div
-                    className={`${styles.statusBanner} ${
-                        fetchState === 'error' ? styles.statusBannerError : ''
-                    }`}
+                    className={`${styles.statusBanner} ${fetchState === 'error' ? styles.statusBannerError : ''
+                        }`}
                     role={fetchState === 'error' ? 'alert' : 'status'}
                     aria-live="polite"
                 >
@@ -238,12 +242,12 @@ const ServiceDetailClient = ({ initialData, serviceId }: ServiceDetailClientProp
                 </div>
             )}
 
-                    <ServiceHeader
+            <ServiceHeader
                 ref={headerRef}
                 title={pickLocale(language, service.title)}
                 description={pickLocale(language, service.description)}
                 longDescription={pickLocale(language, service.longDescription)}
-                        price={heroPrice}
+                price={heroPrice}
                 mainImage={service.mainImage}
                 stats={heroStats}
                 language={language}

@@ -71,11 +71,12 @@ export async function POST(request: Request) {
         const languageInput = ((formData.get('language') as string) || 'en').toLowerCase();
         const orderInput = formData.get('order') ? parseInt(formData.get('order') as string, 10) : undefined;
 
-        if (!file) {
-            return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+        const cloudinaryUrl = formData.get('cloudinaryUrl') as string | null;
+
+        if (!file && !cloudinaryUrl) {
+            return NextResponse.json({ error: 'No file or Cloudinary URL provided' }, { status: 400 });
         }
 
-        const buffer = Buffer.from(await file.arrayBuffer());
         const db = mongoose.connection.db;
         if (!db) {
             throw new Error('Database connection is not initialized.');
@@ -98,19 +99,41 @@ export async function POST(request: Request) {
             );
         }
 
-        const uploadStream = bucket.openUploadStream(file.name, {
-            metadata: {
-                category: categoryInput,
-                section: sectionInput,
-                contentType: file.type,
-                slug: slugInput,
-                language: languageInput,
-                order: orderInput,
-                source: 'admin-upload',
-            },
-        });
+        // Variable to hold the upload stream
+        let uploadStream;
 
-        uploadStream.end(buffer);
+        if (cloudinaryUrl) {
+            // For Cloudinary, we create a placeholder zero-byte file or small text file
+            // so we have a GridFS entry to hang metadata on
+            const placeholderBuffer = Buffer.from('cloudinary-linked-video');
+            uploadStream = bucket.openUploadStream('cloudinary-placeholder', {
+                metadata: {
+                    category: categoryInput,
+                    section: sectionInput,
+                    contentType: 'video/mp4', // specialized type or generic
+                    slug: slugInput,
+                    language: languageInput,
+                    order: orderInput,
+                    source: 'cloudinary',
+                    cloudinaryUrl: cloudinaryUrl,
+                },
+            });
+            uploadStream.end(placeholderBuffer);
+        } else {
+            const buffer = Buffer.from(await file.arrayBuffer());
+            uploadStream = bucket.openUploadStream(file.name, {
+                metadata: {
+                    category: categoryInput,
+                    section: sectionInput,
+                    contentType: file.type,
+                    slug: slugInput,
+                    language: languageInput,
+                    order: orderInput,
+                    source: 'admin-upload',
+                },
+            });
+            uploadStream.end(buffer);
+        }
 
         await new Promise((resolve, reject) => {
             uploadStream.on('finish', resolve);
