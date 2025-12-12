@@ -73,7 +73,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
 
         const ifNoneMatch = request.headers.get('if-none-match');
         const ifModifiedSince = request.headers.get('if-modified-since');
-        
+
         if (ifNoneMatch === etag || ifModifiedSince === lastModified) {
             return new Response(null, {
                 status: 304,
@@ -85,16 +85,21 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
             });
         }
 
+        // Build headers - include Content-Length if we know the file size
+        const headers: Record<string, string> = {
+            'Content-Type': contentType,
+            'Accept-Ranges': 'bytes',
+            'Cache-Control': `public, max-age=${maxAge}, immutable`,
+            'ETag': etag,
+            'Last-Modified': lastModified,
+        };
+
+        if (fileLength !== undefined) {
+            headers['Content-Length'] = fileLength.toString();
+        }
+
         // @ts-expect-error Node stream is compatible with the Response body but lacks types
-        return new Response(stream, {
-            headers: {
-                'Content-Type': contentType,
-                'Accept-Ranges': 'bytes',
-                'Cache-Control': `public, max-age=${maxAge}, immutable`,
-                'ETag': etag,
-                'Last-Modified': lastModified,
-            },
-        });
+        return new Response(stream, { headers });
 
     } catch (error) {
         console.error('Error serving video:', error);

@@ -142,6 +142,13 @@
   object-fit: cover;
 }
 
+/* Hide video while loading but keep in DOM for buffering */
+.videoHidden {
+  opacity: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
 .skeleton {
   position: absolute;
   inset: 0;
@@ -168,6 +175,7 @@
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -210,4 +218,3 @@
     font-size: 0.8rem;
   }
 }
-

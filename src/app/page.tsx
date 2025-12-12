@@ -38,8 +38,20 @@ export default function Home() {
     link.href = '/api/images/slug/ocean-sunrise';
     link.fetchPriority = 'high';
     document.head.appendChild(link);
+
+    // Also preload the hero video for instant playback
+    const videoLink = document.createElement('link');
+    videoLink.rel = 'preload';
+    videoLink.as = 'video';
+    videoLink.href = '/لونيير%20.mp4';
+    videoLink.fetchPriority = 'high';
+    document.head.appendChild(videoLink);
+
     return () => {
       document.head.removeChild(link);
+      if (document.head.contains(videoLink)) {
+        document.head.removeChild(videoLink);
+      }
     };
   }, []);
 
@@ -244,6 +256,15 @@ export default function Home() {
                   loop={false}
                   preload="auto"
                   poster={media.poster}
+                  // @ts-expect-error fetchpriority is valid but not in React types yet
+                  fetchpriority={index === 0 ? "high" : "auto"}
+                  onLoadedData={(e) => {
+                    // Start playing as soon as enough data is available
+                    const video = e.currentTarget;
+                    if (index === currentSlide) {
+                      video.play().catch(() => { });
+                    }
+                  }}
                 />
               ) : (
                 <div

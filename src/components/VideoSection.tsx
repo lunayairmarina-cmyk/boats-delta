@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import styles from "./VideoSection.module.css";
 import { useLanguage } from "@/context/LanguageContext";
 import Link from "next/link";
@@ -17,7 +17,8 @@ export default function VideoSection() {
     const { t, dir, language } = useLanguage();
     const [video, setVideo] = useState<AdminVideo | null>(null);
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [videoReady, setVideoReady] = useState(false);
+    const [hasError, setHasError] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const resolve = (key: string, fallback: string) => {
@@ -28,9 +29,18 @@ export default function VideoSection() {
         return val;
     };
 
+    // Handle video ready state
+    const handleCanPlay = useCallback(() => {
+        setVideoReady(true);
+    }, []);
+
+    const handleError = useCallback(() => {
+        setHasError(true);
+        setVideoReady(false);
+    }, []);
+
     useEffect(() => {
         const fetchVideo = async () => {
-            setLoading(true);
             try {
                 const slugPreferences =
                     language === "ar"
@@ -49,6 +59,7 @@ export default function VideoSection() {
                             const v = videos[0];
                             setVideo(v);
                             setVideoUrl(`/api/videos/${v._id}`);
+                            setHasError(false);
                             found = true;
                             break;
                         }
@@ -58,13 +69,13 @@ export default function VideoSection() {
                 if (!found) {
                     setVideo(null);
                     setVideoUrl(null);
+                    setHasError(true);
                 }
             } catch (error) {
                 console.error("Failed to fetch video:", error);
                 setVideo(null);
                 setVideoUrl(null);
-            } finally {
-                setLoading(false);
+                setHasError(true);
             }
         };
 
@@ -109,26 +120,34 @@ export default function VideoSection() {
                     </div>
 
                     <div className={styles.videoFrame}>
-                        {loading && <div className={styles.skeleton} aria-hidden="true" />}
-                        {!loading && videoUrl ? (
+                        {/* Show skeleton while loading */}
+                        {!videoReady && !hasError && (
+                            <div className={styles.skeleton} aria-hidden="true" />
+                        )}
+
+                        {/* Always render video element if we have a URL - let browser buffer it */}
+                        {videoUrl && !hasError && (
                             <video
                                 ref={videoRef}
-                                className={styles.video}
+                                className={`${styles.video} ${!videoReady ? styles.videoHidden : ''}`}
                                 controls
                                 playsInline
                                 preload="auto"
                                 poster={video?.poster ? `/api/images/${video.poster}` : undefined}
                                 aria-label={heading}
+                                onCanPlay={handleCanPlay}
+                                onError={handleError}
                             >
                                 <source src={videoUrl} type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
-                        ) : (
-                            !loading && (
-                                <div className={styles.fallback}>
-                                    <p>{unavailableText}</p>
-                                </div>
-                            )
+                        )}
+
+                        {/* Show fallback on error */}
+                        {hasError && (
+                            <div className={styles.fallback}>
+                                <p>{unavailableText}</p>
+                            </div>
                         )}
                     </div>
                 </div>
