@@ -169,18 +169,11 @@ export default function VideoManager() {
             // If we are switching from File to URL, simple PUT might fail if not updated. 
             // Let's use the POST endpoint which handles slug conflict by deleting old one.
 
-            // So we treat replace as a new upload with same slug.
-            const res = await fetch('/api/admin/videos', {
-                method: 'POST',
-                body: formData,
-            });
-            // We need to re-append metadata since we are calling POST
             formData.append('section', 'homepage-video');
             formData.append('category', 'homepage');
             formData.append('slug', variant.slug);
             formData.append('language', variant.language);
 
-            // Re-send with full metadata
             const createRes = await fetch('/api/admin/videos', {
                 method: 'POST',
                 body: formData,

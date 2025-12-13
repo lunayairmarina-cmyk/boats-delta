@@ -457,7 +457,7 @@ export default function ServiceManager() {
                 features,
                 featuresAr,
                 benefits,
-                relatedServices: currentService.relatedServices ?? [],
+                relatedServices: Array.isArray(currentService.relatedServices) ? currentService.relatedServices : [],
             };
 
             console.log('Submitting service payload:', JSON.stringify(payload, null, 2));
@@ -887,7 +887,8 @@ export default function ServiceManager() {
                                             onChange={(event) => {
                                                 const selectedId = event.target.value;
                                                 if (!selectedId) return;
-                                                const current = currentService.relatedServices ?? [];
+
+                                                const current = currentService.relatedServices || [];
                                                 if (current.length >= 4) return;
                                                 if (!current.includes(selectedId)) {
                                                     setCurrentService({
@@ -898,8 +899,9 @@ export default function ServiceManager() {
                                                 event.target.value = '';
                                             }}
                                             disabled={(currentService.relatedServices?.length ?? 0) >= 4}
+                                            defaultValue=""
                                         >
-                                            <option value="">{copy.relatedServices.placeholder}</option>
+                                            <option value="" disabled>{copy.relatedServices.placeholder}</option>
                                             {services
                                                 .filter((s) => s._id !== currentService._id)
                                                 .filter((s) => !(currentService.relatedServices ?? []).includes(s._id))
@@ -923,10 +925,12 @@ export default function ServiceManager() {
                                         <div className={styles.relatedServicesList}>
                                             {(currentService.relatedServices ?? []).map((relatedId) => {
                                                 const relatedService = services.find((s) => s._id === relatedId);
-                                                if (!relatedService) return null;
+                                                // Even if not found in current list (rare), show the ID so user can delete it
+                                                const displayName = relatedService ? `${relatedService.title}` : `Unknown Service (${relatedId})`;
+
                                                 return (
                                                     <div key={relatedId} className={styles.relatedServiceTag}>
-                                                        <span>{relatedService.title}</span>
+                                                        <span>{displayName}</span>
                                                         <button
                                                             type="button"
                                                             className={styles.removeTag}
